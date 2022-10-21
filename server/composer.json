@@ -1,0 +1,12 @@
+{
+    "name": "ecommerce/server",
+    "type": "library",
+    "require": {
+        "vlucas/phpdotenv": "^5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "./"
+        }
+    }
+}
