@@ -31,6 +31,18 @@ export const SidebarData = [
     cName: "nav-text",
   },
   {
+    title: "Tin tức",
+    path: "/admin/news",
+    icon: <BiIcons.BiNews />,
+    cName: "nav-text",
+  },
+  {
+    title: "Bình luận",
+    path: "/admin/comments",
+    icon: <BiIcons.BiCommentDots />,
+    cName: "nav-text",
+  },
+  {
     title: "Cài đặt",
     path: "/admin/settings",
     icon: <AiIcons.AiOutlineSetting />,

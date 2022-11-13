@@ -2,7 +2,7 @@ import React from "react";
 import * as BiIcons from "react-icons/bi";
 import * as AiIcons from "react-icons/ai";
 import * as TbIcons from "react-icons/tb";
-import { PaginationTable } from "./Pagination";
+import { PaginationTable } from "../../components/admin/Pagination";
 
 import {
   Chart as ChartJS,
@@ -18,7 +18,7 @@ import {
 import { Line, Doughnut } from "react-chartjs-2";
 import { faker } from "@faker-js/faker";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState} from "react";
 
 ChartJS.register(
   CategoryScale,
@@ -31,7 +31,7 @@ ChartJS.register(
   ArcElement
 );
 
-function Home() {
+function Home({navbarAdmin}) {
   const [dataLine, setDataLine] = useState({});
   const [dataPie, setDataPie] = useState({});
 
@@ -88,11 +88,12 @@ function Home() {
       ],
     });
   }, []);
+
   return (
-    <div className="mx-5 mt-2">
+    <div className={"px-5 pt-2 "+(navbarAdmin?"fade":"")}>
       <h1>Welcome back, Sang !</h1>
       <div className="d-flex flex-column justify-content-lg-between align-items-center flex-lg-row gap-lg-5">
-        <div class="col col-sm-6 col-md-6 col-lg-3 card mt-4">
+        <div class="col col-sm-6 col-md-6 col-lg-3 card mt-3">
           <div class="card-body text-center">
             <span
               class="position-absolute m-0 top-0 start-50 translate-middle badge rounded-pill bg-success"
@@ -111,7 +112,7 @@ function Home() {
           </div>
         </div>
 
-        <div class="col col-sm-6 col-md-6 col-lg-3 card mt-4">
+        <div class="col col-sm-6 col-md-6 col-lg-3 card mt-3">
           <div class="card-body text-center">
             <span
               class="position-absolute m-0 top-0 start-50 translate-middle badge rounded-pill bg-warning"
@@ -130,7 +131,7 @@ function Home() {
           </div>
         </div>
 
-        <div class="col col-sm-6 col-md-6 col-lg-3 card mt-4 border">
+        <div class="col col-sm-6 col-md-6 col-lg-3 card mt-3 border">
           <div class="card-body text-center">
             <span
               class="position-absolute m-0 top-0 start-50 translate-middle badge rounded-pill bg-primary"
@@ -149,21 +150,41 @@ function Home() {
           </div>
         </div>
       </div>
-      <div className="d-flex flex-column flex-lg-row mt-5">
-        <div className="col-12 col-md-9">
+      <div className="d-flex mb-3 flex-column flex-lg-row mt-3">
+        <div className="col-12 col-lg-6">
           {dataLine.datasets ? (
-            <Line style={{height: "300px"}} data={dataLine} options={optionsLineChart} />
+            <Line
+              style={{ height: "300px" }}
+              data={dataLine}
+              options={optionsLineChart}
+            />
           ) : (
             ""
           )}
         </div>
-
-        <div className="col-12 col-md-3 col-lg-3">
-          {dataPie.datasets ? (
-            <Doughnut data={dataPie} options={optionsDoughnut} />
-          ) : (
-            ""
-          )}
+        <div className="d-flex justify-content-center col-12 col-md-6 flex-column flex-md-row">
+          <div className="col-12 col-lg-6">
+            {dataPie.datasets ? (
+              <Doughnut
+                style={{ width: "25vw" }}
+                data={dataPie}
+                options={optionsDoughnut}
+              />
+            ) : (
+              ""
+            )}
+          </div>
+          <div className="col-12 col-lg-6">
+            {dataPie.datasets ? (
+              <Doughnut
+                style={{ height: "300px" }}
+                data={dataPie}
+                options={optionsDoughnut}
+              />
+            ) : (
+              ""
+            )}
+          </div>
         </div>
       </div>
     </div>

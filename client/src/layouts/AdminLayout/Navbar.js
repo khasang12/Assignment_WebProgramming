@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
 import * as BiIcons from "react-icons/bi";
@@ -9,9 +9,10 @@ import "./Navbar.css";
 import { IconContext } from "react-icons";
 import logo from "../../assets/logo.png";
 
-export default function Navbar() {
+export function AdminLayout({setNavbarAdmin}) {
   const [sidebar, setSidebar] = useState(false);
   const toggleSidebar = () => {
+    setNavbarAdmin(!sidebar)
     setSidebar((sidebar) => !sidebar);
   };
   return (

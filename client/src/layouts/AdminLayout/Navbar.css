@@ -4,8 +4,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    
+}
 
+.navbar-active{
+    left: 50px;
+    transition: 500ms;
 }
 
 .navbar img{
