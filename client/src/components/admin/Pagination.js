@@ -32,7 +32,6 @@ export function PaginationTable() {
   const [records, setRecords] = useState(UserData.slice(0, pageSize));
   const isMobile = useMediaQuery("(max-width: 600px)");
 
-  let subtitle;
   const [opened, setOpened] = useState(false);
 
   useEffect(() => {

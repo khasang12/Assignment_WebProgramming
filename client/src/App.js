@@ -1,25 +1,42 @@
 import "./App.css";
-import React from "react";
-import Navbar from "./components/layouts/Navbar";
+import React, { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./components/pages/admin/Home";
-import Products from "./components/pages/admin/Products";
-import Accounts from "./components/pages/admin/Accounts";
-import Orders from "./components/pages/admin/Orders";
-import Settings from "./components/pages/admin/Settings";
-
+import { adminRoutes } from "./routes";
+import { AdminLayout } from "./layouts/AdminLayout/Navbar";
 
 function App() {
+  const [navbarAdmin, setNavbarAdmin] = useState(false);
+  //temporary homepage
+  let AdminPage = adminRoutes[0].component;
   return (
     <BrowserRouter>
-      <Navbar />
       <Routes>
-        <Route path="/" exact element={<Home />} />
-        <Route path="/admin" exact element={<Home />} />
-        <Route path="/admin/accounts" exact element={<Accounts />} />
-        <Route path="/admin/orders" exact element={<Orders />} />
-        <Route path="/admin/settings" element={<Settings />} />
-        <Route path="/admin/products" element={<Products />} />
+
+        <Route
+          path="/"
+          element={
+            <div>
+              <AdminLayout setNavbarAdmin={setNavbarAdmin}/>
+              <AdminPage navbarAdmin={navbarAdmin}/>
+            </div>
+          }
+        />
+
+        {adminRoutes.map((route, index) => {
+          let Page = route.component;
+          return (
+            <Route
+              path={route.path}
+              element={
+                <div>
+                  <AdminLayout setNavbarAdmin={setNavbarAdmin}/>
+                  <Page navbarAdmin={navbarAdmin}/>
+                </div>
+              }
+              key={index}
+            />
+          );
+        })}
       </Routes>
     </BrowserRouter>
   );
