@@ -13,7 +13,7 @@ function App() {
       <Routes>
 
         <Route
-          path="/"
+          path="/admin/"
           element={
             <div>
               <AdminLayout setNavbarAdmin={setNavbarAdmin}/>
