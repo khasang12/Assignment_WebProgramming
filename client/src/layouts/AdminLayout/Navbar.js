@@ -54,7 +54,7 @@ export function AdminLayout({setNavbarAdmin}) {
                 <hr class="dropdown-divider" />
               </li>
               <li>
-                <a class="dropdown-item text-center" href="#">
+                <a class="dropdown-item text-center" href="/admin/orders">
                   Xem thêm
                 </a>
               </li>
