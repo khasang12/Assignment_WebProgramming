@@ -1,12 +1,11 @@
-import React from 'react';
+import React from "react";
+import { AccountsTable } from "../../components/admin/AccountsTable";
 
-import { PaginationTable } from "../../components/admin/Pagination";
-
-function Accounts({navbarAdmin}) {
+function Accounts({ navbarAdmin }) {
   return (
-    <div className={"px-5 pt-2 "+(navbarAdmin?"fade":"")}>
-      <h1>Tài khoản khách hàng</h1>
-      <PaginationTable />
+    <div className={"px-5 pt-2 " + (navbarAdmin ? "fade" : "")}>
+      <h2 className="text-center my-4">Quản lý tài khoản</h2>
+      <AccountsTable />
     </div>
   );
 }
