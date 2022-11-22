@@ -10,6 +10,9 @@ import DefaultLayout from '../layouts/Userlayout/DefaultLayout';
 import HomePage from '../pages/user/HomePage';
 import ProductDetails from '../pages/user/ProductDetails';
 import Cart from '../pages/user/Cart';
+import Login from '../pages/user/Login';
+import Signup from '../pages/user/Signup';
+import UNews from '../pages/user/News';
 
 const publicRoutes = [];
 
@@ -32,6 +35,24 @@ const userRoutes = [
         component: Cart,
         layout: DefaultLayout,
     },
+
+    {
+        path: '/login',
+        component: Login,
+        layout: DefaultLayout,
+    },
+
+    {
+        path: '/signup',
+        component: Signup,
+        layout: DefaultLayout,
+    },
+
+    {
+        path: '/news',
+        component: UNews,
+        layout: DefaultLayout,
+    }
 ];
 
 const adminRoutes = [
