@@ -84,7 +84,9 @@ function Header() {
             </div>
             <div className="mid-bar w-100">
                 <div className="container text-white d-flex align-items-center justify-content-between">
-                    <img src={logo} width="240" className={cx('logo')} alt="logo" />
+                    <Link to="/">
+                        <img src={logo} width="240" className={cx('logo')} alt="logo" />
+                    </Link>
                     <div className={cx('search') + ' d-flex'}>
                         <input type={'text'} className="w-100" placeholder="Bạn cần tìm gì ?" onChange={onSearchBoxChange}
                 onKeyDown={onSearchBoxKeyDown}/>
@@ -94,12 +96,12 @@ function Header() {
                     </div>
                     <div className="d-flex align-items-center">
                         <RiShoppingBagLine size="40" className="mr-3" />
-                        <div>
+                        <Link to="/cart" className="text-white">
                             <p className="mb-1">Giỏ hàng</p>
                             <p className="m-0">
                                 (<span className="m-0">0</span>) Sản phẩm
                             </p>
-                        </div>
+                        </Link>
                     </div>
                 </div>
             </div>
