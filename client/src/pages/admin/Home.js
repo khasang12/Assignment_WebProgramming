@@ -2,7 +2,6 @@ import React from "react";
 import * as BiIcons from "react-icons/bi";
 import * as AiIcons from "react-icons/ai";
 import * as TbIcons from "react-icons/tb";
-import { PaginationTable } from "../../components/admin/Pagination";
 
 import {
   Chart as ChartJS,
@@ -18,7 +17,7 @@ import {
 import { Line, Doughnut } from "react-chartjs-2";
 import { faker } from "@faker-js/faker";
 
-import { useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 
 ChartJS.register(
   CategoryScale,
@@ -31,7 +30,7 @@ ChartJS.register(
   ArcElement
 );
 
-function Home({navbarAdmin}) {
+function Home({ navbarAdmin }) {
   const [dataLine, setDataLine] = useState({});
   const [dataPie, setDataPie] = useState({});
 
@@ -90,7 +89,7 @@ function Home({navbarAdmin}) {
   }, []);
 
   return (
-    <div className={"px-5 pt-2 "+(navbarAdmin?"fade":"")}>
+    <div className={"px-5 pt-2 " + (navbarAdmin ? "fade" : "")}>
       <h1>Welcome back, Sang !</h1>
       <div className="d-flex flex-column justify-content-lg-between align-items-center flex-lg-row gap-lg-5">
         <div class="col col-sm-6 col-md-6 col-lg-3 card mt-3">
