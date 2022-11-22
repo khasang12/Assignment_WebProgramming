@@ -9,6 +9,7 @@ import Comments from '../pages/admin/Comments';
 import DefaultLayout from '../layouts/Userlayout/DefaultLayout';
 import HomePage from '../pages/user/HomePage';
 import ProductDetails from '../pages/user/ProductDetails';
+import SearchPage from '../components/Search';
 import Cart from '../pages/user/Cart';
 import Login from '../pages/user/Login';
 import Signup from '../pages/user/Signup';
@@ -36,6 +37,11 @@ const userRoutes = [
         layout: DefaultLayout,
     },
 
+    {
+        path: '/search',
+        component: SearchPage,
+        layout: DefaultLayout,
+    },
     {
         path: '/login',
         component: Login,

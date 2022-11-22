@@ -1,5 +1,9 @@
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
-import img1 from '../../assets/coverimg.jpg';
+import img1 from '../../assets/slider1_1.webp';
+import img2 from '../../assets/slider1_2.webp';
+import img3 from '../../assets/slider1_3.webp';
+import img4 from '../../assets/slider1_4.webp';
+import img5 from '../../assets/slider1_5.webp';
 import ItemsList from '../../components/Home/ItemList';
 
 function HomePage() {
@@ -30,16 +34,34 @@ function HomePage() {
                         data-bs-slide-to="2"
                         aria-label="Slide 3"
                     ></button>
+                    <button
+                        type="button"
+                        data-bs-target="#carouselExampleCaptions"
+                        data-bs-slide-to="3"
+                        aria-label="Slide 4"
+                    ></button>
+                    <button
+                        type="button"
+                        data-bs-target="#carouselExampleCaptions"
+                        data-bs-slide-to="4"
+                        aria-label="Slide 5"
+                    ></button>
                 </div>
-                <div className="carousel-inner relative w-full overflow-hidden">
-                    <div className="carousel-item active relative float-left w-full">
-                        <img src={img1} className="block w-full object-contain" alt="..." />
+                <div class="carousel-inner relative w-full overflow-hidden">
+                    <div class="carousel-item active relative float-left w-full">
+                        <img src={img1} class="block w-full align-items-center object-contain" alt="..." />
                     </div>
-                    <div className="carousel-item relative float-left w-full">
-                        <img src={img1} className="block w-full" alt="..." />
+                    <div class="carousel-item relative float-left w-full">
+                        <img src={img2} class="block w-full" alt="..." />
                     </div>
-                    <div className="carousel-item relative float-left w-full">
-                        <img src={img1} className="block w-full" alt="..." />
+                    <div class="carousel-item relative float-left w-full">
+                        <img src={img3} class="block w-full" alt="..." />
+                    </div>
+                    <div class="carousel-item relative float-left w-full">
+                        <img src={img4} class="block w-full" alt="..." />
+                    </div>
+                    <div class="carousel-item relative float-left w-full">
+                        <img src={img5} class="block w-full" alt="..." />
                     </div>
                 </div>
                 <button

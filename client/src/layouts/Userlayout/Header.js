@@ -7,6 +7,7 @@ import { TbShoppingCartDiscount } from 'react-icons/tb';
 import { RiShoppingBagLine } from 'react-icons/ri';
 import styles from './DefaultLayout.module.scss';
 import logo from '../../assets/logo.png';
+import { useState } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -22,6 +23,26 @@ export const userOption = [
 ];
 
 function Header() {
+    const [searchStr, setSearchStr] = useState("");
+    const search = (e) => {
+        e.preventDefault();
+        if (searchStr !== "") {
+          window.location.assign(`./search?s=${searchStr}`);
+        }
+      };
+
+      const onSearchBoxChange = (e) => {
+        setSearchStr(e.target.value);
+      };
+    
+      const onSearchBoxKeyDown = (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          if (searchStr !== "") {
+            window.location.assign(`./search?s=${searchStr}`);
+          }
+        }
+      };
     return (
         <div className={cx('header')}>
             <div className={cx('top-bar') + ' border-bottom'}>
@@ -67,8 +88,9 @@ function Header() {
                         <img src={logo} width="240" className={cx('logo')} alt="logo" />
                     </Link>
                     <div className={cx('search') + ' d-flex'}>
-                        <input type={'text'} className="w-100" placeholder="Bạn cần tìm gì ?" />
-                        <button className="btn btn-primary border-0">
+                        <input type={'text'} className="w-100" placeholder="Bạn cần tìm gì ?" onChange={onSearchBoxChange}
+                onKeyDown={onSearchBoxKeyDown}/>
+                        <button className="btn btn-primary border-0" onClick={search}>
                             <BiSearch />
                         </button>
                     </div>
