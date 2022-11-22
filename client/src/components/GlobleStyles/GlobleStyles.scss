@@ -1,0 +1,59 @@
+@import 'normalize.css';
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,400;1,500&display=swap');
+:root {
+    //For all
+    --white: #fff;
+    --black: #000;
+    --text-color: #333;
+
+    --primary: #030391;
+
+    --user-header-height: 120px;
+    --user-footer-height: 60px;
+}
+* {
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    text-rendering: optimizespeed;
+    color: var(--text-color);
+    scroll-behavior: smooth;
+}
+
+button,
+input,
+[tabindex] {
+    outline: none;
+    border: none;
+}
+
+a {
+    color: var(--text-color);
+    text-decoration: none;
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+.text-orange {
+    color: #dc3545;
+}
+
+.bg-primary {
+    background-color: var(--primary) !important;
+}
+
+.text-overflow-ellipsis-2 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* number of lines to show */
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
