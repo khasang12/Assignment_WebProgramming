@@ -9,6 +9,7 @@ import Comments from '../pages/admin/Comments';
 import DefaultLayout from '../layouts/Userlayout/DefaultLayout';
 import HomePage from '../pages/user/HomePage';
 import ProductDetails from '../pages/user/ProductDetails';
+import Cart from '../pages/user/Cart';
 import Login from '../pages/user/Login';
 import Signup from '../pages/user/Signup';
 import UNews from '../pages/user/News';
@@ -27,6 +28,11 @@ const userRoutes = [
     {
         path: '/details',
         component: ProductDetails,
+        layout: DefaultLayout,
+    },
+    {
+        path: 'cart',
+        component: Cart,
         layout: DefaultLayout,
     },
 

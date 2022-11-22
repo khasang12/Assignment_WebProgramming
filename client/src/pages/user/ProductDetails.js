@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom';
 function ProductDetails() {
     return (
         <React.Fragment>
-            <div className="container pt-5">
+            <div className="container">
                 <div className="row">
                     <div className="product-info col-lg-12 col-xl-9">
                         <div className="row">
