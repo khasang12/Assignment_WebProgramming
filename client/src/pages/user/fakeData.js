@@ -1,0 +1,91 @@
+export const product = {
+    id: 'P1',
+    name: 'Macbook Air M2 Midnight MLY33SA/A (Apple M2, 8-Cores GPU, Ram 8GB, SSD 256GB, 13.6 Inch IPS Retina)',
+    image: 'https://bizweb.sapocdn.net/thumb/1024x1024/100/329/122/products/macbook-air-m2-midnight-mly33sa-a.jpg?v=1655105354803',
+    imageDescription: 'https://bizweb.sapocdn.net/100/329/122/files/macbook-air-m2-01.jpg?v=1655094373854',
+    thumbnails: [
+        {
+            path: 'https://bizweb.sapocdn.net/thumb/small/100/329/122/products/macbook-air-m2-midnight-mly33sa-a-1.jpg?v=1655105355167',
+            onFocus: true,
+        },
+        {
+            path: 'https://bizweb.sapocdn.net/thumb/small/100/329/122/products/macbook-air-m2-midnight-mly33sa-a-1.jpg?v=1655105355167',
+            onFocus: false,
+        },
+        {
+            path: 'https://bizweb.sapocdn.net/thumb/small/100/329/122/products/macbook-air-m2-midnight-mly33sa-a-1.jpg?v=1655105355167',
+            onFocus: false,
+        },
+        {
+            path: 'https://bizweb.sapocdn.net/thumb/small/100/329/122/products/macbook-air-m2-midnight-mly33sa-a-1.jpg?v=1655105355167',
+            onFocus: false,
+        },
+    ],
+    price: 28000000,
+    quantity: 1,
+    brand: 'laptop',
+    cpu: 'Apple M2 8 Cores',
+    gpu: 'Apple 8 Cores GPU',
+    ram: ' 8GB',
+    disk: '256GB SSD',
+    screen_size: '13.6"',
+    resolution: '2560x1664',
+    screen_tech: ' IPS Retina',
+    weight: '1.24 kg',
+    os: 'Mac OS',
+    battery: '52.6Wh',
+    overall_rating: '',
+    num_rates: 4,
+    description:
+        ' Macbook Air M2 Midnight MLY33SA/A là dòng sản phẩm có thiết kế mỏng nhẹ kết hợp với những đường nét đơn giản nhưng vô cùng sang trọng và tinh tế đã tạo nên sự thu hút đến đông đảo người dùng yêu thích và lựa chọn. Vỏ nhôm bên ngoài mang đến sự bền bỉ vượt trội theo thời gian cùng màn hình lớn vượt trội hơn để hiệu suất vượt bật mang đến cho bạn khả năng làm việc với cả những công việc chuyên nghiệp, những tác vụ nặng mà không thể chạy được trên MacBook Air trước đây.',
+    relate: [
+        {
+            id: 'P124',
+            images: 'https://bizweb.sapocdn.net/thumb/small/100/329/122/products/laptop-gaming-hp-victus-16-e1106ax-7c0t1pa-01-b455b502-131c-46ea-9045-c0c1055f747f.jpg?v=1668744888510',
+            name: 'Laptop MSI Modern 14 C5M-030VN (Ryzen 5 5625U, Radeon Graphics, Ram 8GB DDR4, SSD 512GB, 14 Inch IPS FHD)',
+            price: 14599000,
+        },
+        {
+            id: 'P123',
+            images: 'https://bizweb.sapocdn.net/thumb/small/100/329/122/products/laptop-msi-modern-14-c5m-030vn.jpg?v=1668590581000',
+            name: 'Laptop Gaming HP VICTUS 16-e1107AX 7C140PA (Ryzen 5 6600H, RTX 3050 4GB, Ram 8GB DDR5, SSD 512GB, 16.1 Inch IPS 144Hz FHD)',
+            price: 20599000,
+        },
+        {
+            id: 'P125',
+            images: 'https://bizweb.sapocdn.net/thumb/small/100/329/122/products/laptop-msi-modern-14-c5m-030vn.jpg?v=1668590581000',
+            name: 'Laptop Gaming HP VICTUS 16-e1107AX 7C140PA (Ryzen 5 6600H, RTX 3050 4GB, Ram 8GB DDR5, SSD 512GB, 16.1 Inch IPS 144Hz FHD)',
+            price: 25599000,
+        },
+        {
+            id: 'P126',
+            images: 'https://bizweb.sapocdn.net/thumb/small/100/329/122/products/laptop-gaming-hp-victus-16-e0177ax-4r0u9pa.jpg?v=1662709385000',
+            name: 'Laptop Gaming HP VICTUS 16-e0177AX 4R0U9PA (Ryzen 5 5600H, GTX 1650 4GB, Ram 8GB DDR4, SSD 512GB, 16.1 Inch IPS 144Hz FHD)',
+            price: 15999000,
+        },
+        {
+            id: 'P124',
+            images: 'https://bizweb.sapocdn.net/thumb/small/100/329/122/products/laptop-gaming-hp-victus-16-e1106ax-7c0t1pa-01-b455b502-131c-46ea-9045-c0c1055f747f.jpg?v=1668744888510',
+            name: 'Laptop MSI Modern 14 C5M-030VN (Ryzen 5 5625U, Radeon Graphics, Ram 8GB DDR4, SSD 512GB, 14 Inch IPS FHD)',
+            price: 14599000,
+        },
+        {
+            id: 'P123',
+            images: 'https://bizweb.sapocdn.net/thumb/small/100/329/122/products/laptop-msi-modern-14-c5m-030vn.jpg?v=1668590581000',
+            name: 'Laptop Gaming HP VICTUS 16-e1107AX 7C140PA (Ryzen 5 6600H, RTX 3050 4GB, Ram 8GB DDR5, SSD 512GB, 16.1 Inch IPS 144Hz FHD)',
+            price: 20599000,
+        },
+        {
+            id: 'P125',
+            images: 'https://bizweb.sapocdn.net/thumb/small/100/329/122/products/laptop-msi-modern-14-c5m-030vn.jpg?v=1668590581000',
+            name: 'Laptop Gaming HP VICTUS 16-e1107AX 7C140PA (Ryzen 5 6600H, RTX 3050 4GB, Ram 8GB DDR5, SSD 512GB, 16.1 Inch IPS 144Hz FHD)',
+            price: 25599000,
+        },
+        {
+            id: 'P126',
+            images: 'https://bizweb.sapocdn.net/thumb/small/100/329/122/products/laptop-gaming-hp-victus-16-e0177ax-4r0u9pa.jpg?v=1662709385000',
+            name: 'Laptop Gaming HP VICTUS 16-e0177AX 4R0U9PA (Ryzen 5 5600H, GTX 1650 4GB, Ram 8GB DDR4, SSD 512GB, 16.1 Inch IPS 144Hz FHD)',
+            price: 15999000,
+        },
+    ],
+};
