@@ -3,10 +3,10 @@ header("Access-Control-Allow-Origin: http://localhost:3000");
 header("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Accept, Authorization, X-Requested-With, X-Auth-Token, Origin, Application");
 
-$serverName='sql12.freemysqlhosting.net';
-$username='sql12541155';
-$password='hyVHGCMqXT';
-$databaseName='sql12541155';
+$serverName='sql12.freesqldatabase.com';
+$username='sql12579701';
+$password='5xSCWaRL1v';
+$databaseName='sql12579701';
 
 
 $conn = mysqli_connect($serverName, $username, $password, $databaseName);
