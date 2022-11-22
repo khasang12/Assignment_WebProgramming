@@ -9,6 +9,7 @@ import Comments from '../pages/admin/Comments';
 import DefaultLayout from '../layouts/Userlayout/DefaultLayout';
 import HomePage from '../pages/user/HomePage';
 import ProductDetails from '../pages/user/ProductDetails';
+import Cart from '../pages/user/Cart';
 
 const publicRoutes = [];
 
@@ -24,6 +25,11 @@ const userRoutes = [
     {
         path: '/details',
         component: ProductDetails,
+        layout: DefaultLayout,
+    },
+    {
+        path: 'cart',
+        component: Cart,
         layout: DefaultLayout,
     },
 ];
