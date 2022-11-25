@@ -1,4 +1,4 @@
-import { REMOVE_CART_ITEM, SELECT_ALL_CART_ITEM, SELECT_CART_ITEM, UPDATE_CART } from './constants';
+import { ADD_CART, REMOVE_CART_ITEM, SELECT_ALL_CART_ITEM, SELECT_CART_ITEM, UPDATE_CART } from './constants';
 import { products } from './fakeData';
 
 const initState = {
@@ -35,6 +35,18 @@ const reducer = (state, action) => {
         case UPDATE_CART: {
             return {
                 ...state,
+            };
+        }
+
+        case ADD_CART: {
+            let newCart = state.cart;
+            let i = newCart.findIndex((item) => item.id === action.payload.id);
+            if (i >= 0) {
+                newCart[i].quantity++;
+            } else newCart.push(action.payload);
+            return {
+                ...state,
+                newCart,
             };
         }
         default:

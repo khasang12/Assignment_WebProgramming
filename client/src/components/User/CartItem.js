@@ -2,7 +2,6 @@ import { Modal, Button } from 'react-bootstrap';
 import { AiFillCloseSquare, AiOutlineMinusSquare, AiOutlinePlusSquare } from 'react-icons/ai';
 import { useContext, useState } from 'react';
 
-import { product } from '../../pages/user/fakeData';
 import Price from '../PriceDisplay/Price';
 import { Context } from '../../stores';
 import { selectItem, removeCartItem, updateCart } from '../../stores/actions';
@@ -41,20 +40,20 @@ function CartItem({ cartItem }) {
                 <input
                     type="checkbox"
                     defaultChecked={cartItem.isSelected}
-                    key={Math.random()}
+                    // key={Math.random()}
                     onChange={(e) => {
                         dispatch(selectItem(cartItem.id));
                     }}
                 />
             </div>
             <div className="col-2 p-2" style={{ width: '17%' }}>
-                <img src={product.image} width="60%" className="" alt="ảnh sản phẩm" />
+                <img src={cartItem.image} width="60%" className="" alt="ảnh sản phẩm" />
             </div>
             <div className="col-3" style={{ width: '33%' }}>
-                {product.name}
+                {cartItem.name}
             </div>
             <div className="col-2" style={{ width: '12%' }}>
-                <Price>{product.price}</Price>
+                <Price>{cartItem.price}</Price>
             </div>
             <div
                 className="col-2 d-flex align-items-center justify-content-center text-primary p-0"
@@ -66,7 +65,7 @@ function CartItem({ cartItem }) {
                     className="text-center"
                     style={{ width: 36 }}
                     defaultValue={cartItem.quantity}
-                    key={Math.random()}
+                    // key={Math.random()}
                     onChange={(e) => {
                         cartItem.quantity = Number(e.target.value);
                     }}
@@ -77,7 +76,7 @@ function CartItem({ cartItem }) {
                 <AiOutlinePlusSquare onClick={handleIncrease} size={24} />
             </div>
             <div className="col-2" style={{ width: '12%' }}>
-                <Price>{product.quantity * product.price}</Price>
+                <Price>{cartItem.quantity * cartItem.price}</Price>
             </div>
             <div className="col-1" style={{ width: '7%' }}>
                 <button className="btn btn-outline text-orange p-1">

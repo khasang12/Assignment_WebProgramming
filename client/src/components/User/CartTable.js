@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { Context } from '../../stores';
 import { selectAllProducts } from '../../stores/actions';
@@ -23,7 +24,7 @@ function CartTable() {
     return (
         <>
             {products.length > 0 ? (
-                <div className="container my-5">
+                <div className="container my-5 border-bottom">
                     <div className="row text-center border-bottom py-2">
                         <div className="col-2" style={{ width: '7%' }}>
                             Chọn
@@ -56,7 +57,7 @@ function CartTable() {
                         <div className="col-6">
                             <input
                                 type="checkbox"
-                                key={Math.random()}
+                                // key={Math.random()}
                                 defaultChecked={productsSelected.length === products.length}
                                 onChange={(e) => handleSelectAll(e.target.checked)}
                             />
@@ -67,6 +68,14 @@ function CartTable() {
                             <span className="mb-0 ml-auto">Tổng tiền: </span>
                             <Price medium>{totalCost}</Price>
                         </div>
+                    </div>
+                    <div className="cart-action d-flex justify-content-end my-3">
+                        <Link to="/">
+                            <button className="btn btn-secondary mr-2">TIẾP TỤC MUA HÀNG</button>
+                        </Link>
+                        <Link to="/payment">
+                            <button className="btn btn-primary bg-primary">THỰC HIỆN THANH TOÁN</button>
+                        </Link>
                     </div>
                 </div>
             ) : (

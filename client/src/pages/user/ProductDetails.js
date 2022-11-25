@@ -1,17 +1,50 @@
-import { Button } from 'react-bootstrap';
-import React from 'react';
+import React, { useContext } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/ai';
+import { Button, Col, Row, Tab, Nav } from 'react-bootstrap';
+
 import Price from '../../components/PriceDisplay/Price';
 import RateStar from '../../components/User/RateStar';
 import { product } from './fakeData';
-import Col from 'react-bootstrap/Col';
-import Nav from 'react-bootstrap/Nav';
-import Row from 'react-bootstrap/Row';
-import Tab from 'react-bootstrap/Tab';
 import Comments from '../../components/User/Comments';
 import { Link } from 'react-router-dom';
+import { Context } from '../../stores';
+import { addToCart, selectItem } from '../../stores/actions';
 
 function ProductDetails() {
+    const [state, dispatch] = useContext(Context);
+    const [urlParams, setURLParams] = useSearchParams();
+    let id = urlParams.get('id');
+
+    //call API --> products
+
+    const handleAddCart = () => {
+        dispatch(
+            addToCart({
+                id: product.id,
+                name: product.name,
+                image: product.image,
+                price: product.price,
+                quantity: 1,
+                isSelected: false,
+            }),
+        );
+    };
+    const handleBuy = () => {
+        dispatch(
+            addToCart({
+                id: product.id,
+                name: product.name,
+                image: product.image,
+                price: product.price,
+                quantity: 1,
+                isSelected: false,
+            }),
+        );
+
+        dispatch(selectItem(product.id));
+    };
+
     return (
         <React.Fragment>
             <div className="container">
@@ -58,11 +91,13 @@ function ProductDetails() {
                                         <Button variant="warning" className=" px-2 py-2 mr-4 w-50">
                                             So sánh mặt hàng
                                         </Button>
-                                        <Button variant="primary" className=" px-2 py-2 w-50">
+                                        <Button variant="primary" className=" px-2 py-2 w-50" onClick={handleAddCart}>
                                             Thêm vào giỏ hàng
                                         </Button>
                                     </div>
-                                    <Button className="w-100 px-2 py-2 bg-primary">Mua ngay</Button>
+                                    <Link to="/cart" onClick={handleBuy}>
+                                        <Button className="w-100 px-2 py-2 bg-primary">Mua ngay</Button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

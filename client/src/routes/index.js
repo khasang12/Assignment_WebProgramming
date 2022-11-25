@@ -14,6 +14,7 @@ import Cart from '../pages/user/Cart';
 import Login from '../pages/user/Login';
 import Signup from '../pages/user/Signup';
 import UNews from '../pages/user/News';
+import Payment from '../pages/user/Payment';
 
 const publicRoutes = [];
 
@@ -34,6 +35,11 @@ const userRoutes = [
     {
         path: 'cart',
         component: Cart,
+        layout: DefaultLayout,
+    },
+    {
+        path: '/payment',
+        component: Payment,
         layout: DefaultLayout,
     },
 
@@ -58,7 +64,7 @@ const userRoutes = [
         path: '/news',
         component: UNews,
         layout: DefaultLayout,
-    }
+    },
 ];
 
 const adminRoutes = [
