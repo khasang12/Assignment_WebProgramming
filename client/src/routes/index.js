@@ -15,6 +15,8 @@ import Login from '../pages/user/Login';
 import Signup from '../pages/user/Signup';
 import UNews from '../pages/user/News';
 import Payment from '../pages/user/Payment';
+import Address from '../pages/user/Address';
+
 
 const publicRoutes = [];
 
@@ -63,6 +65,11 @@ const userRoutes = [
     {
         path: '/news',
         component: UNews,
+        layout: DefaultLayout,
+    },
+    {
+        path: '/address',
+        component: Address,
         layout: DefaultLayout,
     },
 ];

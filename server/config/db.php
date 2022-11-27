@@ -23,8 +23,9 @@ class db {
     }
 
     public function connect() {
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
         $this->conn = mysqli_connect($this->serverName, $this->username, $this->password, $this->databaseName);
-
+        $this->conn->set_charset("utf8");
         if ($this->conn -> connect_errno) {
             echo "Failed to connect to MySQL: " . $this->conn -> connect_error;
             exit();
