@@ -2,7 +2,7 @@ import { Col, Button, Row, Container, Card, Form } from "react-bootstrap";
 
 function Login() {
   return (
-    <div class="container">
+    <Container>
         <Col>
             <Row className="d-flex">
                 <Col>
@@ -69,7 +69,7 @@ function Login() {
             </Row>
         </Col>
         
-    </div>
+    </Container>
   );
 }
 export default Login;
