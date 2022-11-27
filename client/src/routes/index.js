@@ -50,7 +50,7 @@ const userRoutes = [
         component: SearchPage,
         layout: DefaultLayout,
     },
-    {
+            {
         path: '/login',
         component: Login,
         layout: DefaultLayout,

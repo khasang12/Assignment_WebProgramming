@@ -40,6 +40,22 @@ a {
         text-decoration: none;
     }
 }
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
 
 .text-orange {
     color: #dc3545;
@@ -47,6 +63,10 @@ a {
 
 .bg-primary {
     background-color: var(--primary) !important;
+}
+
+.bg-table {
+    background: rgb(249, 246, 209);
 }
 
 .text-overflow-ellipsis-2 {
@@ -58,7 +78,7 @@ a {
     -webkit-box-orient: vertical;
 }
 
-//custm form-flaoting
+//custm form-floating from bootstrap
 
 .form-floating {
     .form-control,
