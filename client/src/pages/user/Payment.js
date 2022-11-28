@@ -46,29 +46,31 @@ const paymentMethods = [
 function Payment() {
     const [state, dispatch] = useContext(Context);
 
+    // get products selected and caculate total price
     const products = state.cart.filter((item) => item.isSelected);
+    const totalPrice = products.reduce((res, item) => (item.isSelected ? res + item.price * item.quantity : res), 0);
     if (products.length <= 0) {
         window.location.href = '/cart';
     }
 
+    //get cost of delivery
     const [deliveryCost, setDeliveryCost] = useState(0);
     const handleSetDeliveryCost = (price) => {
         console.log(price);
         setDeliveryCost(price);
     };
 
+    // click button 'Đặt hàng'
     const handleSubmit = (e) => {
         e.preventDefault();
         alert('đặt hàng thành công!');
     };
 
-    const totalPrice = products.reduce((res, item) => (item.isSelected ? res + item.price * item.quantity : res), 0);
-
     return (
         <div className="container">
             <h2 className="py-2 mt-4 border-bottom">Thanh toán</h2>
             <form name="checkoutForm" onSubmit={(e) => handleSubmit(e)}>
-                <div className="row mt-3">
+                <div className="row my-3">
                     <div className="address-info col-4 mt-5" style={{ width: '30%' }}>
                         <h5>Thông tin nhận hàng</h5>
                         <AddressForm />
@@ -175,3 +177,13 @@ function Payment() {
 }
 
 export default Payment;
+
+/**
+ * Validate form
+ * Responsive web
+ * Xử lý thanh toán online
+ * Viết hướng dẫn thanh toán online
+ * Áp dụng mã giảm giá (nếu có)
+ * Xử lý trường hợp khách đã đăng nhập và có địa chỉ trong sổ địa chỉ
+ * Xử lý trường hợp thêm địa chỉ vào sổ dịa chỉ
+ */

@@ -61,7 +61,7 @@
     min-height: 80vh;
 }
 
-.arrow-top {
+.arrow-top-center {
     &::before {
         content: '';
         position: absolute;
@@ -72,4 +72,22 @@
         border-style: solid;
         border-color: transparent transparent white transparent;
     }
+}
+
+.arrow-top-end {
+    &::before {
+        content: '';
+        position: absolute;
+        top: -27px;
+        left: 70%;
+        margin-left: -5px;
+        border-width: 14px;
+        border-style: solid;
+        border-color: transparent transparent white transparent;
+    }
+}
+
+.popper {
+    width: 400px;
+    overflow: hidden;
 }
