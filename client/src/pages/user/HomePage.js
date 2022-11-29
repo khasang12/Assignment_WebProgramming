@@ -8,7 +8,7 @@ import ItemsList from '../../components/Home/ItemList';
 
 function HomePage() {
     return (
-        <div class="container">
+        <div class="container mt-4">
             {/* <MyButton className="m-5" primary to="/details?id=P123456577">
                 Goto Product details
             </MyButton> */}
