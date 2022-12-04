@@ -41,7 +41,7 @@ function Header() {
   return (
     <div className={cx("header")}>
       <div className={cx("top-bar") + " border-bottom"}>
-        <div className="container d-flex align-items-center">
+        <div className="container-md d-flex align-items-center">
           <p className="m-0 text-white">
             {" "}
             Mở cửa: 8h đến 21h từ Thứ 2 đến chủ nhật
@@ -91,7 +91,7 @@ function Header() {
         </div>
       </div>
       <div className="mid-bar w-100">
-        <div className="container text-white d-flex align-items-center justify-content-between">
+        <div className="container-md text-white d-flex align-items-center justify-content-between">
           <Link to="/">
             <img src={logo} width="240" className={cx("logo")} alt="logo" />
           </Link>
@@ -172,8 +172,8 @@ function Header() {
           </div>
         </div>
       </div>
-      <div className="bot-bar w-100 bg-secondary">
-        <div className='container text-white d-flex flex-row align-items-center justify-content-between"'>
+      <div className="bot-bar w-100" style={{backgroundColor: '#e4f2f2'}}>
+        <div className='container-md text-white d-flex flex-row align-items-center justify-content-between"'>
           <button className="col-12 col-lg-3 px-4 py-3 bg-warning fw-bold fs-4 d-flex flex-row align-items-center">
             <BiMenu className="mr-1"/>
             <a className="text-white" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" href="#">
@@ -186,16 +186,16 @@ function Header() {
             </ul>
           </button>
           <div className="d-none d-lg-block p-2 px-5 fw-semibold fs-6">
-            <a href="#">THANH TOÁN</a>
+            <a href="how-to-purchase">THANH TOÁN</a>
           </div>
           <div className="d-none d-lg-block p-2 px-5 fw-bold fs-6">
-            <a href="#">LIÊN HỆ</a>
+            <a href="how-to-contact">LIÊN HỆ</a>
           </div>
           <div className="d-none d-lg-block p-2 px-5 fw-bold fs-6">
-            <a href="#">TIN TỨC</a>
+            <a href="news">TIN TỨC</a>
           </div>
           <div className="d-none d-lg-block p-2 px-5 fw-bold fs-6">
-            <a href="#">CHĂM SÓC KHÁCH HÀNG</a>
+            <a href="customer-care">CHĂM SÓC KHÁCH HÀNG</a>
           </div>
         </div>
       </div>

@@ -9,6 +9,7 @@
     align-items: center;
     justify-content: center;
     z-index: 10;
+    
 }
 
 .logo {
@@ -27,6 +28,10 @@
         color: var(--white);
         position: relative;
     }
+}
+.bot-bar{
+    position: relative;
+    top: 10px;
 }
 
 .search {

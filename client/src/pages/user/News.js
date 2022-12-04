@@ -1,6 +1,6 @@
 function UNews() {
     return (
-        <div>
+        <div class="container">
             
         </div>
     );
