@@ -11,57 +11,79 @@ import sortBy from "lodash/sortBy";
 import { useDebouncedValue, useMediaQuery } from "@mantine/hooks";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import { useEffect, useState } from "react";
-import { ProductData } from "./data";
 import * as GrIcons from "react-icons/gr";
 import * as AiIcons from "react-icons/ai";
 import * as BiIcons from "react-icons/bi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import SunEditor from "suneditor-react";
+import "suneditor/dist/css/suneditor.min.css";
+import uuid from "react-uuid";
 
 const PAGE_SIZES = [10, 15, 20];
 
 export function ProductsTable() {
-  const [pageSize, setPageSize] = useState(PAGE_SIZES[1]);
-  const [query, setQuery] = useState("");
-  const [debouncedQuery] = useDebouncedValue(query, 200);
-
-  useEffect(() => {
-    setPage(1);
-  }, [pageSize]);
+  // States
+  const [productList, setProductList] = useState([]); // Product List (to be delivered by DB)
+  const [pageSize, setPageSize] = useState(PAGE_SIZES[1]); // Page Size
+  const [records, setRecords] = useState(productList.slice(0, pageSize)); // Records (to be inserted into table)
+  const [query, setQuery] = useState(""); // Query Search string
+  const [debouncedQuery] = useDebouncedValue(query, 200); // Debounce effect
   const initValues = {
-    //for new item to be added
-    product_id: "",
-    brand: "",
-    title: "",
-    price: 0,
+    // Default Values for a Product
+    id: 0,
+    name: "",
+    price: "",
+    quantity: "",
+    overall_rating: "",
     thumbnail: "",
-    desc: "",
-    quantity: 0,
+    brand: "",
+    cpu: "",
+    gpu: "",
+    ram: "",
+    disk: "",
+    description: "",
+    num_rates: "",
+    weight: "",
+    screen_tech: "",
+    screen_size: "",
+    os: "",
   };
-  const [page, setPage] = useState(1);
-  const [records, setRecords] = useState(ProductData.slice(0, pageSize));
+  const [page, setPage] = useState(1); // Current Page
   const [sortStatus, setSortStatus] = useState({
+    // Sorting Status
     columnAccessor: "price",
     direction: "asc",
   });
-  const [product, setProduct] = useState({});
-  const [done, setDone] = useState({ status: false, msg: "empty form" });
-  const [values, setValues] = useState(initValues);
+  const [done, setDone] = useState({ status: false, msg: "empty form" }); // Validation
+  const [values, setValues] = useState(initValues); // Dynamic Values to be clicked/ changed/ inserted
 
-  //Pagination
+  // Effects
+  // Get all Data after FIRST LOADING for 1 second
+  useEffect(() => {
+    const timeoutID = window.setTimeout(() => {
+      getProductsList();
+    }, 1000);
+    return () => window.clearTimeout(timeoutID);
+  }, []);
+  // Set page size according to chosen size
+  useEffect(() => {
+    setPage(1);
+  }, [pageSize]);
+  //Pagination Effect
   useEffect(() => {
     const from = (page - 1) * pageSize;
     const to = from + pageSize;
-    setRecords(ProductData.slice(from, to));
-  }, [page, pageSize]);
-
+    setRecords(productList.slice(from, to));
+  }, [page, pageSize, records]);
   // Table search
   useEffect(() => {
     setRecords(
-      ProductData.filter(({ brand, title }) => {
+      productList.filter(({ id, name }) => {
         if (
           debouncedQuery !== "" &&
-          !`${brand} ${title}`
+          !`${id} ${name}`
             .toLowerCase()
             .includes(debouncedQuery.trim().toLowerCase())
         ) {
@@ -70,37 +92,112 @@ export function ProductsTable() {
         return true;
       })
     );
-  }, [debouncedQuery]);
-
-  // Sorting...
+  }, [debouncedQuery, records]);
+  // Sorting
   useEffect(() => {
-    const data = sortBy(ProductData, sortStatus.columnAccessor);
+    const data = sortBy(productList, sortStatus.columnAccessor);
     setRecords(sortStatus.direction === "desc" ? data.reverse() : data);
   }, [sortStatus]);
-
   // Form validation
   useEffect(() => {
-    const { product_id, brand, title, price, thumbnail, desc, quantity } =
-      values;
-    if (product_id === "") {
-      setDone({ status: false, msg: "Vui lòng nhập mã số" });
-    } else if (title === undefined || title === "") {
-      setDone({ status: false, msg: "Vui lòng chọn tiêu đề" });
-    } else if (brand === undefined || brand === "") {
-      setDone({ status: false, msg: "Vui lòng chọn phân loại" });
-    } else if (quantity === undefined || quantity === 0) {
+    const { name, price, quantity } = values;
+    if (name === undefined || name === "") {
+      setDone({ status: false, msg: "Vui lòng nhập tên sản phẩm" });
+    } else if (price === undefined || price === "") {
+      setDone({ status: false, msg: "Vui lòng nhập giá bán" });
+    } else if (isNaN(price)) {
+      setDone({ status: false, msg: "Giá bán là 1 con số" });
+    } else if (quantity === undefined || quantity === "") {
       setDone({ status: false, msg: "Vui lòng nhập số lượng" });
-    } else if (price === undefined || price === 0) {
-      setDone({ status: false, msg: "Vui lòng chọn giá bán" });
-    } else if (desc === undefined || desc === "") {
-      setDone({ status: false, msg: "Vui lòng mô tả sản phẩm" });
-    } else if (thumbnail === undefined || thumbnail === "") {
-      setDone({ status: false, msg: "Vui lòng chọn ảnh" });
+    } else if (isNaN(quantity)) {
+      setDone({ status: false, msg: "Số lượng là 1 con số" });
     } else {
       setDone({ status: true, msg: "validated form" });
     }
   }, [values]);
 
+  // RESTful API for Product
+  // Get All Product
+  const getProductsList = async () => {
+    await axios
+      .get("http://localhost:8080/api/products/all")
+      .then((response) => setProductList(response.data))
+      //.then(setRecords(ProductList))
+      .catch((res) => alert(res));
+  };
+  // Insert Product
+  const addProduct = (products) => {
+    axios({
+      method: "post",
+      url: "http://localhost:8080/api/products/",
+      data: {
+        id: uuid(),
+        thumbnail: products["thumbnail"] || "",
+        name: products["name"] || "",
+        price: products["price"] || 0,
+        quantity: products["quantity"] || 0,
+        overall_rating: products["overall_rating"] || 0,
+        brand: products["brand"] || "",
+        cpu: products["cpu"] || "",
+        gpu: products["gpu"] || "",
+        ram: products["ram"] || "",
+        disk: products["disk"] || "",
+        description: products["description"] || "",
+        num_rates: products["num_rates"] || 0,
+        weight: products["weight"] || 0,
+        screen_tech: products["screen_tech"] || "",
+        screen_size: products["screen_size"] || "",
+        os: products["os"] || "",
+      },
+    })
+      .then((response) => getProductsList())
+      .catch((res) => alert(res));
+  };
+  // Edit Product with ID
+  const editProduct = (products) => {
+    const id = products["id"];
+    axios({
+      method: "put",
+      url: `http://localhost:8080/api/products/${id}`,
+      data: {
+        thumbnail: products["thumbnail"] || "",
+        name: products["name"] || "",
+        price: products["price"] || 0,
+        quantity: products["quantity"] || 0,
+        overall_rating: products["overall_rating"] || 0,
+        brand: products["brand"] || "",
+        cpu: products["cpu"] || "",
+        gpu: products["gpu"] || "",
+        ram: products["ram"] || "",
+        disk: products["disk"] || "",
+        description: products["description"] || "",
+        num_rates: products["num_rates"] || 0,
+        weight: products["weight"] || 0,
+        screen_tech: products["screen_tech"] || "",
+        screen_size: products["screen_size"] || "",
+        os: products["os"] || "",
+      },
+    }).then((response) =>
+      setProductList((prev) => {
+        prev[prev.findIndex((item) => item.id === id)] = products;
+        return [...prev];
+      })
+    );
+  };
+  // Delete Product with ID
+  const deleteProduct = (id) => {
+    axios({
+      method: "delete",
+      url: `http://localhost:8080/api/products/${id}`,
+    })
+      .then((response) =>
+        setProductList((prev) => prev.filter((item) => item.id !== id))
+      )
+      .catch((res) => alert(res));
+  };
+
+  // Events
+  // Submit with changes: Add, Edit, Delete
   const handleSubmit = (event) => {
     console.log(values);
     const toastOptions = {
@@ -111,15 +208,22 @@ export function ProductsTable() {
       theme: "dark",
     };
     event.preventDefault();
-    if (event.target.name === "edit") {
+    if (event.target.name === "add") {
+      addProduct(values);
+      if (done["status"] === false)
+        return toast.error(done["msg"], toastOptions);
+      else return toast.success("Cập nhật thành công", toastOptions);
+    } else if (event.target.name === "edit") {
+      editProduct(values);
       if (done["status"] === false)
         return toast.error(done["msg"], toastOptions);
       else return toast.success("Cập nhật thành công", toastOptions);
     } else if (event.target.name === "delete") {
+      deleteProduct(values.id);
       return toast.success("Cập nhật thành công", toastOptions);
     }
   };
-
+  // Track user's keystroke
   const handleChange = (event) => {
     setValues({
       ...values,
@@ -130,10 +234,11 @@ export function ProductsTable() {
   return (
     <div>
       <Box sx={{ height: 600 }}>
+        {/* SearchBar and AddProduct Button */}
         <div class="my-2">
           <TextInput
             sx={{ flexBasis: "30%" }}
-            placeholder="Nhập danh mục hoặc tiêu đề để tìm..."
+            placeholder="Nhập mã hoặc tên sản phẩm..."
             value={query}
             onChange={(e) => setQuery(e.currentTarget.value)}
           />
@@ -143,11 +248,13 @@ export function ProductsTable() {
           type="button"
           className="btn btn-primary openmodal mt-0 mb-5"
           data-bs-toggle="modal"
-          data-bs-target="#editModal"
+          data-bs-target="#addModal"
           onClick={() => setValues({ initValues })}
         >
           Thêm sản phẩm
         </button>
+
+        {/* Table */}
         <DataTable
           withBorder
           borderRadius="md"
@@ -161,11 +268,11 @@ export function ProductsTable() {
           verticalAlignment="center"
           records={records}
           columns={[
-            { accessor: "product_id", title: "Mã sản phẩm", width: "35%" },
-            { accessor: "brand", title: "Hãng cung cấp", width: 200, sortable: true},
-            { accessor: "title", title: "Tên mặt hàng", width: 300 },
-            { accessor: "quantity", title: "Số lượng", width: 120, sortable: true },
-            { accessor: "price", title: "Giá bán", width: "100%", sortable: true },
+            { accessor: "id", title: "Mã sản phẩm", width: "15%" },
+            { accessor: "name", title: "Tên", width: 300 },
+            { accessor: "price", title: "Giá bán", width: 200 },
+            { accessor: "quantity", title: "Số lượng tồn", width: 100 },
+            { accessor: "overall_rating", title: "Đánh giá", width: "100%" },
             {
               accessor: "actions",
               title: <Text class="text-center">Thao tác</Text>,
@@ -175,7 +282,7 @@ export function ProductsTable() {
                   <ActionIcon
                     data-bs-toggle="modal"
                     data-bs-target="#viewModal"
-                    onClick={() => setProduct(item)}
+                    onClick={() => setValues(item)}
                     color="green"
                   >
                     <GrIcons.GrView size={16} />
@@ -191,7 +298,7 @@ export function ProductsTable() {
                   <ActionIcon
                     data-bs-toggle="modal"
                     data-bs-target="#deleteModal"
-                    onClick={() => setProduct(item)}
+                    onClick={() => setValues(item)}
                     color="red"
                   >
                     <BiIcons.BiTrash size={16} />
@@ -200,7 +307,7 @@ export function ProductsTable() {
               ),
             },
           ]}
-          totalRecords={ProductData.length}
+          totalRecords={productList.length}
           recordsPerPage={pageSize}
           page={page}
           onPageChange={(p) => setPage(p)}
@@ -210,7 +317,8 @@ export function ProductsTable() {
           onSortStatusChange={setSortStatus}
         />
       </Box>
-      {/* View */}
+
+      {/* View Modal */}
       <div
         class="modal fade"
         id="viewModal"
@@ -237,31 +345,87 @@ export function ProductsTable() {
             <div class="modal-body gap-5 lh-lg">
               <div class="d-flex flex-row">
                 <p class="text-secondary m-0">Mã số:</p>
-                <p class="text-primary m-0 ms-auto">{product.product_id}</p>
+                <p class="text-primary m-0 ms-2 me-auto">{values.id}</p>
               </div>
               <div class="d-flex flex-row">
                 <p class="text-secondary m-0">Tên sản phẩm:</p>
-                <p class="text-primary m-0 ms-auto">{product.title}</p>
+                <p class="text-primary m-0 ms-2 me-auto">{values.name}</p>
               </div>
               <div class="d-flex flex-row">
-                <p class="text-secondary m-0">Phân loại:</p>
-                <p class="text-primary m-0 ms-auto">{product.brand}</p>
-              </div>
-              <div class="d-flex flex-row">
-                <p class="text-secondary m-0">Giá niêm yết:</p>
-                <p class="text-primary m-0 ms-auto">{product.price}</p>
+                <p class="text-secondary m-0">Giá bán:</p>
+                <p class="text-primary m-0 ms-2 me-auto">{values.price}VND</p>
               </div>
               <div class="d-flex flex-row">
                 <p class="text-secondary m-0">Số lượng tồn:</p>
-                <p class="text-primary m-0 ms-auto">{product.quantity}</p>
-              </div>
-              <div class="d-flex flex-column">
-                <p class="text-secondary m-0">Mô tả sản phẩm:</p>
-                <p class="text-primary m-0 text-end">{product.desc}</p>
+                <p class="text-primary m-0 ms-2 me-auto">{values.quantity}</p>
               </div>
               <div class="d-flex flex-row">
-                <p class="text-secondary m-0">Đường dẫn hình ảnh:</p>
-                <p class="text-primary m-0 ms-auto">{product.thumbnail}</p>
+                <p class="text-secondary m-0">Đánh giá:</p>
+                <p class="text-primary m-0 ms-2 me-auto">
+                  {values.overall_rating}
+                </p>
+              </div>
+              <div class="d-flex flex-row">
+                <p class="text-secondary m-0">Lượt đánh giá:</p>
+                <p class="text-primary m-0 me-auto">{values.num_rates}</p>
+              </div>
+              <div class="d-flex flex-column overflow-visible">
+                <p class="text-secondary m-0">Thumbnail:</p>
+                <p class="text-primary m-0 me-auto overflow-auto w-100">
+                  {values.thumbnail}
+                </p>
+              </div>
+              <div class="d-flex flex-column ">
+                <p class="text-secondary m-0">Mô tả:</p>
+                <p class="text-primary m-0 me-auto overflow-visible">
+                  {values.description}
+                </p>
+              </div>
+              <hr />
+              <div class="d-flex flex-column">
+                <p class="text-secondary m-0">Thông số chi tiết:</p>
+              </div>
+              <div className="ms-2 py-2">
+                <div class="d-flex flex-row">
+                  <p class="text-secondary m-0">Hãng:</p>
+                  <p class="text-primary m-0 ms-2 me-auto">{values.brand}</p>
+                </div>
+                <div class="d-flex flex-row">
+                  <p class="text-secondary m-0">Hệ điều hành:</p>
+                  <p class="text-primary m-0 ms-2 me-auto">{values.os}</p>
+                </div>
+                <div class="d-flex flex-row">
+                  <p class="text-secondary m-0">CPU:</p>
+                  <p class="text-primary m-0 ms-2 me-auto">{values.cpu}</p>
+                </div>
+                <div class="d-flex flex-row">
+                  <p class="text-secondary m-0">GPU:</p>
+                  <p class="text-primary m-0 ms-2 me-auto">{values.gpu}</p>
+                </div>
+                <div class="d-flex flex-row">
+                  <p class="text-secondary m-0">RAM:</p>
+                  <p class="text-primary m-0 ms-2 me-auto">{values.ram}</p>
+                </div>
+                <div class="d-flex flex-row">
+                  <p class="text-secondary m-0">DISK:</p>
+                  <p class="text-primary m-0 ms-2 me-auto">{values.disk}</p>
+                </div>
+                <div class="d-flex flex-row">
+                  <p class="text-secondary m-0">Khối lượng:</p>
+                  <p class="text-primary m-0 ms-2 me-auto">{values.weight}</p>
+                </div>
+                <div class="d-flex flex-row">
+                  <p class="text-secondary m-0">Công nghệ màn hình:</p>
+                  <p class="text-primary m-0 ms-2 me-auto">
+                    {values.screen_tech}
+                  </p>
+                </div>
+                <div class="d-flex flex-row">
+                  <p class="text-secondary m-0">Kích thước:</p>
+                  <p class="text-primary m-0 ms-2 me-auto">
+                    {values.screen_size}
+                  </p>
+                </div>
               </div>
             </div>
             <div class="modal-footer">
@@ -276,7 +440,213 @@ export function ProductsTable() {
           </div>
         </div>
       </div>
-      {/* Edit */}
+
+      {/* Add Modal */}
+      <div
+        class="modal fade"
+        id="addModal"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                Thêm sản phẩm
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <label htmlFor="title" className="mt-2 form-label">
+                Tên sản phẩm
+              </label>
+              <input
+                required
+                type="text"
+                className="form-control"
+                name="name"
+                onChange={handleChange}
+              />
+
+              <label htmlFor="title" className="mt-2 form-label">
+                Giá bán
+              </label>
+              <input
+                required
+                type="text"
+                className="form-control"
+                name="price"
+                onChange={handleChange}
+              />
+
+              <label htmlFor="title" className="mt-2 form-label">
+                Số lượng
+              </label>
+              <input
+                required
+                type="text"
+                className="form-control"
+                name="quantity"
+                onChange={handleChange}
+              />
+
+              <label htmlFor="title" className="mt-2 form-label">
+                Thumbnail
+              </label>
+              <input
+                required
+                type="text"
+                className="form-control"
+                name="thumbnail"
+                onChange={handleChange}
+              />
+
+              <label htmlFor="title" className="mt-2 form-label">
+                Mô tả
+              </label>
+              <textarea
+                type="text"
+                className="form-control"
+                name="description"
+                onChange={handleChange}
+              />
+
+              <label htmlFor="title" className="mt-2 form-label">
+                Đánh giá
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="overall_rating"
+                readOnly
+                value={0}
+                onChange={handleChange}
+              />
+
+              <label htmlFor="title" className="mt-2 form-label">
+                Lượt đánh giá
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="num_rates"
+                readOnly
+                value={0}
+                onChange={handleChange}
+              />
+              <label htmlFor="thumbnail" className="mt-2 form-label">
+                Hệ điều hành
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="os"
+                onChange={handleChange}
+              />
+              <label htmlFor="thumbnail" className="mt-2 form-label">
+                Hãng
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="brand"
+                onChange={handleChange}
+              />
+              <label htmlFor="thumbnail" className="mt-2 form-label">
+                CPU
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="cpu"
+                onChange={handleChange}
+              />
+              <label htmlFor="thumbnail" className="mt-2 form-label">
+                GPU
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="gpu"
+                onChange={handleChange}
+              />
+              <label htmlFor="thumbnail" className="mt-2 form-label">
+                RAM
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="ram"
+                onChange={handleChange}
+              />
+              <label htmlFor="thumbnail" className="mt-2 form-label">
+                Disk
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="disk"
+                onChange={handleChange}
+              />
+              <label htmlFor="thumbnail" className="mt-2 form-label">
+                Khối lượng
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="weight"
+                onChange={handleChange}
+              />
+              <label htmlFor="thumbnail" className="mt-2 form-label">
+                Công nghệ màn hình
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="screen_tech"
+                onChange={handleChange}
+              />
+              <label htmlFor="thumbnail" className="mt-2 form-label">
+                Kích thước
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="screen_size"
+                onChange={handleChange}
+              />
+
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Đóng
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  name="add"
+                >
+                  Thêm
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Edit Modal */}
       <div
         class="modal fade"
         id="editModal"
@@ -300,7 +670,7 @@ export function ProductsTable() {
               ></button>
             </div>
             <div className="modal-body">
-              <label htmlFor="title" className="form-label">
+              <label htmlFor="id" className="mt-2 form-label">
                 ID
               </label>
               <input
@@ -308,85 +678,182 @@ export function ProductsTable() {
                 type="text"
                 className="form-control"
                 placeholder="ID"
-                name="product_id"
+                name="id"
+                readOnly
+                value={values.id}
                 onChange={handleChange}
-                value={values.product_id}
               />
-              <label htmlFor="title" className="form-label">
-                Tiêu đề
+              <label htmlFor="title" className="mt-2 form-label">
+                Tên sản phẩm
               </label>
               <input
                 required
                 type="text"
                 className="form-control"
-                placeholder="Tiêu đề"
-                name="title"
+                name="name"
+                value={values.name}
                 onChange={handleChange}
-                value={values.title}
               />
 
-              <label htmlFor="brand" className="form-label">
-                Phân loại
+              <label htmlFor="title" className="mt-2 form-label">
+                Giá bán
               </label>
               <input
                 required
                 type="text"
                 className="form-control"
-                placeholder="Phân loại"
-                name="brand"
+                name="price"
+                value={values.price}
                 onChange={handleChange}
-                value={values.brand}
               />
 
-              <label htmlFor="quantity" className="form-label">
+              <label htmlFor="title" className="mt-2 form-label">
                 Số lượng
               </label>
               <input
                 required
                 type="text"
                 className="form-control"
-                placeholder="Số lượng"
                 name="quantity"
                 value={values.quantity}
                 onChange={handleChange}
               />
 
-              <label htmlFor="price" className="form-label">
-                Giá trị
+              <label htmlFor="title" className="mt-2 form-label">
+                Thumbnail
               </label>
               <input
                 required
                 type="text"
                 className="form-control"
-                placeholder="Giá trị"
-                name="price"
-                value={values.price}
+                name="thumbnail"
+                value={values.thumbnail}
                 onChange={handleChange}
               />
 
-              <label htmlFor="desc" className="form-label">
-                Nội dung
-              </label>
-              <textarea
-                required
-                type="text"
-                className="form-control"
-                placeholder="Nội dung"
-                name="desc"
-                onChange={handleChange}
-                value={values.desc}
-              />
-              <label htmlFor="thumbnail" className="form-label">
-                Hình ảnh
+              <label htmlFor="title" className="mt-2 form-label">
+                Mô tả
               </label>
               <input
-                required
                 type="text"
                 className="form-control"
-                placeholder="Link hình ảnh"
-                name="thumbnail"
+                name="description"
+                value={values.description || ""}
                 onChange={handleChange}
-                value={values.thumbnail}
+              />
+
+              <label htmlFor="title" className="mt-2 form-label">
+                Đánh giá
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="overall_rating"
+                readOnly
+                value={values.overall_rating}
+                onChange={handleChange}
+              />
+
+              <label htmlFor="title" className="mt-2 form-label">
+                Lượt đánh giá
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="num_rates"
+                readOnly
+                value={values.num_rates}
+                onChange={handleChange}
+              />
+              <label htmlFor="thumbnail" className="mt-2 form-label">
+                Hệ điều hành
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="os"
+                value={values.os}
+                onChange={handleChange}
+              />
+              <label htmlFor="thumbnail" className="mt-2 form-label">
+                Hãng
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="brand"
+                value={values.brand}
+                onChange={handleChange}
+              />
+              <label htmlFor="thumbnail" className="mt-2 form-label">
+                CPU
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="cpu"
+                value={values.cpu}
+                onChange={handleChange}
+              />
+              <label htmlFor="thumbnail" className="mt-2 form-label">
+                GPU
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="gpu"
+                value={values.gpu}
+                onChange={handleChange}
+              />
+              <label htmlFor="thumbnail" className="mt-2 form-label">
+                RAM
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="ram"
+                value={values.ram}
+                onChange={handleChange}
+              />
+              <label htmlFor="thumbnail" className="mt-2 form-label">
+                Disk
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="disk"
+                value={values.disk}
+                onChange={handleChange}
+              />
+              <label htmlFor="thumbnail" className="mt-2 form-label">
+                Khối lượng
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="weight"
+                value={values.weight}
+                onChange={handleChange}
+              />
+              <label htmlFor="thumbnail" className="mt-2 form-label">
+                Công nghệ màn hình
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="screen_tech"
+                value={values.screen_tech}
+                onChange={handleChange}
+              />
+              <label htmlFor="thumbnail" className="mt-2 form-label">
+                Kích thước
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="screen_size"
+                value={values.screen_size}
+                onChange={handleChange}
               />
             </div>
             <div class="modal-footer">
@@ -410,7 +877,8 @@ export function ProductsTable() {
           </div>
         </div>
       </div>
-      {/* Delete */}
+
+      {/* Delete Modal*/}
       <div
         class="modal fade"
         id="deleteModal"
@@ -450,10 +918,11 @@ export function ProductsTable() {
                 ></path>
               </svg>
               <p className="fs-4 fw-semibold">
-                Xóa <span class="text-danger fw-bold">"{product.title}"</span> ?
+                Xóa sản phẩm{" "}
+                <span class="text-danger fw-bold">"{values.name}"</span> ?
               </p>
               <p class="fst-italic">
-                Sau khi xác nhận, thủ tục này sẽ không thể hoàn tác lại.
+                Sau khi xác nhận, thủ tục này sẽ không thể hoàn tác.
               </p>
             </div>
             <div class="modal-footer">

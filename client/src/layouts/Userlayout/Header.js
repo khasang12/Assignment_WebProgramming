@@ -1,27 +1,20 @@
 import classNames from "classnames/bind";
 import Tippy from "@tippyjs/react/headless";
 import { Link } from "react-router-dom";
+import "tippy.js/animations/scale.css";
 
-import { BiSearch, BiUserCircle, BiLocationPlus } from "react-icons/bi";
+import { BiMenu, BiSearch, BiUserCircle, BiLocationPlus } from "react-icons/bi";
 import { TbShoppingCartDiscount } from "react-icons/tb";
 import { RiShoppingBagLine } from "react-icons/ri";
 import styles from "./DefaultLayout.module.scss";
 import logo from "../../assets/logo.png";
 import { useContext, useState } from "react";
 import { Context } from "../../stores";
+import Price from "../../components/PriceDisplay/Price";
+import { Button } from "react-bootstrap";
+import MyButton from "../../components/MyButton";
 
 const cx = classNames.bind(styles);
-
-export const userOption = [
-  {
-    name: "Đăng nhập",
-    to: "/login",
-  },
-  {
-    name: "Đăng xuất",
-    to: "/register",
-  },
-];
 
 function Header() {
   const [state, dispatch] = useContext(Context);
@@ -48,7 +41,7 @@ function Header() {
   return (
     <div className={cx("header")}>
       <div className={cx("top-bar") + " border-bottom"}>
-        <div className="container d-flex align-items-center">
+        <div className="container-md d-flex align-items-center">
           <p className="m-0 text-white">
             {" "}
             Mở cửa: 8h đến 21h từ Thứ 2 đến chủ nhật
@@ -60,8 +53,11 @@ function Header() {
                   <div
                     {...attrs}
                     tabIndex="-1"
-                    className={cx("arrow-top") + " shadow p-2 bg-white rounded"}
+                    className={
+                      cx("arrow-top-center") + " shadow p-2 bg-white rounded"
+                    }
                   >
+<<<<<<< HEAD
                     <Link to="/login" className="d-flex flex-column">
                       <button className="btn btn-warning mb-2 px-5">Đăng nhập</button>
                     </Link>
@@ -69,6 +65,20 @@ function Header() {
                       <button className="btn btn-light">Đăng ký</button>
                     </Link>
                       
+=======
+                    <div className="d-flex flex-column">
+                      <Link to="/login">
+                        <button className="btn btn-warning mb-2 px-5 w-100">
+                          Đăng nhập
+                        </button>
+                      </Link>
+                      <Link to="/register">
+                        <button className="btn btn-light mb-2 px-5 w-100">
+                          Đăng ký
+                        </button>
+                      </Link>
+                    </div>
+>>>>>>> 099464299defa6566eec6180787e9170ed1970a3
                   </div>
                 );
               }}
@@ -91,7 +101,7 @@ function Header() {
         </div>
       </div>
       <div className="mid-bar w-100">
-        <div className="container text-white d-flex align-items-center justify-content-between">
+        <div className="container-md text-white d-flex align-items-center justify-content-between">
           <Link to="/">
             <img src={logo} width="240" className={cx("logo")} alt="logo" />
           </Link>
@@ -103,18 +113,99 @@ function Header() {
               onChange={onSearchBoxChange}
               onKeyDown={onSearchBoxKeyDown}
             />
-            <button className="btn btn-primary border-0" onClick={search}>
+            <button className="btn btn-primary border-0 my-1" onClick={search}>
               <BiSearch />
             </button>
           </div>
           <div className="d-flex align-items-center">
-            <RiShoppingBagLine size="40" className="mr-3" />
-            <Link to="/cart" className="text-white">
-              <p className="mb-1">Giỏ hàng</p>
-              <p className="m-0">
-                (<span className="m-0">{state.cart.length}</span>) Sản phẩm
-              </p>
-            </Link>
+            <Tippy
+              render={(attrs) => {
+                return (
+                  <div
+                    {...attrs}
+                    tabIndex="-1"
+                    className={
+                      cx("arrow-top-end", "popper") +
+                      " shadow p-2 bg-white rounded"
+                    }
+                    style={{ height: "60vh", overflowY: "scroll" }}
+                  >
+                    <div className="cart-list" style={{ marginBottom: 60 }}>
+                      {state.cart.map((item, index) => {
+                        return (
+                          <Link key={index} to={`/details?${item.id}`}>
+                            <div className="d-flex align-items-start border-bottom py-3 px-2">
+                              <img src={item.image} alt="" width={"100px"} />
+                              <div>
+                                <p className="text-overflow-ellipsis-2 mb-3">
+                                  {item.name}
+                                </p>
+                                <Price className="font-weight-bold ml-0">
+                                  {item.price}
+                                </Price>
+                              </div>
+                            </div>
+                          </Link>
+                        );
+                      })}
+                    </div>
+
+                    <div
+                      className="d-flex justify-content-end bg-white py-2 border-top"
+                      style={{
+                        position: "fixed",
+                        inset: "auto 0 0 0",
+                        height: "60px",
+                      }}
+                    >
+                      <MyButton primary to="/cart">
+                        Xem giỏ hàng
+                      </MyButton>
+                    </div>
+                  </div>
+                );
+              }}
+              interactive
+              placement="bottom-end"
+              zIndex={999}
+            >
+              <Link to="/cart" className="text-white d-flex align-items-center">
+                <RiShoppingBagLine size="40" className="mr-3" />
+                <div>
+                  <p className="mb-1">Giỏ hàng</p>
+                  <p className="m-0">
+                    (<span className="m-0">{state.cart.length}</span>) Sản phẩm
+                  </p>
+                </div>
+              </Link>
+            </Tippy>
+          </div>
+        </div>
+      </div>
+      <div className="bot-bar w-100" style={{backgroundColor: '#e4f2f2'}}>
+        <div className='container-md text-white d-flex flex-row align-items-center justify-content-between"'>
+          <button className="col-12 col-lg-3 px-4 py-3 bg-warning fw-bold fs-4 d-flex flex-row align-items-center">
+            <BiMenu className="mr-1"/>
+            <a className="text-white" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" href="#">
+              Danh mục sản phẩm
+            </a>
+            <ul class="dropdown-menu mt-3 w-100 w-lg-25" aria-labelledby="dropdownMenuButton1">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+            </ul>
+          </button>
+          <div className="d-none d-lg-block p-2 px-5 fw-semibold fs-6">
+            <a href="how-to-purchase">THANH TOÁN</a>
+          </div>
+          <div className="d-none d-lg-block p-2 px-5 fw-bold fs-6">
+            <a href="how-to-contact">LIÊN HỆ</a>
+          </div>
+          <div className="d-none d-lg-block p-2 px-5 fw-bold fs-6">
+            <a href="news">TIN TỨC</a>
+          </div>
+          <div className="d-none d-lg-block p-2 px-5 fw-bold fs-6">
+            <a href="customer-care">CHĂM SÓC KHÁCH HÀNG</a>
           </div>
         </div>
       </div>
