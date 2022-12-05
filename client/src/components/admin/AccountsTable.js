@@ -10,49 +10,59 @@ import {
 import { useDebouncedValue, useMediaQuery } from "@mantine/hooks";
 import { DataTable} from "mantine-datatable";
 import { useEffect, useState } from "react";
-import { UserData } from "./data";
 import * as GrIcons from "react-icons/gr";
 import * as HiIcons from "react-icons/hi";
 import * as BiIcons from "react-icons/bi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const PAGE_SIZES = [10, 15, 20];
 
 export function AccountsTable() {
+  const [accountList, setAccountList] = useState([]);
   const [pageSize, setPageSize] = useState(PAGE_SIZES[1]);
   const [query, setQuery] = useState("");
   const [debouncedQuery] = useDebouncedValue(query, 200);
+  const initValues = {
+    //for new item to be added
+    id: "",
+    first_name: "",
+    last_name: "",
+    phone: "",
+    email: "",
+    birthday: "",
+    username: "",
+    password: "",
+    address: "",
+  };
+  const [page, setPage] = useState(1);
+  const [records, setRecords] = useState(accountList.slice(0, pageSize));
+  const [values, setValues] = useState(initValues);
 
+  
+  // Effects
   useEffect(() => {
     setPage(1);
   }, [pageSize]);
-  const initValues = {
-    //for new item to be added
-    user_id: "",
-    email: "",
-    firstName: "",
-    lastName: "",
-    subscriptionTier: "",
-  };
-  const [page, setPage] = useState(1);
-  const [records, setRecords] = useState(UserData.slice(0, pageSize));
-
-  const [product, setProduct] = useState({});
-  const [done, setDone] = useState({ status: false, msg: "empty form" });
-  const [values, setValues] = useState(initValues);
-
+  // Get all Data after FIRST LOADING for 1 second
+  useEffect(() => {
+    const timeoutID = window.setTimeout(() => {
+      getAccountsList();
+    }, 1000);
+    return () => window.clearTimeout(timeoutID);
+  }, []);
   //Pagination
   useEffect(() => {
     const from = (page - 1) * pageSize;
     const to = from + pageSize;
-    setRecords(UserData.slice(from, to));
-  }, [page, pageSize]);
+    setRecords(accountList.slice(from, to));
+  }, [page, pageSize, records]);
 
   // Table search
   useEffect(() => {
     setRecords(
-      UserData.filter(({ firstName, lastName, email }) => {
+      accountList.filter(({ firstName, lastName, email }) => {
         if (
           debouncedQuery !== "" &&
           !`${firstName} ${lastName} ${email}`
@@ -66,27 +76,24 @@ export function AccountsTable() {
     );
   }, [debouncedQuery]);
 
-  // Form validation
-  // useEffect(() => {
-  //   const { user_id, email, firstName, lastName, subscriptionTier } = values;
-  //   if (product_id === "") {
-  //     setDone({ status: false, msg: "Vui lòng nhập mã số" });
-  //   } else if (email === undefined || email === "") {
-  //     setDone({ status: false, msg: "Vui lòng chọn tiêu đề" });
-  //   } else if (category === undefined || category === "") {
-  //     setDone({ status: false, msg: "Vui lòng chọn phân loại" });
-  //   } else if (quantity === undefined || quantity === 0) {
-  //     setDone({ status: false, msg: "Vui lòng nhập số lượng" });
-  //   } else if (price === undefined || price === 0) {
-  //     setDone({ status: false, msg: "Vui lòng chọn giá bán" });
-  //   } else if (desc === undefined || desc === "") {
-  //     setDone({ status: false, msg: "Vui lòng mô tả sản phẩm" });
-  //   } else if (thumbnail === undefined || thumbnail === "") {
-  //     setDone({ status: false, msg: "Vui lòng chọn ảnh" });
-  //   } else {
-  //     setDone({ status: true, msg: "validated form" });
-  //   }
-  // }, [values]);
+  const getAccountsList = async () => {
+    await axios
+      .get("http://localhost:8080/api/users/all")
+      .then((response) => setAccountList(response.data))
+      //.then(setRecords(ProductList))
+      .catch((res) => alert(res));
+  };
+  // Delete User with ID
+  const deleteUser = (id) => {
+    axios({
+      method: "delete",
+      url: `http://localhost:8080/api/users/${id}`,
+    })
+      .then((response) =>
+        setAccountList((prev) => prev.filter((item) => item.id !== id))
+      )
+      .catch((res) => alert(res));
+  };
 
   const handleSubmit = (event) => {
     const toastOptions = {
@@ -103,15 +110,12 @@ export function AccountsTable() {
     //   else return toast.success("Cập nhật thành công", toastOptions);
     // } else 
     if (event.target.name === "delete") {
+      deleteUser(values.id);
       return toast.success("Cập nhật thành công", toastOptions);
     }
-  };
-
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
-    });
+    else if (event.target.name === "ban"){
+      return toast.warning("Cập nhật thành công", toastOptions);
+    }
   };
 
   return (
@@ -139,12 +143,12 @@ export function AccountsTable() {
           verticalAlignment="center"
           records={records}
           columns={[
-            { accessor: "user_id", title: "Mã tài khoản", width: "35%" },
-            { accessor: "userName", title: "Tên tài khoản", width: "200" },
-            { accessor: "email", title: "Email", width: 200},
-            { accessor: "lastName", title: "Họ", width: 100},
-            { accessor: "firstName", title: "Tên", width: 300 },
-            { accessor: "subscriptionTier", title: "Hạng", width: "100%"},
+            { accessor: "id", title: "Mã tài khoản", width: "40%" },
+            { accessor: "username", title: "Tên tài khoản", width: 300 },
+            { accessor: "email", title: "Email", width: 300},
+            { accessor: "last_name", title: "Họ", width: 200},
+            { accessor: "first_name", title: "Tên", width: 200 },
+            { accessor: "birthday", title: "Ngày sinh", width: "100%"},
             {
               accessor: "actions",
               title: <Text class="text-center">Thao tác</Text>,
@@ -154,7 +158,7 @@ export function AccountsTable() {
                   <ActionIcon
                     data-bs-toggle="modal"
                     data-bs-target="#viewModal"
-                    onClick={() => setProduct(item)}
+                    onClick={() => setValues(item)}
                     color="green"
                   >
                     <GrIcons.GrView size={16} />
@@ -163,7 +167,7 @@ export function AccountsTable() {
                   <ActionIcon
                     data-bs-toggle="modal"
                     data-bs-target="#banModal"
-                    onClick={() => setProduct(item)}
+                    onClick={() => setValues(item)}
                     color="yellow"
                   >
                     <HiIcons.HiBan size={16} />
@@ -172,7 +176,7 @@ export function AccountsTable() {
                   <ActionIcon
                     data-bs-toggle="modal"
                     data-bs-target="#deleteModal"
-                    onClick={() => setProduct(item)}
+                    onClick={() => setValues(item)}
                     color="red"
                   >
                     <BiIcons.BiTrash size={16} />
@@ -181,7 +185,7 @@ export function AccountsTable() {
               ),
             },
           ]}
-          totalRecords={UserData.length}
+          totalRecords={accountList.length}
           recordsPerPage={pageSize}
           page={page}
           onPageChange={(p) => setPage(p)}
@@ -216,23 +220,27 @@ export function AccountsTable() {
             <div class="modal-body gap-5 lh-lg">
               <div class="d-flex flex-row">
                 <p class="text-secondary m-0">Mã số:</p>
-                <p class="text-primary m-0 ms-auto">{product.user_id}</p>
+                <p class="text-primary m-0 ms-auto">{values.id}</p>
               </div>
               <div class="d-flex flex-row">
                 <p class="text-secondary m-0">Tên tài khoản:</p>
-                <p class="text-primary m-0 ms-auto">{product.userName}</p>
+                <p class="text-primary m-0 ms-auto">{values.username}</p>
               </div>
               <div class="d-flex flex-row">
                 <p class="text-secondary m-0">Họ và tên:</p>
-                <p class="text-primary m-0 ms-auto">{product.lastName + " " + product.firstName}</p>
+                <p class="text-primary m-0 ms-auto">{values.last_name + " " + values.first_name}</p>
               </div>
               <div class="d-flex flex-row">
                 <p class="text-secondary m-0">Địa chỉ email:</p>
-                <p class="text-primary m-0 ms-auto">{product.email}</p>
+                <p class="text-primary m-0 ms-auto">{values.email}</p>
               </div>
               <div class="d-flex flex-row">
-                <p class="text-secondary m-0">Hạng thành viên:</p>
-                <p class="text-primary m-0 ms-auto">{product.subscriptionTier}</p>
+                <p class="text-secondary m-0">Ngày sinh:</p>
+                <p class="text-primary m-0 ms-auto">{values.birthday}</p>
+              </div>
+              <div class="d-flex flex-row">
+                <p class="text-secondary m-0">Địa chỉ:</p>
+                <p class="text-primary m-0 ms-auto">{values.address}</p>
               </div>
             </div>
             <div class="modal-footer">
@@ -288,7 +296,7 @@ export function AccountsTable() {
                 ></path>
               </svg>
               <p className="fs-4 fw-semibold">
-                Cấm mua hàng với tài khoản <span class="text-warning fw-bold">"{product.userName}"</span> trong thời gian 7 ngày ?
+                Cấm mua hàng với tài khoản <span class="text-warning fw-bold">"{values.username}"</span> trong thời gian 7 ngày ?
               </p>
               <p class="fst-italic">
                 Sau khi xác nhận, thủ tục này sẽ không thể hoàn tác.
@@ -306,7 +314,7 @@ export function AccountsTable() {
                 onClick={handleSubmit}
                 type="button"
                 class="btn btn-warning"
-                name="delete"
+                name="ban"
                 data-bs-dismiss="modal"
               >
                 Xác nhận
@@ -356,7 +364,7 @@ export function AccountsTable() {
                 ></path>
               </svg>
               <p className="fs-4 fw-semibold">
-                Xóa người dùng<span class="text-danger fw-bold">"{product.userName}"</span> ?
+                Xóa người dùng<span class="text-danger fw-bold">"{values.username}"</span> ?
               </p>
               <p class="fst-italic">
                 Sau khi xác nhận, thủ tục này sẽ không thể hoàn tác lại.

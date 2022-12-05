@@ -26,9 +26,6 @@
             if($url['2'] == 'users'){
                 include './routes/user.route.php';
             }
-            else if($url['2'] == 'user'){
-                include './routes/user_info.route.php';
-            }
             else if($url['2'] == 'news'){
                 include './routes/news.route.php';
             }
@@ -41,7 +38,7 @@
             else if($url['2'] == 'order'){
                 include './routes/order.route.php';
             }
-            else if($url['2'] == 'comment'){
+            else if($url['2'] == 'comments'){
                 include './routes/comment.route.php';
             }
             else{
