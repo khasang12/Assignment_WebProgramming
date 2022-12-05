@@ -63,11 +63,12 @@ function Header() {
                     className={cx("arrow-top") + " shadow p-2 bg-white rounded"}
                   >
                     <Link to="/login" className="d-flex flex-column">
-                      <button className="btn btn-warning mb-2 px-5">
-                        Đăng nhập
-                      </button>
+                      <button className="btn btn-warning mb-2 px-5">Đăng nhập</button>
+                    </Link>
+                    <Link to="/signup" className="d-flex flex-column">
                       <button className="btn btn-light">Đăng ký</button>
                     </Link>
+                      
                   </div>
                 );
               }}
