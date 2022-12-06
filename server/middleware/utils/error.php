@@ -37,7 +37,7 @@ class UnauthenticatedError extends CustomError{
 
 }
 
-class NotFoundError extends CustomError{
+class FileNotFoundError extends CustomError{
 
     public function __construct($message){
         $this->statusCode = 404;

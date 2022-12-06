@@ -7,53 +7,59 @@ import {
   ActionIcon,
   Button,
 } from "@mantine/core";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 import sortBy from "lodash/sortBy";
 import { useDebouncedValue, useMediaQuery } from "@mantine/hooks";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import { useEffect, useState } from "react";
-import { CommentData } from "./data";
 import * as GrIcons from "react-icons/gr";
 import * as HiIcons from "react-icons/hi";
 import * as BiIcons from "react-icons/bi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const PAGE_SIZES = [10, 15, 20];
 
 export function CommentsTable() {
+  const [commentList, setCommentList] = useState([]);
   const [pageSize, setPageSize] = useState(PAGE_SIZES[1]);
   const [query, setQuery] = useState("");
   const [debouncedQuery] = useDebouncedValue(query, 200);
-
-  useEffect(() => {
-    setPage(1);
-  }, [pageSize]);
-
   const [page, setPage] = useState(1);
-  const [records, setRecords] = useState(CommentData.slice(0, pageSize));
+  const [records, setRecords] = useState(commentList.slice(0, pageSize));
 
-  const [product, setProduct] = useState({});
-  const [done, setDone] = useState({ status: false, msg: "empty form" });
+  const [values, setValues] = useState({});
   const [sortStatus, setSortStatus] = useState({
     columnAccessor: "price",
     direction: "asc",
   });
 
+  // Effects
+  useEffect(() => {
+    setPage(1);
+  }, [pageSize]);
+  // Get all Data after FIRST LOADING for 1 second
+  useEffect(() => {
+    const timeoutID = window.setTimeout(() => {
+      getCommentsList();
+    }, 1000);
+    return () => window.clearTimeout(timeoutID);
+  }, []);
   //Pagination
   useEffect(() => {
     const from = (page - 1) * pageSize;
     const to = from + pageSize;
-    setRecords(CommentData.slice(from, to));
-  }, [page, pageSize]);
+    setRecords(commentList.slice(from, to));
+  }, [page, pageSize, records]);
 
   // Table search
   useEffect(() => {
     setRecords(
-      CommentData.filter(({ productName, userName, star }) => {
+      commentList.filter(({ product, username }) => {
         if (
           debouncedQuery !== "" &&
-          !`${star} ${productName} ${userName}`
+          !`${product} ${username}`
             .toLowerCase()
             .includes(debouncedQuery.trim().toLowerCase())
         ) {
@@ -62,51 +68,61 @@ export function CommentsTable() {
         return true;
       })
     );
-  }, [debouncedQuery]);
+  }, [debouncedQuery, records]);
 
   // Sorting...
   useEffect(() => {
-    const data = sortBy(CommentData, sortStatus.columnAccessor);
+    const data = sortBy(commentList, sortStatus.columnAccessor);
     setRecords(sortStatus.direction === "desc" ? data.reverse() : data);
   }, [sortStatus]);
 
-  // Form validation
-  // useEffect(() => {
-  //   const { Comment_id, email, firstName, lastName, subscriptionTier } = values;
-  //   if (product_id === "") {
-  //     setDone({ status: false, msg: "Vui lòng nhập mã số" });
-  //   } else if (email === undefined || email === "") {
-  //     setDone({ status: false, msg: "Vui lòng chọn tiêu đề" });
-  //   } else if (category === undefined || category === "") {
-  //     setDone({ status: false, msg: "Vui lòng chọn phân loại" });
-  //   } else if (quantity === undefined || quantity === 0) {
-  //     setDone({ status: false, msg: "Vui lòng nhập số lượng" });
-  //   } else if (price === undefined || price === 0) {
-  //     setDone({ status: false, msg: "Vui lòng chọn giá bán" });
-  //   } else if (desc === undefined || desc === "") {
-  //     setDone({ status: false, msg: "Vui lòng mô tả sản phẩm" });
-  //   } else if (thumbnail === undefined || thumbnail === "") {
-  //     setDone({ status: false, msg: "Vui lòng chọn ảnh" });
-  //   } else {
-  //     setDone({ status: true, msg: "validated form" });
-  //   }
-  // }, [values]);
+  // FUNCTIONS
+  // Get all comments
+  const getCommentsList = async () => {
+    await axios
+      .get("http://localhost:8080/api/comments/all")
+      .then((response) => setCommentList(response.data))
+      //.then(setRecords(valuesList))
+      .catch((res) => alert(res));
+  };
+  // Change Status of a comment to Replied
+  const editComment = (comment) => {
+    const id = comment["id"];
+    const admin_name = comment["admin_name"];
+    comment['status'] = "Đã phản hồi";
+    axios({
+      method: "put",
+      url: `http://localhost:8080/api/comments/${id}`,
+      data: {
+        status: "Đã phản hồi",
+        admin_name: admin_name,
+      },
+    }).then((response) =>
+      setCommentList((prev) => {
+        prev[prev.findIndex((item) => item.id === id)] = comment;
+        return [...prev];
+      })
+    );
+  };
+  // Delete User with ID
+  const deleteComment = (id) => {
+    axios({
+      method: "delete",
+      url: `http://localhost:8080/api/comments/${id}`,
+    })
+      .then((response) =>
+        setCommentList((prev) => prev.filter((item) => item.id !== id))
+      )
+      .catch((res) => alert(res));
+  };
 
   const handleSubmit = (event) => {
-    const toastOptions = {
-      position: "top-right",
-      autoClose: 3000,
-      pauseOnHover: true,
-      draggable: true,
-      theme: "dark",
-    };
     event.preventDefault();
-    // if (event.target.name === "edit") {
-    //   if (done["status"] === false)
-    //     return toast.error(done["msg"], toastOptions);
-    //   else return toast.success("Cập nhật thành công", toastOptions);
-    // } else
-    if (event.target.name === "delete") {
+    if (event.target.name === "edit") {
+      editComment(values);
+      return toast.success("Cập nhật thành công", toastOptions);
+    } else if (event.target.name === "delete") {
+      deleteComment(values.id);
       return toast.success("Cập nhật thành công", toastOptions);
     }
   };
@@ -136,12 +152,12 @@ export function CommentsTable() {
           verticalAlignment="center"
           records={records}
           columns={[
-            { accessor: "comment_id", title: "Mã bình luận", width: "35%" },
-            { accessor: "product_id", title: "Mã sản phẩm", width: 200 },
-            { accessor: "product_id", title: "Mã tài khoản", width: 200 },
-            { accessor: "comment", title: "Bình luận", width: 200 },
+            { accessor: "id", title: "Mã bình luận", width: "25%" },
+            { accessor: "product", title: "Sản phẩm", width: 200 },
+            { accessor: "username", title: "Tài khoản", width: 200 },
+            { accessor: "comment", title: "Bình luận", width: 500 },
             { accessor: "status", title: "Trạng thái", width: 150 },
-            { accessor: "updated_at", title: "Cập nhật lần cuối", width: "100%", sortable:true , render: ({ updated_at }) => dayjs(updated_at).format('DD-MM-YYYY HH:mm:ss')},
+            //{ accessor: "updated_at", title: "Cập nhật lần cuối", width: "100%", sortable:true , render: ({ updated_at }) => dayjs(updated_at).format('DD-MM-YYYY HH:mm:ss')},
             {
               accessor: "actions",
               title: <Text class="text-center">Thao tác</Text>,
@@ -151,7 +167,7 @@ export function CommentsTable() {
                   <ActionIcon
                     data-bs-toggle="modal"
                     data-bs-target="#viewModal"
-                    onClick={() => setProduct(item)}
+                    onClick={() => setValues(item)}
                     color="green"
                   >
                     <GrIcons.GrView size={16} />
@@ -159,8 +175,17 @@ export function CommentsTable() {
 
                   <ActionIcon
                     data-bs-toggle="modal"
+                    data-bs-target="#replyModal"
+                    onClick={() => setValues(item)}
+                    color="blue"
+                  >
+                    <BiIcons.BiReply size={16} />
+                  </ActionIcon>
+
+                  <ActionIcon
+                    data-bs-toggle="modal"
                     data-bs-target="#deleteModal"
-                    onClick={() => setProduct(item)}
+                    onClick={() => setValues(item)}
                     color="red"
                   >
                     <BiIcons.BiTrash size={16} />
@@ -169,7 +194,7 @@ export function CommentsTable() {
               ),
             },
           ]}
-          totalRecords={CommentData.length}
+          totalRecords={commentList.length}
           recordsPerPage={pageSize}
           page={page}
           onPageChange={(p) => setPage(p)}
@@ -205,26 +230,34 @@ export function CommentsTable() {
             </div>
             <div class="modal-body gap-5 lh-lg">
               <div class="d-flex flex-row">
-                <p class="text-secondary m-0">Tiêu đề:</p>
-                <p class="text-primary m-0 ms-auto">{product.title}</p>
+                <p class="text-secondary m-0">Mã bình luận:</p>
+                <p class="text-primary m-0 ms-auto">{values.id}</p>
               </div>
 
               <div class="d-flex flex-row">
                 <p class="text-secondary m-0">Tên sản phẩm:</p>
-                <p class="text-primary m-0 ms-auto">{product.productName}</p>
+                <p class="text-primary m-0 ms-auto">{values.product}</p>
               </div>
               <div class="d-flex flex-row">
                 <p class="text-secondary m-0">Tên tài khoản:</p>
-                <p class="text-primary m-0 ms-auto">{product.userName}</p>
+                <p class="text-primary m-0 ms-auto">{values.username}</p>
               </div>
 
-              <div class="d-flex flex-row">
-                <p class="text-secondary m-0">Đánh giá:</p>
-                <p class="text-primary m-0 ms-auto">{product.rating}</p>
+              <div class="d-flex flex-column">
+                <p class="text-secondary m-0">Bình luận:</p>
+                <p class="text-primary m-0 me-auto">{values.comment}</p>
               </div>
               <div class="d-flex flex-row">
-                <p class="text-secondary m-0">Chi tiết:</p>
-                <p class="text-primary m-0 ms-auto">{product.desc}</p>
+                <p class="text-secondary m-0">Trạng thái:</p>
+                <p class="text-primary m-0 ms-auto">{values.status}</p>
+              </div>
+              <div class="d-flex flex-row">
+                <p class="text-secondary m-0">Người phản hồi (nếu có):</p>
+                <p class="text-primary m-0 ms-auto">{values.admin_name}</p>
+              </div>
+              <div class="d-flex flex-row">
+                <p class="text-secondary m-0">Cập nhật gần nhất:</p>
+                <p class="text-primary m-0 ms-auto">{values.updated_at}</p>
               </div>
             </div>
             <div class="modal-footer">
@@ -234,6 +267,76 @@ export function CommentsTable() {
                 data-bs-dismiss="modal"
               >
                 Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Reply */}
+      <div
+        class="modal fade"
+        id="replyModal"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                Xác nhận phản hồi
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body text-center">
+              <svg
+                aria-hidden="true"
+                className="mx-auto mb-4 text-secondary w-25"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              <p className="fs-4 fw-semibold">
+                Xác nhận đã phản hồi bình luận số
+                <span class="text-warning fw-bold">"{values.id}"</span> ?
+              </p>
+              <p class="fst-italic">
+                Trạng thái phản hồi kèm tên quản trị viên sẽ được cập nhật sau
+                khi xác nhận.
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Quay lại
+              </button>
+              <button
+                onClick={handleSubmit}
+                type="button"
+                class="btn btn-warning"
+                name="edit"
+                data-bs-dismiss="modal"
+              >
+                Xác nhận
               </button>
             </div>
           </div>
@@ -281,11 +384,10 @@ export function CommentsTable() {
               </svg>
               <p className="fs-4 fw-semibold">
                 Xóa bình luận
-                <span class="text-danger fw-bold">"{product.comment_id}"</span>{" "}
-                ?
+                <span class="text-danger fw-bold">"{values.id}"</span> ?
               </p>
               <p class="fst-italic">
-                Sau khi xác nhận, thủ tục này sẽ không thể hoàn tác lại.
+                Sau khi xác nhận, thủ tục này sẽ không thể hoàn tác.
               </p>
             </div>
             <div class="modal-footer">
@@ -313,3 +415,10 @@ export function CommentsTable() {
     </div>
   );
 }
+const toastOptions = {
+  position: "top-right",
+  autoClose: 3000,
+  pauseOnHover: true,
+  draggable: true,
+  theme: "dark",
+};

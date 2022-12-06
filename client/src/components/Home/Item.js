@@ -6,6 +6,8 @@ import { addToCart } from '../../stores/actions';
 import RateStar from '../../components/User/RateStar';
 
 export default function Item({ item }) {
+
+    //add product to cart
     const [state, dispatch] = useContext(Context);
     const handleAdđToCart = () => {
         dispatch(

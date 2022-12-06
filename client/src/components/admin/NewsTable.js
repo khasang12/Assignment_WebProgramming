@@ -11,57 +11,65 @@ import sortBy from "lodash/sortBy";
 import { useDebouncedValue, useMediaQuery } from "@mantine/hooks";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import { useEffect, useState } from "react";
-import { NewsData } from "./data";
 import * as GrIcons from "react-icons/gr";
 import * as AiIcons from "react-icons/ai";
 import * as BiIcons from "react-icons/bi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import SunEditor from "suneditor-react";
+import "suneditor/dist/css/suneditor.min.css";
 
 const PAGE_SIZES = [10, 15, 20];
 
 export function NewsTable() {
-  const [pageSize, setPageSize] = useState(PAGE_SIZES[1]);
-  const [query, setQuery] = useState("");
-  const [debouncedQuery] = useDebouncedValue(query, 200);
-
-  useEffect(() => {
-    setPage(1);
-  }, [pageSize]);
+  // States
+  const [newsList, setNewsList] = useState([]); // News List (to be delivered by DB)
+  const [pageSize, setPageSize] = useState(PAGE_SIZES[1]); // Page Size
+  const [records, setRecords] = useState(newsList.slice(0, pageSize)); // Records (to be inserted into table)
+  const [query, setQuery] = useState(""); // Query Search string
+  const [debouncedQuery] = useDebouncedValue(query, 200); // Debounce effect
   const initValues = {
-    //for new item to be added
-    news_id: "",
-    category: "",
-    title: "",
-    price: 0,
+    // Default Values for a News
+    id: 0,
+    admin_name: "",
+    content: "",
     thumbnail: "",
-    desc: "",
-    quantity: 0,
   };
-  const [page, setPage] = useState(1);
-  const [records, setRecords] = useState(NewsData.slice(0, pageSize));
+  const [page, setPage] = useState(1); // Current Page
   const [sortStatus, setSortStatus] = useState({
+    // Sorting Status
     columnAccessor: "price",
     direction: "asc",
   });
-  const [product, setProduct] = useState({});
-  const [done, setDone] = useState({ status: false, msg: "empty form" });
-  const [values, setValues] = useState(initValues);
+  const [done, setDone] = useState({ status: false, msg: "empty form" }); // Validation
+  const [values, setValues] = useState(initValues); // Dynamic Values to be clicked/ changed/ inserted
 
-  //Pagination
+  // Effects
+  // Get all Data after FIRST LOADING for 1 second
+  useEffect(() => {
+    const timeoutID = window.setTimeout(() => {
+      getNewsList();
+    }, 1000);
+    return () => window.clearTimeout(timeoutID);
+  }, []);
+  // Set page size according to chosen size
+  useEffect(() => {
+    setPage(1);
+  }, [pageSize]);
+  //Pagination Effect
   useEffect(() => {
     const from = (page - 1) * pageSize;
     const to = from + pageSize;
-    setRecords(NewsData.slice(from, to));
-  }, [page, pageSize]);
-
+    setRecords(newsList.slice(from, to));
+  }, [page, pageSize, records]);
   // Table search
   useEffect(() => {
     setRecords(
-      NewsData.filter(({ content, title }) => {
+      newsList.filter(({ id, admin_name }) => {
         if (
           debouncedQuery !== "" &&
-          !`${content} ${title}`
+          !`${id} ${admin_name}`
             .toLowerCase()
             .includes(debouncedQuery.trim().toLowerCase())
         ) {
@@ -70,21 +78,19 @@ export function NewsTable() {
         return true;
       })
     );
-  }, [debouncedQuery]);
-
-  // Sorting...
+  }, [debouncedQuery, records]);
+  // Sorting
   useEffect(() => {
-    const data = sortBy(NewsData, sortStatus.columnAccessor);
+    const data = sortBy(newsList, sortStatus.columnAccessor);
     setRecords(sortStatus.direction === "desc" ? data.reverse() : data);
   }, [sortStatus]);
-
   // Form validation
   useEffect(() => {
-    const { news_id, title, content, thumbnail } = values;
-    if (news_id === "") {
+    const { id, admin_name, content, thumbnail } = values;
+    if (id === "") {
       setDone({ status: false, msg: "Vui lòng nhập mã số" });
-    } else if (title === undefined || title === "") {
-      setDone({ status: false, msg: "Vui lòng chọn tiêu đề" });
+    } else if (admin_name === undefined || admin_name === "") {
+      setDone({ status: false, msg: "Vui lòng chọn tác giả" });
     } else if (content === undefined || content === "") {
       setDone({ status: false, msg: "Vui lòng nhập nội dung bản tin" });
     } else {
@@ -92,6 +98,62 @@ export function NewsTable() {
     }
   }, [values]);
 
+  // RESTful API for News
+  // Get All News
+  const getNewsList = async () => {
+    await axios
+      .get("http://localhost:8080/api/news/all")
+      .then((response) => setNewsList(response.data))
+      //.then(setRecords(newsList))
+      .catch((res) => alert(res));
+  };
+  // Insert News
+  const addNews = (news) => {
+    axios({
+      method: "post",
+      url: "http://localhost:8080/api/news/",
+      data: {
+        id: parseInt(news["id"]) || 0,
+        admin_name: news["admin_name"] || "",
+        content: news["content"] || "",
+        thumbnail: news["thumbnail"] || "",
+      },
+    })
+      .then((response) => getNewsList())
+      .catch((res) => alert(res));
+  };
+  // Edit News with ID
+  const editNews = (news) => {
+    const id = news["id"];
+    axios({
+      method: "put",
+      url: `http://localhost:8080/api/news/${id}`,
+      data: {
+        admin_name: news["admin_name"] || "",
+        content: news["content"] || "",
+        thumbnail: news["thumbnail"] || "",
+      },
+    }).then((response) =>
+      setNewsList((prev) => {
+        prev[prev.findIndex((item) => item.id === id)] = news;
+        return [...prev];
+      })
+    );
+  };
+  // Delete News with ID
+  const deleteNews = (id) => {
+    axios({
+      method: "delete",
+      url: `http://localhost:8080/api/news/${id}`,
+    })
+      .then((response) =>
+        setNewsList((prev) => prev.filter((item) => item.id !== id))
+      )
+      .catch((res) => alert(res));
+  };
+
+  // Events
+  // Submit with changes: Add, Edit, Delete
   const handleSubmit = (event) => {
     console.log(values);
     const toastOptions = {
@@ -102,15 +164,22 @@ export function NewsTable() {
       theme: "dark",
     };
     event.preventDefault();
-    if (event.target.name === "edit") {
+    if (event.target.name === "add") {
+      addNews(values);
+      if (done["status"] === false)
+        return toast.error(done["msg"], toastOptions);
+      else return toast.success("Cập nhật thành công", toastOptions);
+    } else if (event.target.name === "edit") {
+      editNews(values);
       if (done["status"] === false)
         return toast.error(done["msg"], toastOptions);
       else return toast.success("Cập nhật thành công", toastOptions);
     } else if (event.target.name === "delete") {
+      deleteNews(values.id);
       return toast.success("Cập nhật thành công", toastOptions);
     }
   };
-
+  // Track user's keystroke
   const handleChange = (event) => {
     setValues({
       ...values,
@@ -120,11 +189,13 @@ export function NewsTable() {
 
   return (
     <div>
+    
       <Box sx={{ height: 600 }}>
+        {/* SearchBar and AddNews Button */}
         <div class="my-2">
           <TextInput
             sx={{ flexBasis: "30%" }}
-            placeholder="Nhập tiêu đề hoặc nội dung để tìm..."
+            placeholder="Nhập mã tin hoặc người đăng để tìm bài viết..."
             value={query}
             onChange={(e) => setQuery(e.currentTarget.value)}
           />
@@ -134,11 +205,13 @@ export function NewsTable() {
           type="button"
           className="btn btn-primary openmodal mt-0 mb-5"
           data-bs-toggle="modal"
-          data-bs-target="#editModal"
+          data-bs-target="#addModal"
           onClick={() => setValues({ initValues })}
         >
           Thêm tin
         </button>
+
+        {/* Table */}
         <DataTable
           withBorder
           borderRadius="md"
@@ -152,10 +225,9 @@ export function NewsTable() {
           verticalAlignment="center"
           records={records}
           columns={[
-            { accessor: "news_id", title: "Mã tin đăng", width: "15%" },
-            { accessor: "title", title: "Tiêu đề", width: 200},
-            { accessor: "content", title: "Nội dung", width: "50%" },
-            { accessor: "thumbnail", title: "Đường dẫn", width: "100%"},
+            { accessor: "id", title: "Mã tin đăng", width: "15%" },
+            { accessor: "admin_name", title: "Người đăng", width: 200 },
+            { accessor: "thumbnail", title: "Thumbnail", width: "100%" },
             {
               accessor: "actions",
               title: <Text class="text-center">Thao tác</Text>,
@@ -165,7 +237,7 @@ export function NewsTable() {
                   <ActionIcon
                     data-bs-toggle="modal"
                     data-bs-target="#viewModal"
-                    onClick={() => setProduct(item)}
+                    onClick={() => setValues(item)}
                     color="green"
                   >
                     <GrIcons.GrView size={16} />
@@ -181,7 +253,7 @@ export function NewsTable() {
                   <ActionIcon
                     data-bs-toggle="modal"
                     data-bs-target="#deleteModal"
-                    onClick={() => setProduct(item)}
+                    onClick={() => setValues(item)}
                     color="red"
                   >
                     <BiIcons.BiTrash size={16} />
@@ -190,17 +262,18 @@ export function NewsTable() {
               ),
             },
           ]}
-          totalRecords={NewsData.length}
+          totalRecords={newsList.length}
           recordsPerPage={pageSize}
           page={page}
           onPageChange={(p) => setPage(p)}
           recordsPerPageOptions={PAGE_SIZES}
           onRecordsPerPageChange={setPageSize}
-          // sortStatus={sortStatus}
-          // onSortStatusChange={setSortStatus}
+          sortStatus={sortStatus}
+          onSortStatusChange={setSortStatus}
         />
       </Box>
-      {/* View */}
+
+      {/* View Modal */}
       <div
         class="modal fade"
         id="viewModal"
@@ -210,11 +283,11 @@ export function NewsTable() {
         aria-labelledby="staticBackdropLabel"
         aria-hidden="true"
       >
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-xl">
           <div class="modal-content">
             <div class="modal-header">
               <h1 class="modal-title fs-5" id="staticBackdropLabel">
-                Thông tin sản phẩm
+                Thông tin bài viết
               </h1>
 
               <button
@@ -227,19 +300,29 @@ export function NewsTable() {
             <div class="modal-body gap-5 lh-lg">
               <div class="d-flex flex-row">
                 <p class="text-secondary m-0">Mã số:</p>
-                <p class="text-primary m-0 ms-auto">{product.news_id}</p>
+                <p class="text-primary m-0 ms-auto">{values.id}</p>
               </div>
               <div class="d-flex flex-row">
-                <p class="text-secondary m-0">Tiêu đề:</p>
-                <p class="text-primary m-0 ms-auto">{product.title}</p>
+                <p class="text-secondary m-0">Tác giả:</p>
+                <p class="text-primary m-0 ms-auto">{values.admin_name}</p>
+              </div>
+              <div class="d-flex flex-column">
+                <p class="text-secondary m-0">Thumbnail:</p>
+                <p class="text-primary m-0 me-auto">{values.thumbnail}</p>
               </div>
               <div class="d-flex flex-column">
                 <p class="text-secondary m-0">Nội dung:</p>
-                <p class="text-primary m-0 ms-auto text-justify">{product.content}</p>
-              </div>
-              <div class="d-flex flex-row">
-                <p class="text-secondary m-0">Đường dẫn:</p>
-                <p class="text-primary m-0 ms-auto">{product.thumbnail}</p>
+                <p class="text-primary m-0 text-justify">
+                  <SunEditor
+                    disable={true}
+                    enableToolbar={false}
+                    showToolbar={false}
+                    setContents={values.content}
+                    width="100%"
+                    height="100%"
+                    setOptions={{ resizingBar: false, showPathLabel: false }}
+                  />
+                </p>
               </div>
             </div>
             <div class="modal-footer">
@@ -254,7 +337,122 @@ export function NewsTable() {
           </div>
         </div>
       </div>
-      {/* Edit */}
+
+      {/* Add Modal */}
+      <div
+        class="modal fade"
+        id="addModal"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                Thêm bài đăng
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <label htmlFor="id" className="mt-2 form-label">
+                ID
+              </label>
+              <input
+                required
+                type="text"
+                className="form-control"
+                placeholder="ID"
+                name="id"
+                onChange={handleChange}
+              />
+              <label htmlFor="title" className="mt-2 form-label">
+                Tác giả
+              </label>
+              <input
+                required
+                type="text"
+                className="form-control"
+                placeholder="Tác giả"
+                name="admin_name"
+                onChange={handleChange}
+              />
+
+              <label htmlFor="thumbnail" className="mt-2 form-label">
+                Thumbnail
+              </label>
+              <input
+                required
+                type="text"
+                className="form-control"
+                placeholder="Link hình ảnh"
+                name="thumbnail"
+                onChange={handleChange}
+              />
+
+              <label htmlFor="category" className="mt-2 form-label">
+                Nội dung
+              </label>
+              <SunEditor
+                name="content"
+                showToolbar={true}
+                onChange={(content) => {
+                  //console.log(content)
+                  setValues((prev) => ({ ...prev, content: content }));
+                }}
+                setDefaultStyle="height: auto"
+                setOptions={{
+                  buttonList: [
+                    [
+                      "undo",
+                      "redo",
+                      "bold",
+                      "underline",
+                      "italic",
+                      "strike",
+                      "list",
+                      "align",
+                      "fontSize",
+                      "formatBlock",
+                      "table",
+                      "image",
+                      "link",
+                      "fontColor",
+                      "hiliteColor",
+                    ],
+                  ],
+                }}
+              />
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Đóng
+              </button>
+              <button
+                type="button"
+                onClick={handleSubmit}
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                name="add"
+              >
+                Thêm
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Edit Modal */}
       <div
         class="modal fade"
         id="editModal"
@@ -264,7 +462,7 @@ export function NewsTable() {
         aria-labelledby="staticBackdropLabel"
         aria-hidden="true"
       >
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-xl">
           <div class="modal-content">
             <div class="modal-header">
               <h1 class="modal-title fs-5" id="staticBackdropLabel">
@@ -278,7 +476,7 @@ export function NewsTable() {
               ></button>
             </div>
             <div className="modal-body">
-              <label htmlFor="title" className="form-label">
+              <label htmlFor="id" className="mt-2 form-label">
                 ID
               </label>
               <input
@@ -286,38 +484,26 @@ export function NewsTable() {
                 type="text"
                 className="form-control"
                 placeholder="ID"
-                name="news_id"
+                name="id"
                 onChange={handleChange}
-                value={values.news_id}
+                value={values.id}
+                disabled
               />
-              <label htmlFor="title" className="form-label">
-                Tiêu đề
+              <label htmlFor="title" className="mt-2 form-label">
+                Tác giả
               </label>
               <input
                 required
                 type="text"
                 className="form-control"
-                placeholder="Tiêu đề"
-                name="title"
+                placeholder="Tác giả"
+                name="admin_name"
                 onChange={handleChange}
-                value={values.title}
+                value={values.admin_name}
               />
 
-              <label htmlFor="category" className="form-label">
-                Nội dung
-              </label>
-              <textarea
-                required
-                type="text"
-                className="form-control"
-                placeholder="Phân loại"
-                name="category"
-                onChange={handleChange}
-                value={values.content}
-              />
-
-              <label htmlFor="thumbnail" className="form-label">
-                Hình ảnh
+              <label htmlFor="thumbnail" className="mt-2 form-label">
+                Thumbnail
               </label>
               <input
                 required
@@ -327,6 +513,41 @@ export function NewsTable() {
                 name="thumbnail"
                 onChange={handleChange}
                 value={values.thumbnail}
+              />
+
+              <label htmlFor="category" className="mt-2 form-label">
+                Nội dung
+              </label>
+              <SunEditor
+                name="content"
+                setContents={values.content}
+                showToolbar={true}
+                onChange={(content) => {
+                  //console.log(content)
+                  setValues((prev) => ({ ...prev, content: content }));
+                }}
+                setDefaultStyle="height: auto"
+                setOptions={{
+                  buttonList: [
+                    [
+                      "undo",
+                      "redo",
+                      "bold",
+                      "underline",
+                      "italic",
+                      "strike",
+                      "list",
+                      "align",
+                      "fontSize",
+                      "formatBlock",
+                      "table",
+                      "image",
+                      "link",
+                      "fontColor",
+                      "hiliteColor",
+                    ],
+                  ],
+                }}
               />
             </div>
             <div class="modal-footer">
@@ -350,7 +571,8 @@ export function NewsTable() {
           </div>
         </div>
       </div>
-      {/* Delete */}
+
+      {/* Delete Modal*/}
       <div
         class="modal fade"
         id="deleteModal"
@@ -390,7 +612,7 @@ export function NewsTable() {
                 ></path>
               </svg>
               <p className="fs-4 fw-semibold">
-                Xóa tin <span class="text-danger fw-bold">"{product.title}"</span> ?
+                Xóa tin <span class="text-danger fw-bold">"{values.id}"</span> ?
               </p>
               <p class="fst-italic">
                 Sau khi xác nhận, thủ tục này sẽ không thể hoàn tác.

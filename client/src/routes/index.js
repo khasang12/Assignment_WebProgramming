@@ -18,6 +18,7 @@ import Payment from '../pages/user/Payment';
 import Address from '../pages/user/Address';
 import Guide from '../pages/user/Guide';
 
+
 const publicRoutes = [];
 
 const privateRoutes = [];
@@ -50,7 +51,7 @@ const userRoutes = [
         component: SearchPage,
         layout: DefaultLayout,
     },
-    {
+            {
         path: '/login',
         component: Login,
         layout: DefaultLayout,
@@ -74,13 +75,11 @@ const userRoutes = [
         layout: DefaultLayout,
     },
 
-
     {
         path: '/shopping_guide',
         component: Guide,
         layout: DefaultLayout,
     },
-
 ];
 
 const adminRoutes = [

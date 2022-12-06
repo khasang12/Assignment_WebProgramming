@@ -10,7 +10,7 @@ function AddressForm() {
     const handleChangeCity = (cityName) => {
         if (data.length > 0) {
             let districts = data.find((item) => item.name === cityName).districts;
-            console.log(districts);
+
             setDistrict(districts);
         }
     };
@@ -18,6 +18,8 @@ function AddressForm() {
     const handleChangeDistricts = (districtName) => {
         if (districts.length > 0) {
             let district = districts.find((item) => item.name === districtName);
+            console.log(districts[7]);
+            console.log(districts[7].wards.reduce((res, item) => `${res}, "${item.name}"`, ''));
             if (district) {
                 setWard(district.wards);
             } else {

@@ -1,6 +1,6 @@
 <?php
 
-include_once './middleware/error/custom_error.php';
+include_once(dirname(__FILE__) . '/utils/error.php');
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
