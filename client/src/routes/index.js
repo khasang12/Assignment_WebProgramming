@@ -76,7 +76,7 @@ const userRoutes = [
     },
 
     {
-        path: '/shopping_guide',
+        path: '/shopping-guide',
         component: Guide,
         layout: DefaultLayout,
     },
