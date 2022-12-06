@@ -57,7 +57,6 @@ function Header() {
                       cx("arrow-top-center") + " shadow p-2 bg-white rounded"
                     }
                   >
-<<<<<<< HEAD
                     <Link to="/login" className="d-flex flex-column">
                       <button className="btn btn-warning mb-2 px-5">Đăng nhập</button>
                     </Link>
@@ -65,20 +64,6 @@ function Header() {
                       <button className="btn btn-light">Đăng ký</button>
                     </Link>
                       
-=======
-                    <div className="d-flex flex-column">
-                      <Link to="/login">
-                        <button className="btn btn-warning mb-2 px-5 w-100">
-                          Đăng nhập
-                        </button>
-                      </Link>
-                      <Link to="/register">
-                        <button className="btn btn-light mb-2 px-5 w-100">
-                          Đăng ký
-                        </button>
-                      </Link>
-                    </div>
->>>>>>> 099464299defa6566eec6180787e9170ed1970a3
                   </div>
                 );
               }}
@@ -179,33 +164,6 @@ function Header() {
                 </div>
               </Link>
             </Tippy>
-          </div>
-        </div>
-      </div>
-      <div className="bot-bar w-100" style={{backgroundColor: '#e4f2f2'}}>
-        <div className='container-md text-white d-flex flex-row align-items-center justify-content-between"'>
-          <button className="col-12 col-lg-3 px-4 py-3 bg-warning fw-bold fs-4 d-flex flex-row align-items-center">
-            <BiMenu className="mr-1"/>
-            <a className="text-white" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" href="#">
-              Danh mục sản phẩm
-            </a>
-            <ul class="dropdown-menu mt-3 w-100 w-lg-25" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-            </ul>
-          </button>
-          <div className="d-none d-lg-block p-2 px-5 fw-semibold fs-6">
-            <a href="how-to-purchase">THANH TOÁN</a>
-          </div>
-          <div className="d-none d-lg-block p-2 px-5 fw-bold fs-6">
-            <a href="how-to-contact">LIÊN HỆ</a>
-          </div>
-          <div className="d-none d-lg-block p-2 px-5 fw-bold fs-6">
-            <a href="news">TIN TỨC</a>
-          </div>
-          <div className="d-none d-lg-block p-2 px-5 fw-bold fs-6">
-            <a href="customer-care">CHĂM SÓC KHÁCH HÀNG</a>
           </div>
         </div>
       </div>
