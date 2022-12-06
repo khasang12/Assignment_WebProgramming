@@ -25,22 +25,22 @@ class Comment{
         }
     }
 
-    // public function createComment($info){
+    public function createComment($info){
 
-    //         $id = $info['id'];
-    //         $admin_name = $info['admin_name'];
-    //         $content = $info['content'];
-    //         $thumbnail = $info['thumbnail'];
+            $id = $info['id'];
+            $admin_name = $info['admin_name'];
+            $content = $info['content'];
+            $thumbnail = $info['thumbnail'];
 
-    //         $query0 = "SELECT id FROM Admin WHERE CONCAT(first_name,' ',last_name) = '$admin_name'";
-    //         $stmt0 = $this->conn->query($query0);
-    //         $admin_id = $stmt0->fetch_assoc()['id'];
-    //         $stmt0->close();
+            $query0 = "SELECT id FROM Admin WHERE CONCAT(first_name,' ',last_name) = '$admin_name'";
+            $stmt0 = $this->conn->query($query0);
+            $admin_id = $stmt0->fetch_assoc()['id'];
+            $stmt0->close();
 
-    //         $query = "INSERT INTO Comment (id, admin_id, content, thumbnail) VALUES ($id, $admin_id,'$content','$thumbnail')";
-    //         $stmt = $this->conn->prepare($query);
-    //         return $stmt->execute();
-    // }
+            $query = "INSERT INTO Comment (id, admin_id, content, thumbnail) VALUES ($id, $admin_id,'$content','$thumbnail')";
+            $stmt = $this->conn->prepare($query);
+            return $stmt->execute();
+    }
 
     public function editComment($id, $info){
         try{

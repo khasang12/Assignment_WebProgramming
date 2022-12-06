@@ -18,15 +18,15 @@ class CommentController{
         throw new FileNotFoundError("Comment not found!!!");
     }
 
-    // public static function createComment($info){
-    //     $temp = new Comment();
-    //     $new = $temp->createComment($info);
-    //     if ($new){
-    //         http_response_code(200);
-    //         return json_encode(["msg"=>"success"]);
-    //     }
-    //     throw new FileNotFoundError("Comment not created!!!");
-    // }
+    public static function createComment($info){
+        $temp = new Comment();
+        $new = $temp->createComment($info);
+        if ($new){
+            http_response_code(200);
+            return json_encode(["msg"=>"success"]);
+        }
+        throw new FileNotFoundError("Comment not created!!!");
+    }
 
     public static function editComment($id, $data){
         $temp = new Comment();

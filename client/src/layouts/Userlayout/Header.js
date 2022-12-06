@@ -172,17 +172,240 @@ function Header() {
           </div>
         </div>
       </div>
-      <div className="bot-bar w-100" style={{backgroundColor: '#e4f2f2'}}>
+      <div className="bot-bar w-100" style={{ backgroundColor: "#e4f2f2" }}>
         <div className='container-md text-white d-flex flex-row align-items-center justify-content-between"'>
           <button className="col-12 col-lg-3 px-4 py-3 bg-warning fw-bold fs-4 d-flex flex-row align-items-center">
-            <BiMenu className="mr-1"/>
-            <a className="text-white" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" href="#">
+            <a
+              className="text-white"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              id="dropdownMenuClickableInside"
+              data-bs-auto-close="outside"
+            >
+              <BiMenu className="mr-1" />
               Danh mục sản phẩm
             </a>
-            <ul class="dropdown-menu mt-3 w-100 w-lg-25" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
+            <ul
+              class="dropdown-menu mt-3 w-100 w-lg-25 dropdown-menu-left"
+              style={{ border: 0, padding: 0 }}
+              aria-labelledby="dropdownMenuClickableInside"
+            >
+              <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingOne">
+                    <button
+                      class="accordion-button"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#collapseOne"
+                      aria-expanded="true"
+                      aria-controls="collapseOne"
+                    >
+                      Thương hiệu
+                    </button>
+                  </h2>
+                  <div
+                    id="collapseOne"
+                    class="accordion-collapse collapse show"
+                    aria-labelledby="headingOne"
+                    data-bs-parent="#accordionExample"
+                  >
+                    <div class="accordion-body list-group list-group-flush p-0">
+                      <a
+                        href="/search?brand=dell"
+                        class="list-group-item list-group-item-action"
+                        aria-current="true"
+                      >
+                        Dell
+                      </a>
+                      <a
+                        href="/search?brand=acer"
+                        class="list-group-item list-group-item-action"
+                      >
+                        Acer
+                      </a>
+                      <a
+                        href="/search?brand=asus"
+                        class="list-group-item list-group-item-action"
+                      >
+                        Asus
+                      </a>
+                      <a
+                        href="/search?brand=apple"
+                        class="list-group-item list-group-item-action"
+                      >
+                        Apple
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingTwo">
+                    <button
+                      class="accordion-button collapsed"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#collapseTwo"
+                      aria-expanded="false"
+                      aria-controls="collapseTwo"
+                    >
+                      Mức giá
+                    </button>
+                  </h2>
+                  <div
+                    id="collapseTwo"
+                    class="accordion-collapse collapse"
+                    aria-labelledby="headingTwo"
+                    data-bs-parent="#accordionExample"
+                  >
+                    <div class="accordion-body list-group list-group-flush p-0">
+                      <a
+                        href="/search?priceFrom=5&priceTo=15"
+                        class="list-group-item list-group-item-action"
+                        aria-current="true"
+                      >
+                        5-15 triệu
+                      </a>
+                      <a
+                        href="/search?priceFrom=15&priceTo=25"
+                        class="list-group-item list-group-item-action"
+                      >
+                        15-25 triệu
+                      </a>
+                      <a
+                        href="/search?priceFrom=25&priceTo=35"
+                        class="list-group-item list-group-item-action"
+                      >
+                        25-35 triệu
+                      </a>
+                      <a
+                        href="/search?priceFrom=35&priceTo=100"
+                        class="list-group-item list-group-item-action"
+                      >
+                        Trên 35 triệu
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingThree">
+                    <button
+                      class="accordion-button collapsed"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#collapseThree"
+                      aria-expanded="false"
+                      aria-controls="collapseThree"
+                    >
+                      Cấu hình
+                    </button>
+                  </h2>
+                  <div
+                    id="collapseThree"
+                    class="accordion-collapse collapse"
+                    aria-labelledby="headingThree"
+                    data-bs-parent="#accordionExample"
+                  >
+                    <div class="accordion-body list-group list-group-flush p-0">
+                      <div class="btn-group dropend">
+                        <button
+                          type="button"
+                          class="btn btn-secondary list-group-item list-group-item-action"
+                          data-bs-toggle="dropdown"
+                          aria-current="true"
+                          aria-expanded="false"
+                        >
+                          Intel
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li>
+                            <a class="dropdown-item" href="/search?cpu=intel-i3">
+                              Intel Core i3
+                            </a>
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="/search?cpu=intel-i5">
+                              Intel Core i5
+                            </a>
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="/search?cpu=intel-i7">
+                              Intel Core i7
+                            </a>
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="/search?cpu=intel-i9">
+                              Intel Core i9
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="btn-group dropend">
+                        <button
+                          type="button"
+                          class="btn btn-secondary list-group-item list-group-item-action"
+                          data-bs-toggle="dropdown"
+                          aria-current="true"
+                          aria-expanded="false"
+                        >
+                          AMD
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li>
+                            <a class="dropdown-item" href="/search?cpu=amd-ryzen-3">
+                              AMD Ryzen 3
+                            </a>
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="/search?cpu=amd-ryzen-5">
+                              AMD Ryzen 5
+                            </a>
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="/search?cpu=amd-ryzen-7">
+                              AMD Ryzen 7
+                            </a>
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="/search?cpu=amd-ryzen-9">
+                              AMD Ryzen 9
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="btn-group dropend">
+                        <button
+                          type="button"
+                          class="btn btn-secondary list-group-item list-group-item-action"
+                          data-bs-toggle="dropdown"
+                          aria-current="true"
+                          aria-expanded="false"
+                        >
+                          Nvidia
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li>
+                            <a class="dropdown-item" href="/search?cpu=nvidia-16">
+                              Nvidia 16 Series
+                            </a>
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="/search?cpu=nvidia-30">
+                              Nvidia 30 Series
+                            </a>
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="/search?cpu=nvidia-40">
+                              Nvidia 40 Series
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </ul>
           </button>
           <div className="d-none d-lg-block p-2 px-5 fw-semibold fs-6">
