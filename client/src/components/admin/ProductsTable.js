@@ -92,12 +92,12 @@ export function ProductsTable() {
         return true;
       })
     );
-  }, [debouncedQuery, records]);
+  }, [debouncedQuery, productList]);
   // Sorting
   useEffect(() => {
     const data = sortBy(productList, sortStatus.columnAccessor);
     setRecords(sortStatus.direction === "desc" ? data.reverse() : data);
-  }, [sortStatus]);
+  }, [sortStatus,productList]);
   // Form validation
   useEffect(() => {
     const { name, price, quantity } = values;
@@ -268,11 +268,11 @@ export function ProductsTable() {
           verticalAlignment="center"
           records={records}
           columns={[
-            { accessor: "id", title: "Mã sản phẩm", width: "15%" },
-            { accessor: "name", title: "Tên", width: 300 },
-            { accessor: "price", title: "Giá bán", width: 200 },
-            { accessor: "quantity", title: "Số lượng tồn", width: 100 },
-            { accessor: "overall_rating", title: "Đánh giá", width: "100%" },
+            { accessor: "id", title: "Mã sản phẩm", width: "25%" },
+            { accessor: "name", title: "Tên", width: 400 },
+            { accessor: "price", title: "Giá bán", width: 200 , sortable:true},
+            { accessor: "quantity", title: "Số lượng tồn", width: 200, sortable:true },
+            { accessor: "overall_rating", title: "Đánh giá", width: "100%", sortable:true },
             {
               accessor: "actions",
               title: <Text class="text-center">Thao tác</Text>,
