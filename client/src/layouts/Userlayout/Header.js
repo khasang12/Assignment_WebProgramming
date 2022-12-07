@@ -400,43 +400,6 @@ function Header() {
                           </li>
                         </ul>
                       </div>
-                      <div class="btn-group dropend">
-                        <button
-                          type="button"
-                          class="btn btn-secondary list-group-item list-group-item-action"
-                          data-bs-toggle="dropdown"
-                          aria-current="true"
-                          aria-expanded="false"
-                        >
-                          Nvidia
-                        </button>
-                        <ul class="dropdown-menu">
-                          <li>
-                            <a
-                              class="dropdown-item"
-                              href="/search?cpu=nvidia-16"
-                            >
-                              Nvidia 16 Series
-                            </a>
-                          </li>
-                          <li>
-                            <a
-                              class="dropdown-item"
-                              href="/search?cpu=nvidia-30"
-                            >
-                              Nvidia 30 Series
-                            </a>
-                          </li>
-                          <li>
-                            <a
-                              class="dropdown-item"
-                              href="/search?cpu=nvidia-40"
-                            >
-                              Nvidia 40 Series
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
                     </div>
                   </div>
                 </div>
