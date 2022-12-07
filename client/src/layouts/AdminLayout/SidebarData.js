@@ -3,6 +3,7 @@ import * as FaIcons from "react-icons/fa";
 import * as BiIcons from "react-icons/bi";
 import * as AiIcons from "react-icons/ai";
 import * as MdIcons from "react-icons/md";
+import * as GrIcons from "react-icons/gr";
 
 
 export const SidebarData = [
@@ -40,6 +41,12 @@ export const SidebarData = [
     title: "Bình luận",
     path: "/admin/comments",
     icon: <BiIcons.BiCommentDots />,
+    cName: "nav-text",
+  },
+  {
+    title: "Tài nguyên",
+    path: "/admin/resource",
+    icon: <AiIcons.AiOutlineDatabase />,
     cName: "nav-text",
   },
   {

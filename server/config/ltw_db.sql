@@ -83,6 +83,14 @@ CREATE TABLE `News` (
   `content` longtext,
    PRIMARY KEY(id)
 );
+use bkzone;
+CREATE TABLE `Resource` (
+  `id` int not null auto_increment,
+  `name` varchar(255),
+  `data` longtext,
+   PRIMARY KEY(id),
+   PRIMARY KEY(name)
+);
 
 ALTER TABLE `Order` ADD FOREIGN KEY (`customer_id`) REFERENCES `Customer` (`id`);
 
@@ -112,6 +120,15 @@ VALUES ('e7503d15-73c9-11ed-93a1-00155d001934','Apple Ultrabook MacBook Pro 16GB
 INSERT INTO Product (id, name, thumbnail, price, quantity, brand, cpu, gpu, ram,disk, screen_size, screen_tech, weight, os, overall_rating, num_rates,description)
 VALUES ('e750a798-73c9-11ed-93a1-00155d001934','Asus Ultrabook ZenBook UX430UN','https://fptshop.com.vn/Uploads/Originals/2021/3/1/637502173944633590_asus-vivobook-x415-print-bac-dd.jpg',46780635,13,'Apple','Intel Core i5 2.3GHz','Intel HD Graphics 6000','8GB','256GB Flash Storage','13.3','1440x900',1.34,'macOS',2,915,'Nằm trong Series Zenbook của ASUS, UX430 là sản phẩm mới nhất và được hãng sản xuất đầu tư rất nhiều để đảm bảo trải nghiệm cho khách hàng trên 3 yếu tố theo thứ tự ưu tiên: Hiệu năng – giá thành – độ cơ động. Asus Zenbook UX430UN sở hữu thiết kế đơn giản nhưng trẻ trung và chắc chắn, cấu hình mạnh mẽ với các tính năng mới mà vẫn đáp ứng được nhu cầu di chuyển thường xuyên, đây thực sự là 1 trong những laptop dành cho sinh viên, dân văn phòng cần máy cấu hình cao mà không hề bất tiện trong việc mang đi cũng như sử dụng.');
 
+-- Resource
+INSERT INTO `bkzone`.`resource` (`id`, `category`, `name`) VALUES ('1', 'news', 'news1');
+INSERT INTO `bkzone`.`resource` (`id`, `category`, `name`) VALUES ('2', 'news', 'news2');
+INSERT INTO `bkzone`.`resource` (`id`, `category`, `name`) VALUES ('3', 'news', 'news3');
+INSERT INTO `bkzone`.`resource` (`id`, `category`, `name`) VALUES ('4', 'home', 'slider1');
+INSERT INTO `bkzone`.`resource` (`id`, `category`, `name`) VALUES ('5', 'home', 'slider2');
+INSERT INTO `bkzone`.`resource` (`id`, `category`, `name`) VALUES ('6', 'home', 'slider3');
+INSERT INTO `bkzone`.`resource` (`id`, `category`, `name`) VALUES ('7', 'logo', 'logo');
+INSERT INTO `bkzone`.`resource` (`id`, `category`, `name`) VALUES ('8', 'demo', 'demo');
 
 -- Customer
 INSERT INTO `bkzone`.`customer` (`id`, `first_name`, `last_name`, `phone`, `email`, `birthday`, `username`, `password`, `address`) VALUES ('466f5995-4f94-41b7-8e76-06ac759a148d', 'A', 'Nguyễn Văn', '0772114299', 'a@gmail.com', '2000-10-01', 'ngvana', '1234qwer', '15 Lý Thường Kiệt, Phường 12, Quận 10');
