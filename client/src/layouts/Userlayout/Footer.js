@@ -49,10 +49,10 @@ function Footer() {
             class="card card-body mt-2 mb-4"
             style={{ backgroundColor: "var(--primary)", height: "auto" }}
           >
-            <a className="text-white p-1 w-full" href="#">Chính sách giao nhận</a>
-            <a className="text-white p-1 w-full" href="#">Chính sách đổi trả hàng</a>
-            <a className="text-white p-1 w-full" href="#">Phương thức thanh toán</a>
-            <a className="text-white p-1 w-full" href="#">Chính sách bảo hành</a>
+            <a className="text-white p-1 w-full" href="shopping-guide">Chính sách giao nhận</a>
+            <a className="text-white p-1 w-full" href="shopping-guide">Chính sách đổi trả hàng</a>
+            <a className="text-white p-1 w-full" href="shopping-guide">Phương thức thanh toán</a>
+            <a className="text-white p-1 w-full" href="shopping-guide">Chính sách bảo hành</a>
           </div>
         </div>
       </div>
