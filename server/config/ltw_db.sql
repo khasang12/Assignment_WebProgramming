@@ -83,13 +83,11 @@ CREATE TABLE `News` (
   `content` longtext,
    PRIMARY KEY(id)
 );
-use bkzone;
 CREATE TABLE `Resource` (
   `id` int not null auto_increment,
   `name` varchar(255),
   `data` longtext,
-   PRIMARY KEY(id),
-   PRIMARY KEY(name)
+   PRIMARY KEY(id)
 );
 
 ALTER TABLE `Order` ADD FOREIGN KEY (`customer_id`) REFERENCES `Customer` (`id`);
