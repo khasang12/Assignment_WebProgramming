@@ -29,7 +29,7 @@ class db {
         if ($this->conn -> connect_errno) {
             echo "Failed to connect to MySQL: " . $this->conn -> connect_error;
             exit();
-        }
+        } 
         return $this->conn;
     }
 }

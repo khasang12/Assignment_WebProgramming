@@ -58,7 +58,7 @@ function ProductSpecificationsTable({ product }) {
             </div>
             <div className="row border">
                 <div className="col-6 text-center border-right">
-                    <p className="mx-2 my-2">Chất liêu</p>
+                    <p className="mx-2 my-2">Chất liệu</p>
                 </div>
                 <div className="col-6 text-center">
                     <p className="mx-2 my-2">{product.screen_tech}</p>
