@@ -1,12 +1,26 @@
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
-import img1 from '../../assets/slider1_1.webp';
-import img2 from '../../assets/slider1_2.webp';
-import img3 from '../../assets/slider1_3.webp';
-import img4 from '../../assets/slider1_4.webp';
-import img5 from '../../assets/slider1_5.webp';
 import ItemsList from '../../components/Home/ItemList';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 function HomePage() {
+    const [img,setImg] = useState([])
+    useEffect(()=>{
+        const timeoutID = window.setTimeout(() => {
+            getHomeImages();
+          }, 1000);
+          
+        return () => window.clearTimeout(timeoutID);
+    },[])
+    const getHomeImages = async () => {
+        await axios
+          .get("http://localhost:8080/api/upload/slider")
+          .then((response) => {
+            setImg(response.data)
+            console.log(response)
+          })
+          .catch((res) => alert(res));
+      };
     return (
         <div class="container mt-4">
             {/* <MyButton className="m-5" primary to="/details?id=P123456577">
@@ -49,19 +63,15 @@ function HomePage() {
                 </div>
                 <div class="carousel-inner relative w-full overflow-hidden">
                     <div class="carousel-item active relative float-left w-full">
-                        <img src={img1} class="block w-full align-items-center object-contain" alt="..." />
+                        {img[0]?<img src={img[0].data} class="block w-full align-items-center object-contain" alt="..." />:"no"}
                     </div>
                     <div class="carousel-item relative float-left w-full">
-                        <img src={img2} class="block w-full" alt="..." />
+                    {img[1]?<img src={img[1].data} class="block w-full align-items-center object-contain" alt="..." />:"no"}
+
                     </div>
                     <div class="carousel-item relative float-left w-full">
-                        <img src={img3} class="block w-full" alt="..." />
-                    </div>
-                    <div class="carousel-item relative float-left w-full">
-                        <img src={img4} class="block w-full" alt="..." />
-                    </div>
-                    <div class="carousel-item relative float-left w-full">
-                        <img src={img5} class="block w-full" alt="..." />
+                    {img[2]?<img src={img[2].data} class="block w-full align-items-center object-contain" alt="..." />:"no"}
+
                     </div>
                 </div>
                 <button

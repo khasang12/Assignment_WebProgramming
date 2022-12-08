@@ -41,6 +41,9 @@
             else if($url['2'] == 'comments'){
                 include './routes/comment.route.php';
             }
+            else if($url['2'] == 'upload'){
+                include './routes/resource.route.php';
+            }
             else{
                 http_response_code(404);
                 echo json_encode(["message" => 'Not found API!!!']);

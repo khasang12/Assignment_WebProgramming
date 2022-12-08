@@ -1,9 +1,11 @@
 import { useState } from "react";
 import Item from "./Item";
 import Pagination from "./Pagination";
+import LazyLoad from 'react-lazy-load'
+
 
 export default function ItemsList({ itemList }) {
-  const items = Array.from(Array(10), (_, x) => ({
+  const items = Array.from(Array(30), (_, x) => ({
     id: x,
     image:
       "//bizweb.sapocdn.net/thumb/medium/100/329/122/products/laptop-avita-pura-ns14a6vnf541-sgc.jpg?v=1669029239000",

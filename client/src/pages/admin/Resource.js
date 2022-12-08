@@ -5,7 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import avatar from "../../assets/avatar.jpg";
 
 function Resource({ navbarAdmin }) {
-  const UPLOAD_ENDPOINT = "http://localhost:8080/upload.php";
+  const UPLOAD_ENDPOINT = "http://localhost:8080/api/upload";
   const initFlag = {
     slider1: false,
     slider2: false,
@@ -18,9 +18,13 @@ function Resource({ navbarAdmin }) {
   };
   const [response, setResponse] = useState([]);
   const [flag, setFlag] = useState(initFlag);
-  console.log(response);
+  
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (flag===initFlag){
+      alert('You have not submitted any files!!')
+      return
+    }
     for (const key in flag) {
       if (flag[key] != false) {
         if (key != flag[key]["name"].slice(0, -4)) {
@@ -32,7 +36,7 @@ function Resource({ navbarAdmin }) {
     }
     alert("Files updated");
   };
-  useEffect(() => {}, [response]);
+  
   const uploadFile = async (key, file) => {
     const formData = new FormData();
     formData.append("file[]", file);
