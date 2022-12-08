@@ -40,7 +40,7 @@ function CartItem({ cartItem }) {
                 <input
                     type="checkbox"
                     defaultChecked={cartItem.isSelected}
-                    // key={Math.random()}
+                    key={Math.random()}
                     onChange={(e) => {
                         dispatch(selectItem(cartItem.id));
                     }}
@@ -65,7 +65,7 @@ function CartItem({ cartItem }) {
                     className="text-center"
                     style={{ width: 36 }}
                     defaultValue={cartItem.quantity}
-                    // key={Math.random()}
+                    key={Math.random()}
                     onChange={(e) => {
                         cartItem.quantity = Number(e.target.value);
                     }}

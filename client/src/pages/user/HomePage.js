@@ -8,7 +8,7 @@ import ItemsList from '../../components/Home/ItemList';
 
 function HomePage() {
     return (
-        <div class="container">
+        <div class="container mt-4">
             {/* <MyButton className="m-5" primary to="/details?id=P123456577">
                 Goto Product details
             </MyButton> */}
@@ -82,6 +82,7 @@ function HomePage() {
                     <span className="carousel-control-next-icon inline-block bg-no-repeat" aria-hidden="true"></span>
                     <span className="visually-hidden">Next</span>
                 </button>
+                <a id="items-display" name="anchor"></a>
             </div>
             <div className="fs-1 p-10 my-5 font-size text-center">Tin đăng mới</div>
             <ItemsList />

@@ -21,6 +21,7 @@ import Account from '../pages/user/Account';
 
 
 
+
 const publicRoutes = [];
 
 const privateRoutes = [];
@@ -53,7 +54,7 @@ const userRoutes = [
         component: SearchPage,
         layout: DefaultLayout,
     },
-    {
+            {
         path: '/login',
         component: Login,
         layout: DefaultLayout,
@@ -77,19 +78,16 @@ const userRoutes = [
         layout: DefaultLayout,
     },
 
-
     {
         path: '/shopping_guide',
         component: Guide,
         layout: DefaultLayout,
     },
-
     {
         path: '/account',
         component: Account,
         layout: DefaultLayout,
     },
-
 ];
 
 const adminRoutes = [

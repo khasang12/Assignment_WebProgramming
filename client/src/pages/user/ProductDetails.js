@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/ai';
-import { Button, Col, Row, Tab, Nav } from 'react-bootstrap';
+import { Button, Col, Row, Tab, Nav, Table } from 'react-bootstrap';
 
 import Price from '../../components/PriceDisplay/Price';
 import RateStar from '../../components/User/RateStar';
@@ -10,6 +10,7 @@ import Comments from '../../components/User/Comments';
 import { Link } from 'react-router-dom';
 import { Context } from '../../stores';
 import { addToCart, selectItem } from '../../stores/actions';
+import ProductSpecificationsTable from '../../components/User/ProductSpecificationsTable';
 
 function ProductDetails() {
     const [state, dispatch] = useContext(Context);
@@ -115,6 +116,11 @@ function ProductDetails() {
                                             Thông số kỹ thuật
                                         </Nav.Link>
                                     </Nav.Item>
+                                    <Nav.Item>
+                                        <Nav.Link eventKey="third" className="px-xl-5 px-lg-5 font-weight-bold">
+                                            Đánh giá sản phẩm
+                                        </Nav.Link>
+                                    </Nav.Item>
                                 </Nav>
                             </Row>
 
@@ -126,16 +132,22 @@ function ProductDetails() {
                                             <img src={product.imageDescription} alt="" width="100%" className="" />
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="second">
-                                            <h1>Tab 2</h1>
+                                            <div className="row text-center border p-2 mb-4">
+                                                <h4 className="m-0">Thông số kỹ thuật</h4>
+                                            </div>
+
+                                            <ProductSpecificationsTable product={product} />
+                                        </Tab.Pane>
+
+                                        <Tab.Pane eventKey="third">
+                                            <div className="product-user-review container mb-5 mt-3 p-0">
+                                                <Comments />
+                                            </div>
                                         </Tab.Pane>
                                     </Tab.Content>
                                 </Col>
                             </Row>
                         </Tab.Container>
-
-                        <div className="product-user-review container mb-5 p-0">
-                            <Comments />
-                        </div>
                     </div>
                     <div className="col-lg-12 col-xl-3 border px-0">
                         <div className="text-white py-3 m-0 w-100 text-center bg-primary">
