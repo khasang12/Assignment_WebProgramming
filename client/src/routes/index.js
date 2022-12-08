@@ -17,6 +17,9 @@ import UNews from '../pages/user/News';
 import Payment from '../pages/user/Payment';
 import Address from '../pages/user/Address';
 import Guide from '../pages/user/Guide';
+import Account from '../pages/user/Account';
+
+
 
 const publicRoutes = [];
 
@@ -78,6 +81,12 @@ const userRoutes = [
     {
         path: '/shopping_guide',
         component: Guide,
+        layout: DefaultLayout,
+    },
+
+    {
+        path: '/account',
+        component: Account,
         layout: DefaultLayout,
     },
 
