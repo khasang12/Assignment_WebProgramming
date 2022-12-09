@@ -56,11 +56,12 @@ class Comment{
                 return false;
             $stmt0->close();
 
-            $query = "UPDATE Comment SET stats='$status', admin_id='$admin_id' WHERE id = '$id'";
+            $query = "UPDATE Comment SET status='$status', admin_id='$admin_id' WHERE id = '$id'";
             $stmt = $this->conn->prepare($query);
             return $stmt->execute();
         }
         catch (mysqli_sql_exception $e){
+            echo $this->conn->error;
             throw new InternalServerError('Server Error!!!');
         }
     }
