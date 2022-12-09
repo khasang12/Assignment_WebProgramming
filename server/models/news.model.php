@@ -13,7 +13,7 @@ class News{
 
     public function getAllNews(){
         try{
-            $query = "SELECT N.id, CONCAT(A.first_name,' ',A.last_name) as admin_name, N.thumbnail, N.content FROM `News` N, `Admin` A WHERE N.admin_id=A.id";
+            $query = "SELECT N.id, CONCAT(A.first_name,' ',A.last_name) as admin_name, N.title, N.thumbnail, N.content FROM `News` N, `Admin` A WHERE N.admin_id=A.id";
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
             return $stmt->get_result();
@@ -25,17 +25,19 @@ class News{
 
     public function createNews($info){
 
-            $id = $info['id'];
             $admin_name = $info['admin_name'];
+            $title = $info['title'];
             $content = $info['content'];
             $thumbnail = $info['thumbnail'];
 
             $query0 = "SELECT id FROM Admin WHERE CONCAT(first_name,' ',last_name) = '$admin_name'";
             $stmt0 = $this->conn->query($query0);
             $admin_id = $stmt0->fetch_assoc()['id'];
+            if ($admin_id == null)
+                return false;
             $stmt0->close();
 
-            $query = "INSERT INTO News (id, admin_id, content, thumbnail) VALUES ($id, $admin_id,'$content','$thumbnail')";
+            $query = "INSERT INTO News (title,admin_id, content, thumbnail) VALUES ('$title',$admin_id,'$content','$thumbnail')";
             $stmt = $this->conn->prepare($query);
             return $stmt->execute();
     }
@@ -43,15 +45,18 @@ class News{
     public function editNews($id, $info){
         try{
             $admin_name = $info['admin_name'];
+            $title = $info['title'];
             $content = $info['content'];
             $thumbnail = $info['thumbnail'];
 
             $query0 = "SELECT id FROM Admin WHERE CONCAT(first_name,' ',last_name) = '$admin_name'";
             $stmt0 = $this->conn->query($query0);
             $admin_id = $stmt0->fetch_assoc()['id'];
+            if ($admin_id == null)
+                return false;
             $stmt0->close();
 
-            $query = "UPDATE News SET admin_id = '$admin_id', content = '$content', thumbnail = '$thumbnail' WHERE id = $id";
+            $query = "UPDATE News SET title = '$title', admin_id = '$admin_id', content = '$content', thumbnail = '$thumbnail' WHERE id = $id";
             $stmt = $this->conn->prepare($query);
             return $stmt->execute();
         }

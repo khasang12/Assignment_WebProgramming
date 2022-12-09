@@ -80,7 +80,6 @@ function Header() {
                         </button>
                     </div>
                 </div>
-            </div>
             <div className="mid-bar w-100">
                 <div className="container-md text-white d-flex align-items-center justify-content-between">
                     <Link to="/">
@@ -362,22 +361,22 @@ function Header() {
                             </div>
                         </ul>
                     </button>
+                    <div className="d-none d-lg-block p-2 px-5 fw-bold fs-6">
+                        <a href="about">GIỚI THIỆU</a>
+                    </div>
+                    <div className="d-none d-lg-block p-2 px-5 fw-bold fs-6">
+                        <a href="news">TIN TỨC</a>
+                    </div>
                     <div className="d-none d-lg-block p-2 px-5 fw-semibold fs-6">
                         <a href="shopping-guide">THANH TOÁN</a>
                     </div>
                     <div className="d-none d-lg-block p-2 px-5 fw-bold fs-6">
                         <a href="address">LIÊN HỆ</a>
                     </div>
-                    <div className="d-none d-lg-block p-2 px-5 fw-bold fs-6">
-                        <a href="news">TIN TỨC</a>
-                    </div>
-                    <div className="d-none d-lg-block p-2 px-5 fw-bold fs-6">
-                        <a href="customer-care">CHĂM SÓC KHÁCH HÀNG</a>
-                    </div>
                 </div>
             </div>
         </div>
-    );
+      </div>
+  );
 }
-
 export default Header;

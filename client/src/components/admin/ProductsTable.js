@@ -209,15 +209,15 @@ export function ProductsTable() {
     };
     event.preventDefault();
     if (event.target.name === "add") {
+      if (done["status"] === false)
+        return toast.error(done["msg"], toastOptions);
       addProduct(values);
-      if (done["status"] === false)
-        return toast.error(done["msg"], toastOptions);
-      else return toast.success("Cập nhật thành công", toastOptions);
+      return toast.success("Cập nhật thành công", toastOptions);
     } else if (event.target.name === "edit") {
-      editProduct(values);
       if (done["status"] === false)
         return toast.error(done["msg"], toastOptions);
-      else return toast.success("Cập nhật thành công", toastOptions);
+      editProduct(values);
+      return toast.success("Cập nhật thành công", toastOptions);
     } else if (event.target.name === "delete") {
       deleteProduct(values.id);
       return toast.success("Cập nhật thành công", toastOptions);
