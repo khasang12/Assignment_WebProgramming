@@ -35,6 +35,7 @@ export function NewsTable() {
     admin_name: "",
     content: "",
     thumbnail: "",
+    title:""
   };
   const [page, setPage] = useState(1); // Current Page
   const [sortStatus, setSortStatus] = useState({
@@ -86,11 +87,13 @@ export function NewsTable() {
   }, [sortStatus]);
   // Form validation
   useEffect(() => {
-    const { id, admin_name, content, thumbnail } = values;
+    const { id, admin_name, content, thumbnail, title } = values;
     if (id === "") {
       setDone({ status: false, msg: "Vui lòng nhập mã số" });
     } else if (admin_name === undefined || admin_name === "") {
       setDone({ status: false, msg: "Vui lòng chọn tác giả" });
+    } else if (title === undefined || title === "") {
+      setDone({ status: false, msg: "Vui lòng gõ tiêu đề" });
     } else if (content === undefined || content === "") {
       setDone({ status: false, msg: "Vui lòng nhập nội dung bản tin" });
     } else {
@@ -113,8 +116,8 @@ export function NewsTable() {
       method: "post",
       url: "http://localhost:8080/api/news/",
       data: {
-        id: parseInt(news["id"]) || 0,
         admin_name: news["admin_name"] || "",
+        title: news["title"] || "",
         content: news["content"] || "",
         thumbnail: news["thumbnail"] || "",
       },
@@ -130,6 +133,7 @@ export function NewsTable() {
       url: `http://localhost:8080/api/news/${id}`,
       data: {
         admin_name: news["admin_name"] || "",
+        title: news["title"] || "",
         content: news["content"] || "",
         thumbnail: news["thumbnail"] || "",
       },
@@ -165,15 +169,15 @@ export function NewsTable() {
     };
     event.preventDefault();
     if (event.target.name === "add") {
+      if (done["status"] === false)
+        return toast.error(done["msg"], toastOptions);
       addNews(values);
-      if (done["status"] === false)
-        return toast.error(done["msg"], toastOptions);
-      else return toast.success("Cập nhật thành công", toastOptions);
+      return toast.success("Cập nhật thành công", toastOptions);
     } else if (event.target.name === "edit") {
-      editNews(values);
       if (done["status"] === false)
         return toast.error(done["msg"], toastOptions);
-      else return toast.success("Cập nhật thành công", toastOptions);
+      editNews(values);
+      return toast.success("Cập nhật thành công", toastOptions);
     } else if (event.target.name === "delete") {
       deleteNews(values.id);
       return toast.success("Cập nhật thành công", toastOptions);
@@ -189,7 +193,6 @@ export function NewsTable() {
 
   return (
     <div>
-    
       <Box sx={{ height: 600 }}>
         {/* SearchBar and AddNews Button */}
         <div class="my-2">
@@ -227,6 +230,7 @@ export function NewsTable() {
           columns={[
             { accessor: "id", title: "Mã tin đăng", width: "15%" },
             { accessor: "admin_name", title: "Người đăng", width: 200 },
+            { accessor: "title", title: "Tiêu đề", width: 400 },
             { accessor: "thumbnail", title: "Thumbnail", width: "100%" },
             {
               accessor: "actions",
@@ -299,12 +303,12 @@ export function NewsTable() {
             </div>
             <div class="modal-body gap-5 lh-lg">
               <div class="d-flex flex-row">
-                <p class="text-secondary m-0">Mã số:</p>
-                <p class="text-primary m-0 ms-auto">{values.id}</p>
-              </div>
-              <div class="d-flex flex-row">
                 <p class="text-secondary m-0">Tác giả:</p>
                 <p class="text-primary m-0 ms-auto">{values.admin_name}</p>
+              </div>
+              <div class="d-flex flex-row">
+                <p class="text-secondary m-0">Tiêu đề:</p>
+                <p class="text-primary m-0 ms-auto">{values.title}</p>
               </div>
               <div class="d-flex flex-column">
                 <p class="text-secondary m-0">Thumbnail:</p>
@@ -362,17 +366,6 @@ export function NewsTable() {
               ></button>
             </div>
             <div className="modal-body">
-              <label htmlFor="id" className="mt-2 form-label">
-                ID
-              </label>
-              <input
-                required
-                type="text"
-                className="form-control"
-                placeholder="ID"
-                name="id"
-                onChange={handleChange}
-              />
               <label htmlFor="title" className="mt-2 form-label">
                 Tác giả
               </label>
@@ -382,6 +375,17 @@ export function NewsTable() {
                 className="form-control"
                 placeholder="Tác giả"
                 name="admin_name"
+                onChange={handleChange}
+              />
+              <label htmlFor="title" className="mt-2 form-label">
+                Tiêu đề
+              </label>
+              <input
+                required
+                type="text"
+                className="form-control"
+                placeholder="Tiêu đề"
+                name="title"
                 onChange={handleChange}
               />
 
@@ -501,7 +505,18 @@ export function NewsTable() {
                 onChange={handleChange}
                 value={values.admin_name}
               />
-
+              <label htmlFor="title" className="mt-2 form-label">
+                Tiêu đề
+              </label>
+              <input
+                required
+                type="text"
+                className="form-control"
+                placeholder="Tiêu đề"
+                name="title"
+                onChange={handleChange}
+                value={values.title}
+              />
               <label htmlFor="thumbnail" className="mt-2 form-label">
                 Thumbnail
               </label>
