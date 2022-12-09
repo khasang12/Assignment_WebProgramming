@@ -13,12 +13,14 @@ class Product{
 
     public function getAllProduct(){
         try{
-            $query = "SELECT * FROM product";
+            $query = "SELECT * FROM Product";
+            //$query = "SHOW TABLES;";
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
             return $stmt->get_result();
         }
         catch (mysqli_sql_exception $e){
+            echo $this->conn->error;
             throw new InternalServerError('Server Error!!!');
         }
     }

@@ -18,7 +18,6 @@
     $dotenv->load();
 
     include_once './config/db.php';
-
     if(isset($_SERVER['REDIRECT_URL'])){
         $url = array_filter(explode('/', $_SERVER['REDIRECT_URL']));
         

@@ -167,8 +167,6 @@ function Header() {
           </div>
         </div>
       </div>
-<<<<<<< HEAD
-=======
       <div className="bot-bar w-100" style={{ backgroundColor: "#e4f2f2" }}>
         <div className='container-md text-white d-flex flex-row align-items-center justify-content-between"'>
           <button className="col-12 col-lg-3 px-4 py-3 bg-warning fw-bold fs-4 d-flex flex-row align-items-center">
@@ -419,7 +417,6 @@ function Header() {
           </div>
         </div>
       </div>
->>>>>>> c189cb644a6fa612301fc5ba902b4acf35d0c7b1
     </div>
   );
 }

@@ -22,7 +22,32 @@ class User{
             throw new InternalServerError('Server Error!!!');
         }
     }
-
+    public function getUser($username){
+        try{
+            $query = "SELECT id,first_name,last_name,password FROM Customer WHERE username = '$username'";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
+            return $stmt->get_result();
+        }
+        catch (mysqli_sql_exception $e){
+            echo $this->conn->error;
+            throw new InternalServerError('Server Error!!!');
+        }
+    }
+    
+    public function createUser($first_name,$last_name,$phone,$email,$birthday,$username,$password,$address){
+        try{
+            print_r($birthday);
+            $query = "INSERT INTO Customer (first_name, last_name, phone, email, birthday,username, password,address) VALUES('$first_name','$last_name','$phone','$email','$birthday','$username','$password','$address');";
+            $stmt = $this->conn->prepare($query);
+            return $stmt->execute();
+           
+        }
+        catch (mysqli_sql_exception $e){
+            echo $this->conn->error;
+            throw new InternalServerError('Server Error!!!');
+        }
+    }
     public function deleteUser($id){
         try{
             echo $id;

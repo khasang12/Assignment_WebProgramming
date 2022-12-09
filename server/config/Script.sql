@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS bkzone_2022;
+CREATE DATABASE bkzone_2022;
 USE bkzone_2022;
 DROP TABLE IF EXISTS `OrderDetail`;
 DROP TABLE IF EXISTS `Order`;
@@ -201,7 +203,7 @@ INSERT INTO Product (name, thumbnail, price, quantity, brand, cpu, gpu, ram,disk
 INSERT INTO Product (name, thumbnail, price, quantity, brand, cpu, gpu, ram,disk, screen_size, screen_tech, weight, os, overall_rating, num_rates) VALUES ('HP Notebook 15-bw000nv (E2-9000e/4GB/500GB/Radeon','https://cdn.tgdd.vn/Products/Images/44/284190/hp-15s-fq2662tu-i3-6k795pa-020722-020019-600x600.jpg',46203266,8,'HP','AMD E-Series E2-9000e 1.5GHz','AMD Radeon R2','4GB','500GB HDD','15.6"','Full HD 1920x1080',2.1,'Windows',2,267);
 INSERT INTO Product (name, thumbnail, price, quantity, brand, cpu, gpu, ram,disk, screen_size, screen_tech, weight, os, overall_rating, num_rates) VALUES ('Dell Notebook Inspiron 3576','https://cdn.ankhang.vn/media/product/20971_laptop_dell_latitude_3520_1.jpg',36210912,12,'Dell','Intel Core i5 8250U 1.6GHz','AMD Radeon 520','8GB','1TB HDD','15.6"','Full HD 1920x1080',2.2,'Linux',2,694);
 INSERT INTO Product (name, thumbnail, price, quantity, brand, cpu, gpu, ram,disk, screen_size, screen_tech, weight, os, overall_rating, num_rates) VALUES ('HP Ultrabook Envy 13-ad009n','https://cdn.tgdd.vn/Products/Images/44/284190/hp-15s-fq2662tu-i3-6k795pa-020722-020019-600x600.jpg',33584414,8,'HP','Intel Core i7 7500U 2.7GHz','Nvidia GeForce MX150','8GB','256GB SSD','13.3"','IPS Panel Full HD 1920x1080',1.38,'Windows',5,235);
-USE bkzone_2022;
+
 INSERT INTO Customer (first_name, last_name, phone, email, birthday,username, password,address) VALUE('James','Butt','504-845-1427','jbutt@gmail.com','1973-04-06','jamesbutt','jamesbutt26760','6649 N Blue Gum St');
 INSERT INTO Customer (first_name, last_name, phone, email, birthday,username, password,address) VALUE('Josephine','Darakjy','810-374-9840','josephine_darakjy@darakjy.org','2009-03-06','josephinedarakjy','josephinedarakjy39878','4 B Blue Ridge Blvd');
 INSERT INTO Customer (first_name, last_name, phone, email, birthday,username, password,address) VALUE('Art','Venere','856-264-4130','art@venere.org','1971-12-16','artvenere','artvenere26283','8 W Cerritos Ave #54');
