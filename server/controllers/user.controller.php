@@ -36,7 +36,6 @@ class UserController{
         $temp = new User();
         $new = $temp->getUser($info['username']);
         if ($new->num_rows == 0) {
-            print_r($info);
             $create = $temp->createUser($info['first_name'],$info['last_name'],$info['phone'],$info['email'],$info['birthday'],$info['username'],$info['password'],$info['address']);
             if ($create){
                 http_response_code(200);

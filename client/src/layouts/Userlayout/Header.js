@@ -17,6 +17,13 @@ import MyButton from "../../components/MyButton";
 const cx = classNames.bind(styles);
 
 function Header() {
+  var login_signup = ['/login', 'Đăng nhập','/signup','Đăng kí']
+  if (sessionStorage.getItem('id')!==null) {
+    login_signup[9]= '/userdetails';
+    login_signup[1]= sessionStorage.getItem('first_name')+' '+ sessionStorage.getItem('last_name');
+    login_signup[2]='/';
+    login_signup[3]='Đăng xuất';
+  }
   const [state, dispatch] = useContext(Context);
   const [searchStr, setSearchStr] = useState("");
   const search = (e) => {
@@ -38,6 +45,14 @@ function Header() {
       }
     }
   };
+  function checkbutton() {
+    if (sessionStorage.getItem('id')!==null) {
+      login_signup = ['/login', 'Đăng nhập','/signup','Đăng kí']
+      sessionStorage.removeItem('id');
+      sessionStorage.removeItem('last_name');
+      sessionStorage.removeItem('first_name');
+    }
+  }
   return (
     <div className={cx("header")}>
       <div className={cx("top-bar") + " border-bottom"}>
@@ -57,11 +72,11 @@ function Header() {
                       cx("arrow-top-center") + " shadow p-2 bg-white rounded"
                     }
                   >
-                    <Link to="/login" className="d-flex flex-column">
-                      <button className="btn btn-warning mb-2 px-5">Đăng nhập</button>
+                    <Link to={login_signup[0]} className="d-flex flex-column">
+                      <button className="btn btn-warning mb-2 px-5" >{login_signup[1]}</button>
                     </Link>
-                    <Link to="/signup" className="d-flex flex-column">
-                      <button className="btn btn-light">Đăng ký</button>
+                    <Link to={login_signup[2]} className="d-flex flex-column">
+                      <button className="btn btn-light" onClick={checkbutton()}>{login_signup[3]}</button>
                     </Link>
                       
                   </div>
