@@ -35,7 +35,7 @@
             else if($url['2'] == 'products'){
                 include './routes/product.route.php';
             }
-            else if($url['2'] == 'order'){
+            else if($url['2'] == 'orders'){
                 include './routes/order.route.php';
             }
             else if($url['2'] == 'comments'){

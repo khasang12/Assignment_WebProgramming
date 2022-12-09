@@ -1,11 +1,12 @@
 USE bkzone_2022;
 DROP TABLE IF EXISTS `OrderDetail`;
-DROP TABLE IF EXISTS `Order`;
+DROP TABLE IF EXISTS `Orders`;
 DROP TABLE IF EXISTS `Comment`;
 DROP TABLE IF EXISTS `News`;
 DROP TABLE IF EXISTS `Product`;
-DROP TABLE IF EXISTS `Customer`;
 DROP TABLE IF EXISTS `Admin`;
+DROP TABLE IF EXISTS `Address`;
+DROP TABLE IF EXISTS `Customer`;
 CREATE TABLE `Customer` (
   `id` int AUTO_INCREMENT,
   `first_name` varchar(255),
@@ -39,21 +40,26 @@ CREATE TABLE `Product` (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE `Order` (
+CREATE TABLE `Orders` (
   `id` int AUTO_INCREMENT,
   `customer_id` int,
+  `address` varchar(255),
+  `receiverName` varchar(255),
+  `phoneNumber`  varchar(255),
+  `paymentMethod` varchar(255),
   `order_date` timestamp,
   `status` varchar(255),
+  `total_product` integer,
   `total_order_money` integer,
-  PRIMARY KEY(id)
+   PRIMARY KEY(id)
 );
 
 CREATE TABLE `OrderDetail` (
-  `id` int AUTO_INCREMENT,
+  `order_id` int,
   `product_id` int,
   `quantity` integer,
   `total_money` integer,
-  PRIMARY KEY (`id`, `product_id`)
+  PRIMARY KEY (`order_id`, `product_id`)
 );
 
 CREATE TABLE `Comment` (
@@ -86,9 +92,24 @@ CREATE TABLE `News` (
    PRIMARY KEY(id)
 );
 
-ALTER TABLE `Order` ADD FOREIGN KEY (`customer_id`) REFERENCES `Customer` (`id`) ON DELETE CASCADE;
+CREATE TABLE `Address` (
+	`id` int AUTO_INCREMENT, 
+	`user_id` int , 
+	`city` varchar(255), 
+	`district` varchar(255) , 
+	`ward` varchar(255), 
+	`specificAddress` varchar(255), 
+	`phoneNumber` varchar(255) , 
+	`reiceiverName` varchar(255) , 
+	`type` BIT,
 
-ALTER TABLE `OrderDetail` ADD FOREIGN KEY (`id`) REFERENCES `Order` (`id`) ON DELETE CASCADE;
+	PRIMARY KEY(id)
+
+);
+
+ALTER TABLE `Orders` ADD FOREIGN KEY (`customer_id`) REFERENCES `Customer` (`id`) ON DELETE CASCADE;
+
+ALTER TABLE `OrderDetail` ADD FOREIGN KEY (`order_id`) REFERENCES `Orders` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `OrderDetail` ADD FOREIGN KEY (`product_id`) REFERENCES `Product` (`id`) ON DELETE CASCADE;
 
@@ -99,6 +120,9 @@ ALTER TABLE `Comment` ADD FOREIGN KEY (`customer_id`) REFERENCES `Customer` (`id
 ALTER TABLE `Comment` ADD FOREIGN KEY (`admin_id`) REFERENCES `Admin` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `News` ADD FOREIGN KEY (`admin_id`) REFERENCES `Admin` (`id`) ON DELETE CASCADE;
+
+ALTER TABLE `address` ADD FOREIGN KEY (`user_id`) REFERENCES `Customer` (`id`) ON DELETE CASCADE;
+
 
 
 INSERT INTO Product (name, thumbnail, price, quantity, brand, cpu, gpu, ram,disk, screen_size, screen_tech, weight, os, overall_rating, num_rates) VALUES ('Apple Ultrabook MacBook Pro','https://images.fpt.shop/unsafe/filters:quality(5)/fptshop.com.vn/Uploads/images/2015/Tin-Tuc/QuanLNH2/macbook-pro-14-4.JPG',24279787,22,'Apple','Intel Core i5 3.1GHz','Intel Iris Plus Graphics 650','8GB','256GB SSD','13.3','IPS Panel Retina Display 2560x1600',1.37,'macOS',1,795);
@@ -262,33 +286,44 @@ RETURN FLOOR(value_minimum + RAND() * (value_maximum - value_minimum + 1));
 
 
 USE bkzone_2022;
-INSERT INTO `Order` (customer_id, order_date, status) VALUE (random_integer(1,20),'2022-12-1','Đã nhận hàng');
-INSERT INTO `Order` (customer_id, order_date, status) VALUE (random_integer(1,20),'2022-12-1','Đã thanh toán');
-INSERT INTO `Order` (customer_id, order_date, status) VALUE (random_integer(1,20),'2022-12-1','Đang vận chuyển');
-INSERT INTO `Order` (customer_id, order_date, status) VALUE (random_integer(1,20),'2022-12-1','Chưa thanh toán');
-INSERT INTO `Order` (customer_id, order_date, status) VALUE (random_integer(1,20),'2022-12-1','Đã nhận hàng');
-INSERT INTO `Order` (customer_id, order_date, status) VALUE (random_integer(1,20),'2022-12-1','Đã thanh toán');
-INSERT INTO `Order` (customer_id, order_date, status) VALUE (random_integer(1,20),'2022-12-1','Đang vận chuyển');
-INSERT INTO `Order` (customer_id, order_date, status) VALUE (random_integer(1,20),'2022-12-1','Chưa thanh toán');
-INSERT INTO `Order` (customer_id, order_date, status) VALUE (random_integer(1,20),'2022-12-1','Chưa thanh toán');
-INSERT INTO `Order` (customer_id, order_date, status) VALUE (random_integer(1,20),'2022-12-1','Đang vận chuyển');
-INSERT INTO `OrderDetail` (id,product_id, quantity) VALUE (1,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (id,product_id, quantity) VALUE (1,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (id,product_id, quantity) VALUE (2,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (id,product_id, quantity) VALUE (2,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (id,product_id, quantity) VALUE (3,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (id,product_id, quantity) VALUE (3,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (id,product_id, quantity) VALUE (4,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (id,product_id, quantity) VALUE (4,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (id,product_id, quantity) VALUE (5,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (id,product_id, quantity) VALUE (5,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (id,product_id, quantity) VALUE (6,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (id,product_id, quantity) VALUE (6,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (id,product_id, quantity) VALUE (7,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (id,product_id, quantity) VALUE (7,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (id,product_id, quantity) VALUE (8,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (id,product_id, quantity) VALUE (8,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (id,product_id, quantity) VALUE (9,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (id,product_id, quantity) VALUE (9,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (id,product_id, quantity) VALUE (10,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (id,product_id, quantity) VALUE (10,random_integer(1,100), random_integer(0,2));
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, order_date, `status`) VALUE (1,'59/6/12 Nguyễn Đình Chiểu, Phường 4, Quận 3, Thành phố Hồ Chí Minh',     'Minh Vuong', '039768114', 'momo',   '2022-12-1','waiting');
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, order_date, `status`) VALUE (2,'98 Nguyễn Đình Chiểu Dist1, Thành phố Hồ Chí Minh',                      'Minh Vuong', '039768114', 'cash',   '2022-12-1','confirmed');
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, order_date, `status`) VALUE (3,'98 Nguyễn Đình Chiểu Dist1, Thành phố Hồ Chí Minh',                      'Minh Vuong', '039768114', 'cash',   '2022-12-1','confirmed');
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, order_date, `status`) VALUE (4,'K18 Luy Ban Bich Street Tan Thoi Hoa Phường, Thành phố Hồ Chí Minh',     'Tuan Hao',   '039768114', 'qrcode', '2022-12-1','waiting');
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, order_date, `status`) VALUE (5,'18 Luy Ban Bich Street Tan Thoi Hoa Phường, Thành phố Hồ Chí Minh',      'Quoc Thai',  '039768114', 'vnpay',  '2022-12-1','waiting');
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, order_date, `status`) VALUE (6,'98 Nguyễn Đình Chiểu, Quận 1, Thành phố Hồ Chí Minh',                    'Kha Sang',   '039768114', 'momo',   '2022-12-1','confirmed');
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, order_date, `status`) VALUE (7,'298 Nguyen Trong Tuyen, Phường 1, Thành phố Hồ Chí Minh',                'Kha Sang',   '039768114', 'momo',   '2022-12-1','waiting');
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, order_date, `status`) VALUE (8,'18 Luy Ban Bich Street Tan Thoi Hoa Phường, Thành phố Hồ Chí Minh',      'Kha Sang',   '039768114', 'qrcode', '2022-12-1','confirmed');
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, order_date, `status`) VALUE (9,'Ký túc xá khu A, Đường tạ Quang Bửu, khu phố 6, Linh Trung, Thủ Đức',    'Tuan Hao',   '039768114', 'qrcode', '2022-12-1','confirmed');
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, order_date, `status`) VALUE (10,'K18 Luy Ban Bich Street Tan Thoi Hoa Phường, Thành phố Hồ Chí Minh',     'Tuan Hao',   '039768114', 'qrcode', '2022-12-1','waiting');
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (1,random_integer(1,100), random_integer(0,2));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (1,random_integer(1,100), random_integer(0,2));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (2,random_integer(1,100), random_integer(0,2));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (2,random_integer(1,100), random_integer(0,2));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (3,random_integer(1,100), random_integer(0,2));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (3,random_integer(1,100), random_integer(0,2));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (4,random_integer(1,100), random_integer(0,2));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (4,random_integer(1,100), random_integer(0,2));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (5,random_integer(1,100), random_integer(0,2));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (5,random_integer(1,100), random_integer(0,2));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (6,random_integer(1,100), random_integer(0,2));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (6,random_integer(1,100), random_integer(0,2));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (7,random_integer(1,100), random_integer(0,2));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (7,random_integer(1,100), random_integer(0,2));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (8,random_integer(1,100), random_integer(0,2));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (8,random_integer(1,100), random_integer(0,2));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (9,random_integer(1,100), random_integer(0,2));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (9,random_integer(1,100), random_integer(0,2));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (10,random_integer(1,100), random_integer(0,2));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (10,random_integer(1,100), random_integer(0,2));
+
+INSERT INTO Address (user_id, city, district, ward, specificAddress, phoneNumber, reiceiverName, `type`) VALUES
+(1, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 1', '0923236277', 'Người nhận 1', 1),
+(2, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 2', '0923236277', 'Người nhận 2', 0),
+(3, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 3', '0923236277', 'Người nhận 3', 1),
+(4, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 4', '0923236277', 'Người nhận 4', 1),
+(5, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 5', '0923236277', 'Người nhận 5', 1),
+(6, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 6', '0923236277', 'Người nhận 6', 1),
+(7, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 7', '0923236277', 'Người nhận 7', 1),
+(8, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 8', '0923236277', 'Người nhận 8', 1),
+(9, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 9', '0923236277', 'Người nhận 9', 1) ;

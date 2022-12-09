@@ -2,14 +2,19 @@ import { Modal, Box, Checkbox, Grid, TextInput, Text, Group, ActionIcon } from '
 import sortBy from 'lodash/sortBy';
 import { useDebouncedValue, useMediaQuery } from '@mantine/hooks';
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
-import { useEffect, useState } from 'react';
-import { OrderData } from './data';
+import { useContext, useEffect, useState } from 'react';
+// import { orderData } from './data';
 import * as GrIcons from 'react-icons/gr';
 import * as AiIcons from 'react-icons/ai';
 import * as BiIcons from 'react-icons/bi';
 import dayjs from 'dayjs';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { getStatus } from '../../helpper/helpper';
+import axios from 'axios';
+
+import Price from '../../components/PriceDisplay/Price';
+import { OrderContext } from '../../pages/admin/Orders';
 
 const PAGE_SIZES = [10, 15, 20];
 
@@ -17,15 +22,18 @@ export function OrdersTable() {
     const [pageSize, setPageSize] = useState(PAGE_SIZES[1]);
     const [query, setQuery] = useState('');
     const [debouncedQuery] = useDebouncedValue(query, 200);
+    const [orderData, setOrderData, getOrders] = useContext(OrderContext);
+
+    console.log(orderData);
 
     useEffect(() => {
         setPage(1);
     }, [pageSize]);
 
     const [page, setPage] = useState(1);
-    const [records, setRecords] = useState(OrderData.slice(0, pageSize));
+    const [records, setRecords] = useState(orderData.slice(0, pageSize));
 
-    const [product, setProduct] = useState(OrderData[0]);
+    const [orderDetails, setOrderDetails] = useState(orderData[0]);
     const [done, setDone] = useState({ status: false, msg: 'empty form' });
     const [sortStatus, setSortStatus] = useState({
         columnAccessor: 'price',
@@ -36,16 +44,16 @@ export function OrdersTable() {
     useEffect(() => {
         const from = (page - 1) * pageSize;
         const to = from + pageSize;
-        setRecords(OrderData.slice(from, to));
+        setRecords(orderData.slice(from, to));
     }, [page, pageSize]);
 
     // Table search
     useEffect(() => {
         setRecords(
-            OrderData.filter(({ order_id, order_date }) => {
+            orderData.filter(({ order_id, last_update }) => {
                 if (
                     debouncedQuery !== '' &&
-                    !`${order_id} ${order_date}`.toLowerCase().includes(debouncedQuery.trim().toLowerCase())
+                    !`${order_id} ${last_update}`.toLowerCase().includes(debouncedQuery.trim().toLowerCase())
                 ) {
                     return false;
                 }
@@ -56,11 +64,11 @@ export function OrdersTable() {
 
     // Sorting...
     useEffect(() => {
-        const data = sortBy(OrderData, sortStatus.columnAccessor);
+        const data = sortBy(orderData, sortStatus.columnAccessor);
         setRecords(sortStatus.direction === 'desc' ? data.reverse() : data);
     }, [sortStatus]);
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         const toastOptions = {
             position: 'top-right',
             autoClose: 3000,
@@ -69,12 +77,22 @@ export function OrdersTable() {
             theme: 'dark',
         };
         event.preventDefault();
-        // if (event.target.name === "edit") {
-        //   if (done["status"] === false)
-        //     return toast.error(done["msg"], toastOptions);
-        //   else return toast.success("Cập nhật thành công", toastOptions);
-        // } else
-        if (event.target.name === 'delete') {
+        await axios({
+            method: 'put',
+            url: `http://localhost:8080/api/orders/${orderDetails.id}`,
+            data: {
+                status: event.target.name === 'edit' ? 'confirmed' : 'canceled',
+            },
+        }).then((res) => res);
+
+        await getOrders()
+            .then((res) => setOrderData(res))
+            .catch((err) => alert(err));
+
+        if (event.target.name === 'edit') {
+            if (done['status'] === false) return toast.error(done['msg'], toastOptions);
+            else return toast.success('Cập nhật thành công', toastOptions);
+        } else if (event.target.name === 'delete') {
             return toast.success('Cập nhật thành công', toastOptions);
         }
     };
@@ -82,7 +100,7 @@ export function OrdersTable() {
     return (
         <div>
             <Box sx={{ height: 600 }}>
-                <div class="my-2">
+                <div className="my-2">
                     <TextInput
                         sx={{ flexBasis: '30%' }}
                         placeholder="Nhập mã đơn hàng hoặc ngày tạo đơn..."
@@ -104,27 +122,38 @@ export function OrdersTable() {
                     verticalAlignment="center"
                     records={records}
                     columns={[
-                        { accessor: 'order_id', title: 'Mã đơn hàng', width: '35%' },
-                        { accessor: 'customer_id', title: 'Mã tài khoản', width: 200 },
-                        { accessor: 'total_order_money', title: 'Tổng giá trị', width: 200 },
-                        { accessor: 'status', title: 'Trạng thái', width: 150 },
+                        { accessor: 'id', title: 'Mã đơn' },
+                        { accessor: 'customer_id', title: 'Mã TK' },
+                        { accessor: 'total_order_money', title: 'Tổng giá trị' },
                         {
-                            accessor: 'order_date',
-                            title: 'Cập nhật lần cuối',
-                            width: '100%',
+                            accessor: 'create_at',
+                            title: 'Ngày đặt',
+                            width: 150,
                             sortable: true,
-                            render: ({ updated_at }) => dayjs(updated_at).format('DD-MM-YYYY HH:mm:ss'),
+                        },
+                        {
+                            accessor: 'last_update',
+                            title: 'Cập nhật lần cuối',
+                            sortable: true,
+                        },
+                        { accessor: 'phoneNumber', title: 'Số điện thoại' },
+                        { accessor: 'address', title: 'Địa chỉ', width: '100%' },
+                        {
+                            accessor: 'status',
+                            title: 'Trạng thái',
+                            width: 120,
+                            render: (item) => getStatus(item.status),
                         },
                         {
                             accessor: 'actions',
-                            title: <Text class="text-center">Thao tác</Text>,
+                            title: <Text className="text-center">Thao tác</Text>,
                             textAlignment: 'right',
                             render: (item) => (
-                                <Group spacing={4} position="right" noWrap>
+                                <Group spacing={4} position="right" noWrap className="align-center">
                                     <ActionIcon
                                         data-bs-toggle="modal"
                                         data-bs-target="#viewModal"
-                                        onClick={() => setProduct(item)}
+                                        onClick={() => setOrderDetails(item)}
                                         color="green"
                                     >
                                         <GrIcons.GrView size={16} />
@@ -133,7 +162,7 @@ export function OrdersTable() {
                                     <ActionIcon
                                         data-bs-toggle="modal"
                                         data-bs-target="#editModal"
-                                        onClick={() => setProduct(item)}
+                                        onClick={() => setOrderDetails(item)}
                                         color="blue"
                                     >
                                         <AiIcons.AiOutlineCheckCircle size={16} />
@@ -142,7 +171,7 @@ export function OrdersTable() {
                                     <ActionIcon
                                         data-bs-toggle="modal"
                                         data-bs-target="#deleteModal"
-                                        onClick={() => setProduct(item)}
+                                        onClick={() => setOrderDetails(item)}
                                         color="red"
                                     >
                                         <BiIcons.BiTrash size={16} />
@@ -151,7 +180,7 @@ export function OrdersTable() {
                             ),
                         },
                     ]}
-                    totalRecords={OrderData.length}
+                    totalRecords={orderData.length}
                     recordsPerPage={pageSize}
                     page={page}
                     onPageChange={(p) => setPage(p)}
@@ -163,7 +192,7 @@ export function OrdersTable() {
             </Box>
             {/* View */}
             <div
-                class="modal fade"
+                className="modal fade"
                 id="viewModal"
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"
@@ -171,47 +200,68 @@ export function OrdersTable() {
                 aria-labelledby="staticBackdropLabel"
                 aria-hidden="true"
             >
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="staticBackdropLabel">
                                 Chi tiết đơn hàng
                             </h1>
 
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button
+                                type="button"
+                                className="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                            ></button>
                         </div>
-                        <div class="modal-body gap-5 lh-lg">
-                            <div class="d-flex flex-row">
-                                <p class="text-secondary m-0">Mã đơn hàng:</p>
-                                <p class="text-primary m-0 ms-auto">{product.order_id}</p>
+                        <div className="modal-body gap-5 lh-lg">
+                            <div className="d-flex flex-row">
+                                <p className="text-secondary m-0">Mã đơn hàng:</p>
+                                <p className="text-primary m-0 ms-auto">{orderDetails.id}</p>
                             </div>
-
-                            <div class="d-flex flex-row">
-                                <p class="text-secondary m-0">Tổng hóa đơn:</p>
-                                <p class="text-primary m-0 ms-auto">{product.total_order_money}</p>
+                            <div className="d-flex flex-row">
+                                <p className="text-secondary m-0">Tổng hóa đơn:</p>
+                                <p className="text-primary m-0 ms-auto">{orderDetails.total_order_money}</p>
                             </div>
                             <hr />
-                            {product.order_items.map((item, index) => {
-                                return (
-                                    <div class="ms-2 py-2">
-                                        <div class="d-flex flex-row">
-                                            <p class="text-secondary m-0">Mã hàng {index}:</p>
-                                            <p class="text-primary m-0 ms-auto">{item.product_id}</p>
+                            {orderDetails &&
+                                orderDetails.products.map((item, index) => {
+                                    return (
+                                        <div className="ms-2 py-2" key={index}>
+                                            <div className="d-flex flex-row">
+                                                <p className="text-secondary m-0">Mã hàng {index + 1}:</p>
+                                                <p className="text-primary m-0 ms-auto">#{item.product_id}</p>
+                                            </div>
+                                            <div className="d-flex flex-row">
+                                                <p className="text-secondary m-0">Tên sản phẩm:</p>
+                                                <p className="text-primary m-0 ms-auto">{item.name}</p>
+                                            </div>
+                                            <div className="d-flex flex-row">
+                                                <p className="text-secondary m-0">Số lượng:</p>
+                                                <p className="text-primary m-0 ms-auto">{item.quantity}</p>
+                                            </div>
+                                            <div className="d-flex flex-row">
+                                                <p className="text-secondary m-0">Thành tiền:</p>
+                                                <Price primary className="ms-auto">
+                                                    {item.price}
+                                                </Price>
+                                            </div>
                                         </div>
-                                        <div class="d-flex flex-row">
-                                            <p class="text-secondary m-0">Số lượng:</p>
-                                            <p class="text-primary m-0 ms-auto">{item.quantity}</p>
-                                        </div>
-                                        <div class="d-flex flex-row">
-                                            <p class="text-secondary m-0">Thành tiền:</p>
-                                            <p class="text-primary m-0 ms-auto">{item.total_money}</p>
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })}
+                            <div>
+                                <div className="d-flex flex-row">
+                                    <p className="text-secondary m-0">Người nhận: </p>
+                                    <p className="text-primary m-0 ms-auto">{orderDetails.receiverName}</p>
+                                </div>
+                                <div className="d-flex flex-row">
+                                    <p className="text-secondary m-0">Địa chỉ </p>
+                                    <p className="text-primary m-0 ms-auto">{orderDetails.address}</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
                                 Đóng
                             </button>
                         </div>
@@ -221,7 +271,7 @@ export function OrdersTable() {
 
             {/* Edit */}
             <div
-                class="modal fade"
+                className="modal fade"
                 id="editModal"
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"
@@ -229,15 +279,20 @@ export function OrdersTable() {
                 aria-labelledby="staticBackdropLabel"
                 aria-hidden="true"
             >
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="staticBackdropLabel">
                                 Xác nhận đơn hàng
                             </h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button
+                                type="button"
+                                className="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                            ></button>
                         </div>
-                        <div class="modal-body text-center">
+                        <div className="modal-body text-center">
                             <svg
                                 aria-hidden="true"
                                 className="mx-auto mb-4 text-secondary w-25"
@@ -255,19 +310,19 @@ export function OrdersTable() {
                             </svg>
                             <p className="fs-4 fw-semibold">
                                 Duyệt đơn hàng
-                                <span class="text-success fw-bold">"{product.order_id}"</span> ?
+                                <span className="text-success fw-bold">"{orderDetails.id}"</span> ?
                             </p>
-                            <p class="fst-italic">Sau khi xác nhận, thủ tục này sẽ không thể hoàn tác.</p>
+                            <p className="fst-italic">Sau khi xác nhận, thủ tục này sẽ không thể hoàn tác.</p>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
                                 Quay lại
                             </button>
                             <button
                                 onClick={handleSubmit}
                                 type="button"
-                                class="btn btn-primary"
-                                name="delete"
+                                className="btn btn-primary"
+                                name="edit"
                                 data-bs-dismiss="modal"
                             >
                                 Xác nhận
@@ -279,7 +334,7 @@ export function OrdersTable() {
 
             {/* Delete */}
             <div
-                class="modal fade"
+                className="modal fade"
                 id="deleteModal"
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"
@@ -287,15 +342,20 @@ export function OrdersTable() {
                 aria-labelledby="staticBackdropLabel"
                 aria-hidden="true"
             >
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="staticBackdropLabel">
                                 Hủy đơn hàng
                             </h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button
+                                type="button"
+                                className="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                            ></button>
                         </div>
-                        <div class="modal-body text-center">
+                        <div className="modal-body text-center">
                             <svg
                                 aria-hidden="true"
                                 className="mx-auto mb-4 text-secondary w-25"
@@ -313,22 +373,22 @@ export function OrdersTable() {
                             </svg>
                             <p className="fs-4 fw-semibold">
                                 Hủy đơn hàng
-                                <span class="text-danger fw-bold">"{product.order_id}"</span> ?
+                                <span className="text-danger fw-bold">"{orderDetails.order_id}"</span> ?
                             </p>
-                            <p class="fst-italic">Sau khi xác nhận, thủ tục này sẽ không thể hoàn tác.</p>
+                            <p className="fst-italic">Sau khi xác nhận, thủ tục này sẽ không thể hoàn tác.</p>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
                                 Quay lại
                             </button>
                             <button
                                 onClick={handleSubmit}
                                 type="button"
-                                class="btn btn-danger"
+                                className="btn btn-danger"
                                 name="delete"
                                 data-bs-dismiss="modal"
                             >
-                                Xóa bình luận
+                                Xác nhận
                             </button>
                         </div>
                     </div>
