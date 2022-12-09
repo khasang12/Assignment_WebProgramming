@@ -1,28 +1,30 @@
-import { Col, Button, Row, Container, Form } from "react-bootstrap";
+import { Col, Row, Container, Form } from "react-bootstrap";
 import { useState } from "react";
 import { Navigate } from 'react-router-dom';
 import axios from "axios";
-function SignupDB(input) {
-    axios({
-        method: "post",
-        url: "http://localhost:8080/api/",
-        data: {
-            first_name: input.first_name,
-            last_name: input.last_name,
-            birthday: input.birthday,
-            phone: input.phone,
-            email: input.email,
-            address: input.address,
-            username: input.username,
-            password: input.password
-        },
-    }).catch((res) => {alert(res); return false});
-    return true;
-};
+import MyButton from "../../components/MyButton";
 function Signup() {
     const [input, setinput] = useState({first_name: "", last_name: "", birthday: "", phone: "", email: "", address: "", username: "", password: "", passwordconfirm: ""});
     const [danger, setdanger] = useState({first_name: false, last_name: false, birthday: false, phone: false, email: false, address: false, username: false, password: false, passwordconfirm: false, signup: true});
     const [signup, setsignup] = useState(false);
+    function SignupDB() {
+        axios({
+            method: "post",
+            url: "http://localhost:8080/api/users/signup",
+            data: {
+                first_name: input.first_name,
+                last_name: input.last_name,
+                birthday: input.birthday,
+                phone: input.phone,
+                email: input.email,
+                address: input.address,
+                username: input.username,
+                password: input.password
+            },
+        })
+        .then((res) => {alert("Đăng kí thành công");setsignup(true);})
+        .catch((res) => {alert(res);});
+    };
     function handleChange(e) {
         setinput({ ...input, [e.target.name]: e.target.value });
     }
@@ -66,9 +68,8 @@ function Signup() {
         e.preventDefault();
         
         setdanger({first_name: !validatefirstname(), last_name: !validatelastname(), birthday: !validatebirthday(), phone: !validatephone(), email: !validateemail(), username: !validateusername(), password: !validatepassword(), passwordconfirm: !validatepasswordconfirm(), address: !validateaddress(), signup: !((validatefirstname() && validatelastname() && validatebirthday() && validatephone() && validatephone() && validateusername() && validatepassword() && validatepasswordconfirm()))})
-        console.log(danger);
-        if (!danger.signup) {SignupDB(input)
-            setsignup(true);
+        if (!danger.signup) {
+            SignupDB();
         }
     }
     return (
@@ -152,10 +153,13 @@ function Signup() {
                             </Col>
                         </Row>
                         
-                        <Button className="bg-primary d-grid w-100" type="submit">
+                        <MyButton primary className=" w-100" type="submit">
                             Đăng ký
-                        </Button>
+                        </MyButton>
                         <p className={` ${danger.username ? "text-danger" : "visually-hidden" }`}>Please enter all of the information</p>
+                        <MyButton to="/login"className="mt-2 w-100">
+                            Đã có tài khoản
+                        </MyButton>
                     </Form>
                 </Container>
             </Row>

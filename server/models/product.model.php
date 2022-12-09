@@ -37,6 +37,7 @@ class Product{
             return $stmt->get_result();
         }
         catch (mysqli_sql_exception $e){
+            echo $this->conn->error;
             throw new InternalServerError('Server Error!!!');
         }
     }
