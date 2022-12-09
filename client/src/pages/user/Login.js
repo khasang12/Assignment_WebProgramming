@@ -1,17 +1,16 @@
 
 import { Col, Row, Container, Form } from "react-bootstrap";
 import { useState } from "react";
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import MyButton from "../../components/MyButton";
 
 function Login() {
-    
+    const navigate = useNavigate()
     const [input, setinput] = useState({username: "", password: "", email: ""});
     const [danger, setdanger] = useState({username: false, password: false, email: false, login: false});
     const [login, setlogin] = useState(false);
     const [forget, setforget] = useState(false);
-    const [logininfo, setlogininfo] = useState({id: null, first_name: null, last_name: null});
     function LoginDB() {
         axios({
             method: "put",
@@ -21,8 +20,9 @@ function Login() {
                 password: input.password
             },
         })
-        .then((res) => {return setlogininfo({id: res.data[0]['id'], last_name: res.data[0]['last_name'], first_name: res.data[0]['first_name']});})
-        .catch((res) => {alert(res)});
+        .then((res) => (sessionStorage.setItem("user", JSON.stringify({id:res.data[0].id,name:res.data[0].first_name+' '+res.data[0].last_name}))))
+        .then(()=>navigate('/'))
+        .catch((res) => {alert('404 - Incorrect Username or Password')});
     }
     function handleChange(e) {
         setinput({ ...input, [e.target.name]: e.target.value });
@@ -49,18 +49,8 @@ function Login() {
         if (validateusername()) {
             if (validatepassword()) {
                 LoginDB(input);
-                if (logininfo['id'] !== null) {
-                    sessionStorage.setItem("first_name", logininfo['first_name']);
-                    sessionStorage.setItem("last_name", logininfo['last_name']);
-                    sessionStorage.setItem("id", logininfo['id']);
-                    setlogin(true);
-                    setinput({ username: "", password: "", email: "" });
-                }
-                else setdanger({username: danger.username, password: danger.password, login: true, email:false});
             }
-            else setdanger({password: true, username: danger.username, login:false, email:false});
         }
-        else setdanger({password: danger.password, username: true, login: false, email: false});
     }
     function validateemail() {
         if (input.email === "") return false;
@@ -100,7 +90,7 @@ function Login() {
                                 </MyButton>
                                 <p className={` ${danger.login ? "text-danger" : "visually-hidden" }`}>Wrong login detail</p>
                                 <MyButton className="w-75 mt-2" to='/signup'>
-                                        Chưa có tài khoản
+                                        Chưa có tài khoản? Đăng kí
                                 </MyButton>
                             </div>    
                         </Form>
