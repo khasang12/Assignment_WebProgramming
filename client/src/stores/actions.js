@@ -20,7 +20,12 @@ export const removeCartItem = (payload) => ({
     payload,
 });
 
-export const addToCart = payload => ({
+export const addToCart = (payload) => ({
     type: ADD_CART,
-    payload
-})
+    payload,
+});
+
+export const getCart = (payload) => ({
+    type: ADD_CART,
+    payload,
+});

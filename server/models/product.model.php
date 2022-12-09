@@ -11,9 +11,27 @@ class Product{
         $this->conn = $db->connect();
     }
 
-    public function getAllProduct(){
+    public function getAllProduct($params){
         try{
-            $query = "SELECT * FROM product";
+            $query = "SELECT * FROM product ";
+            if ($params) {
+                $query .= ' WHERE ' ;
+                foreach(array_keys($params) as $key) {
+                    $query .= "$key= \"$params[$key]\" ";
+                }
+            }
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
+            return $stmt->get_result();
+        }
+        catch (mysqli_sql_exception $e){
+            throw new InternalServerError('Server Error!!!');
+        }
+    }
+
+    public function getProduct($id){
+        try{
+            $query = "SELECT * FROM product Where id = $id";
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
             return $stmt->get_result();
