@@ -11,10 +11,27 @@ class Product{
         $this->conn = $db->connect();
     }
 
-    public function getAllProduct(){
+    public function getAllProduct($params){
         try{
-            $query = "SELECT * FROM Product";
-            //$query = "SHOW TABLES;";
+            $query = "SELECT * FROM product ";
+            if ($params) {
+                $query .= ' WHERE ' ;
+                foreach(array_keys($params) as $key) {
+                    $query .= "$key= \"$params[$key]\" ";
+                }
+            }
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
+            return $stmt->get_result();
+        }
+        catch (mysqli_sql_exception $e){
+            throw new InternalServerError('Server Error!!!');
+        }
+    }
+
+    public function getProduct($id){
+        try{
+            $query = "SELECT * FROM product Where id = $id";
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
             return $stmt->get_result();
@@ -46,7 +63,7 @@ class Product{
             $weight = $info['weight'];
             $os = $info['os'];
 
-            $query = "INSERT INTO product (id,`name`,thumbnail,price,quantity,brand,cpu,gpu,ram,`disk`,screen_size,screen_tech,os,overall_rating,`description`,`weight`,num_rates) VALUES ('$id','$name','$thumbnail',$price,$quantity,'$brand','$cpu','$gpu','$ram','$disk','$screen_size','$screen_tech','$os',$overall_rating,'$description',$weight,$num_rates)";
+            $query = "INSERT INTO product (`name`,thumbnail,price,quantity,brand,cpu,gpu,ram,`disk`,screen_size,screen_tech,os,overall_rating,`description`,`weight`,num_rates) VALUES ('$name','$thumbnail',$price,$quantity,'$brand','$cpu','$gpu','$ram','$disk','$screen_size','$screen_tech','$os',$overall_rating,'$description',$weight,$num_rates)";
             $stmt = $this->conn->prepare($query);
             return $stmt->execute();
     }

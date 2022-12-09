@@ -25,7 +25,7 @@ class NewsController{
             http_response_code(200);
             return json_encode(["msg"=>"success"]);
         }
-        throw new FileNotFoundError("News not created!!!");
+        throw new FileNotFoundError("News not created or Author not found!!!");
     }
 
     public static function editNews($id, $data){
