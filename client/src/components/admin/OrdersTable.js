@@ -126,13 +126,13 @@ export function OrdersTable() {
                         { accessor: 'customer_id', title: 'Mã TK' },
                         { accessor: 'total_order_money', title: 'Tổng giá trị' },
                         {
-                            accessor: 'create_at',
+                            accessor: 'order_date',
                             title: 'Ngày đặt',
                             width: 150,
                             sortable: true,
                         },
                         {
-                            accessor: 'last_update',
+                            accessor: 'order_date',
                             title: 'Cập nhật lần cuối',
                             sortable: true,
                         },
@@ -254,7 +254,7 @@ export function OrdersTable() {
                                     <p className="text-secondary m-0">Người nhận: </p>
                                     <p className="text-primary m-0 ms-auto">{orderDetails.receiverName}</p>
                                 </div>
-                                <div className="d-flex flex-row">
+                                <div className="d-flex flex-column">
                                     <p className="text-secondary m-0">Địa chỉ </p>
                                     <p className="text-primary m-0 ms-auto">{orderDetails.address}</p>
                                 </div>
@@ -373,7 +373,7 @@ export function OrdersTable() {
                             </svg>
                             <p className="fs-4 fw-semibold">
                                 Hủy đơn hàng
-                                <span className="text-danger fw-bold">"{orderDetails.order_id}"</span> ?
+                                <span className="text-danger fw-bold">"{orderDetails.id}"</span> ?
                             </p>
                             <p className="fst-italic">Sau khi xác nhận, thủ tục này sẽ không thể hoàn tác.</p>
                         </div>
