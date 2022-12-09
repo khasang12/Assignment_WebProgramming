@@ -57,18 +57,13 @@ function Header() {
                       cx("arrow-top-center") + " shadow p-2 bg-white rounded"
                     }
                   >
-                    <div className="d-flex flex-column">
-                      <Link to="/login">
-                        <button className="btn btn-warning mb-2 px-5 w-100">
-                          Đăng nhập
-                        </button>
-                      </Link>
-                      <Link to="/register">
-                        <button className="btn btn-light mb-2 px-5 w-100">
-                          Đăng ký
-                        </button>
-                      </Link>
-                    </div>
+                    <Link to="/login" className="d-flex flex-column">
+                      <button className="btn btn-warning mb-2 px-5">Đăng nhập</button>
+                    </Link>
+                    <Link to="/signup" className="d-flex flex-column">
+                      <button className="btn btn-light">Đăng ký</button>
+                    </Link>
+                      
                   </div>
                 );
               }}
@@ -85,7 +80,9 @@ function Header() {
               <TbShoppingCartDiscount /> Khuyến mãi
             </button>
             <button className="btn text-white py-0">
-              <BiLocationPlus /> Hệ thống
+              <a href="address" className="text-white">
+                <BiLocationPlus /> Hệ thống
+              </a>
             </button>
           </div>
         </div>
@@ -320,22 +317,34 @@ function Header() {
                         </button>
                         <ul class="dropdown-menu">
                           <li>
-                            <a class="dropdown-item" href="/search?cpu=intel-i3">
+                            <a
+                              class="dropdown-item"
+                              href="/search?cpu=intel-i3"
+                            >
                               Intel Core i3
                             </a>
                           </li>
                           <li>
-                            <a class="dropdown-item" href="/search?cpu=intel-i5">
+                            <a
+                              class="dropdown-item"
+                              href="/search?cpu=intel-i5"
+                            >
                               Intel Core i5
                             </a>
                           </li>
                           <li>
-                            <a class="dropdown-item" href="/search?cpu=intel-i7">
+                            <a
+                              class="dropdown-item"
+                              href="/search?cpu=intel-i7"
+                            >
                               Intel Core i7
                             </a>
                           </li>
                           <li>
-                            <a class="dropdown-item" href="/search?cpu=intel-i9">
+                            <a
+                              class="dropdown-item"
+                              href="/search?cpu=intel-i9"
+                            >
                               Intel Core i9
                             </a>
                           </li>
@@ -353,51 +362,35 @@ function Header() {
                         </button>
                         <ul class="dropdown-menu">
                           <li>
-                            <a class="dropdown-item" href="/search?cpu=amd-ryzen-3">
+                            <a
+                              class="dropdown-item"
+                              href="/search?cpu=amd-ryzen-3"
+                            >
                               AMD Ryzen 3
                             </a>
                           </li>
                           <li>
-                            <a class="dropdown-item" href="/search?cpu=amd-ryzen-5">
+                            <a
+                              class="dropdown-item"
+                              href="/search?cpu=amd-ryzen-5"
+                            >
                               AMD Ryzen 5
                             </a>
                           </li>
                           <li>
-                            <a class="dropdown-item" href="/search?cpu=amd-ryzen-7">
+                            <a
+                              class="dropdown-item"
+                              href="/search?cpu=amd-ryzen-7"
+                            >
                               AMD Ryzen 7
                             </a>
                           </li>
                           <li>
-                            <a class="dropdown-item" href="/search?cpu=amd-ryzen-9">
+                            <a
+                              class="dropdown-item"
+                              href="/search?cpu=amd-ryzen-9"
+                            >
                               AMD Ryzen 9
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="btn-group dropend">
-                        <button
-                          type="button"
-                          class="btn btn-secondary list-group-item list-group-item-action"
-                          data-bs-toggle="dropdown"
-                          aria-current="true"
-                          aria-expanded="false"
-                        >
-                          Nvidia
-                        </button>
-                        <ul class="dropdown-menu">
-                          <li>
-                            <a class="dropdown-item" href="/search?cpu=nvidia-16">
-                              Nvidia 16 Series
-                            </a>
-                          </li>
-                          <li>
-                            <a class="dropdown-item" href="/search?cpu=nvidia-30">
-                              Nvidia 30 Series
-                            </a>
-                          </li>
-                          <li>
-                            <a class="dropdown-item" href="/search?cpu=nvidia-40">
-                              Nvidia 40 Series
                             </a>
                           </li>
                         </ul>
@@ -409,10 +402,10 @@ function Header() {
             </ul>
           </button>
           <div className="d-none d-lg-block p-2 px-5 fw-semibold fs-6">
-            <a href="how-to-purchase">THANH TOÁN</a>
+            <a href="shopping-guide">THANH TOÁN</a>
           </div>
           <div className="d-none d-lg-block p-2 px-5 fw-bold fs-6">
-            <a href="how-to-contact">LIÊN HỆ</a>
+            <a href="address">LIÊN HỆ</a>
           </div>
           <div className="d-none d-lg-block p-2 px-5 fw-bold fs-6">
             <a href="news">TIN TỨC</a>
