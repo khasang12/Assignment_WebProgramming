@@ -276,26 +276,19 @@ function Header() {
                     >
                       <div class="accordion-body list-group list-group-flush p-0">
                         <a
-                          href="/search?priceFrom=5&priceTo=15"
-                          class="list-group-item list-group-item-action"
-                          aria-current="true"
-                        >
-                          5-15 triệu
-                        </a>
-                        <a
-                          href="/search?priceFrom=15&priceTo=25"
+                          href="/search?priceFrom=15000000&priceTo=25000000"
                           class="list-group-item list-group-item-action"
                         >
                           15-25 triệu
                         </a>
                         <a
-                          href="/search?priceFrom=25&priceTo=35"
+                          href="/search?priceFrom=25000000&priceTo=35000000"
                           class="list-group-item list-group-item-action"
                         >
                           25-35 triệu
                         </a>
                         <a
-                          href="/search?priceFrom=35&priceTo=100"
+                          href="/search?priceFrom=35000000"
                           class="list-group-item list-group-item-action"
                         >
                           Trên 35 triệu
@@ -337,7 +330,7 @@ function Header() {
                             <li>
                               <a
                                 class="dropdown-item"
-                                href="/search?cpu=intel-i3"
+                                href="/search?cpu=intel%20core%20i3"
                               >
                                 Intel Core i3
                               </a>
@@ -345,7 +338,7 @@ function Header() {
                             <li>
                               <a
                                 class="dropdown-item"
-                                href="/search?cpu=intel-i5"
+                                href="/search?cpu=intel%20core%20i5"
                               >
                                 Intel Core i5
                               </a>
@@ -353,17 +346,9 @@ function Header() {
                             <li>
                               <a
                                 class="dropdown-item"
-                                href="/search?cpu=intel-i7"
+                                href="/search?cpu=intel%20core%20i7"
                               >
                                 Intel Core i7
-                              </a>
-                            </li>
-                            <li>
-                              <a
-                                class="dropdown-item"
-                                href="/search?cpu=intel-i9"
-                              >
-                                Intel Core i9
                               </a>
                             </li>
                           </ul>
@@ -382,33 +367,25 @@ function Header() {
                             <li>
                               <a
                                 class="dropdown-item"
-                                href="/search?cpu=amd-ryzen-3"
+                                href="/search?cpu=amd%20a6"
                               >
-                                AMD Ryzen 3
+                                AMD A6 Series
                               </a>
                             </li>
                             <li>
                               <a
                                 class="dropdown-item"
-                                href="/search?cpu=amd-ryzen-5"
+                                href="/search?cpu=amd%20a9"
                               >
-                                AMD Ryzen 5
+                                AMD A9 Series
                               </a>
                             </li>
                             <li>
                               <a
                                 class="dropdown-item"
-                                href="/search?cpu=amd-ryzen-7"
+                                href="/search?cpu=amd%20e"
                               >
-                                AMD Ryzen 7
-                              </a>
-                            </li>
-                            <li>
-                              <a
-                                class="dropdown-item"
-                                href="/search?cpu=amd-ryzen-9"
-                              >
-                                AMD Ryzen 9
+                                AMD E Series
                               </a>
                             </li>
                           </ul>

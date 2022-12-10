@@ -21,7 +21,8 @@
                     //get all 
                     echo ProductController::getAllProduct($params);
                     http_response_code(200);
-                } else {  
+                } 
+                else {  
                     // get by ID
                     echo ProductController::getProduct($url[3]);
                     http_response_code(200);
@@ -64,7 +65,6 @@
         if($method == 'POST'){
             try{
                 $data = (array) json_decode(file_get_contents('php://input'));
-                print_r($data);
                 echo ProductController::createProduct($data);
                 http_response_code(200);
 

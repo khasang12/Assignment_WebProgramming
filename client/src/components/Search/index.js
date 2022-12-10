@@ -7,10 +7,10 @@ import axios from "axios";
 export default function SearchPage() {
   // States
   const initFilter = {
-    sort: "all",
+    sorted: "all",
     priceFrom: "all",
     priceTo: "all",
-    screen_size: "all",
+    os: "all",
     ram: "all",
     ssd: "all",
   };
@@ -24,19 +24,17 @@ export default function SearchPage() {
     // get urlparams then call api
     // external api calls
     if (urlParams.get("brand")) {
-      //getItemListByBrand(urlParams.get("brand"))
-      console.log("brand");
-    } else if (urlParams.get("priceFrom") && urlParams.get("priceTo")) {
-      //getItemListByPrice(urlParams.get("priceFrom"), urlParams.get("priceTo"))
+      getItemListByBrand(urlParams.get("brand"))
+    } else if (urlParams.get("priceFrom")) {
+      if (urlParams.get("priceTo"))
+         getItemListByPrice(urlParams.get("priceFrom"), urlParams.get("priceTo"))
+      else getItemListByPrice(urlParams.get("priceFrom"),100000000)
     } else if (urlParams.get("cpu")) {
-      //getItemListByConfig(urlParams.get("config"))
-      console.log("config");
+      getItemListByConfig(urlParams.get("cpu"))
     } else if (urlParams.get("filter")) {
-      //getItemListFiltered(filter)
-      console.log(filter);
+      getItemListFiltered(filter)
     } else {
-      //getItemListByName(urlParams.get("s"))
-      console.log("name");
+      getItemListByName(urlParams.get("s"))
     }
     // api called by filter
     return () => window.clearTimeout(timeoutID);
@@ -47,8 +45,7 @@ export default function SearchPage() {
   const getItemListByName = async (name) => {
     await axios({
       method: "get",
-      url: `http://localhost:8080/api/products?name=${name}`,
-      data: { name: name },
+      url: `http://localhost:8080/api/products/all?name=${name}`,
     })
       .then((response) => setItemList(response.data))
       //.then(setRecords(ProductList))
@@ -57,8 +54,7 @@ export default function SearchPage() {
   const getItemListByBrand = async (brandname) => {
     await axios({
       method: "get",
-      url: `http://localhost:8080/api/products?brand=${brandname}`,
-      data: { brandname: brandname },
+      url: `http://localhost:8080/api/products/all?brand=${brandname}`,
     })
       .then((response) => setItemList(response.data))
       //.then(setRecords(ProductList))
@@ -67,18 +63,18 @@ export default function SearchPage() {
   const getItemListByPrice = async (priceFrom, priceTo) => {
     await axios({
       method: "get",
-      url: `http://localhost:8080/api/products?priceFrom=${priceFrom}&priceTo=${priceTo}`,
-      data: { priceFrom: priceFrom, priceTo: priceTo },
+      url: `http://localhost:8080/api/products/all?priceFrom=${priceFrom}&priceTo=${priceTo}`,
     })
-      .then((response) => setItemList(response.data))
-      //.then(setRecords(ProductList))
+      .then((response) => {
+        console.log(response)
+        setItemList(response.data)
+      })
       .catch((res) => alert(res));
   };
   const getItemListByConfig = async (config) => {
     await axios({
       method: "get",
-      url: `http://localhost:8080/api/products?config=${config}`,
-      data: { config: config },
+      url: `http://localhost:8080/api/products/all?cpu=${config}`,
     })
       .then((response) => setItemList(response.data))
       //.then(setRecords(ProductList))
@@ -87,8 +83,7 @@ export default function SearchPage() {
   const getItemListFiltered = async () => {
     await axios({
       method: "get",
-      url: `http://localhost:8080/api/products`,
-      data: filter,
+      url: `http://localhost:8080/api/products/all?ram=${filter.ram}&disk=${filter.ssd}&os=${filter.os}&sorted=${filter.sorted}`,
     })
       .then((response) => setItemList(response.data))
       //.then(setRecords(ProductList))
@@ -99,12 +94,11 @@ export default function SearchPage() {
   const onChangeHandler = (e) => {
     setFilter((filter) => ({ ...filter, [e.target.name]: e.target.value }));
   };
-  const onSubmitHandler = (e) => {
+  const onSubmitHandler = async (e) => {
     if (parseInt(filter["priceFrom"]) > parseInt(filter["priceTo"])) {
-      alert("Giá sàn không lớn hớn giá trần");
+      alert("Giá sàn không lớn hơn giá trần");
     } else {
-      console.log(filter);
-      setURLParams("filter=true");
+      await getItemListFiltered()
     }
   };
 
@@ -142,19 +136,19 @@ export default function SearchPage() {
         >
           <div className="w-48 d-flex flex-column mr-16 mb-6">
             <div class="mb-3">
-              <label for="sort" class="form-label text-uppercase fw-bold">
+              <label for="sorted" class="form-label text-uppercase fw-bold">
                 Sắp xếp:
               </label>
               <br />
               <select
-                id="sort"
-                name="sort"
+                id="sorted"
+                name="sorted"
                 class="form-select"
                 onChange={onChangeHandler}
                 defaultValue="all"
                 className="border-[#1488d8] border-2 py-1 px-4 rounded appearance-none w-75"
               >
-                <option value="new">Mới nhất</option>
+                <option value="hot">Bán chạy nhất</option>
                 <option value="priceDown">Giá giảm dần</option>
                 <option value="priceUp">Giá tăng dần</option>
                 <option value="all">Tất cả</option>
@@ -163,48 +157,14 @@ export default function SearchPage() {
 
             <div class="mb-3">
               <label for="price" class="form-label text-uppercase fw-bold">
-                Tầm giá:
-              </label>
-              <br />
-              <label for="priceMin" class="form-label">
-                Min:
-              </label>
-              <RangeSlider
-                min={0}
-                max={40000000}
-                step={100000}
-                name="priceFrom"
-                onChange={onChangeHandler}
-                tooltipPlacement="top"
-                tooltip="off"
-              />
-              <br />
-              <label for="priceMax" class="form-label">
-                Max:
-              </label>
-              <RangeSlider
-                min={0}
-                max={40000000}
-                step={100000}
-                name="priceTo"
-                onChange={(e) => onChangeHandler(e)}
-                tooltipPlacement="top"
-                tooltip="off"
-              />
-              <br />
-              {filter["priceFrom"]}VND - {filter["priceTo"]}VND
-            </div>
-
-            <div class="mb-3">
-              <label for="price" class="form-label text-uppercase fw-bold">
-                Kích thước màn hình
+                Hệ điều hành
               </label>
               <div class="form-check">
                 <input
                   class="form-check-input"
                   type="radio"
                   value="all"
-                  name="screen_size"
+                  name="os"
                   id="flexCheckChecked"
                   onChange={onChangeHandler}
                 />
@@ -216,39 +176,39 @@ export default function SearchPage() {
                 <input
                   class="form-check-input"
                   type="radio"
-                  value="13"
-                  name="screen_size"
+                  value="windows"
+                  name="os"
                   id="flexCheckDefault"
                   onChange={onChangeHandler}
                 />
                 <label class="form-check-label" for="flexCheckDefault">
-                  13 inch
+                  Windows
                 </label>
               </div>
               <div class="form-check">
                 <input
                   class="form-check-input"
                   type="radio"
-                  value="14"
-                  name="screen_size"
+                  value="linux"
+                  name="os"
                   id="flexCheckChecked"
                   onChange={onChangeHandler}
                 />
                 <label class="form-check-label" for="flexCheckChecked">
-                  14 inch
+                  Linux
                 </label>
               </div>
               <div class="form-check">
                 <input
                   class="form-check-input"
                   type="radio"
-                  value="16"
-                  name="screen_size"
+                  value="macOS"
+                  name="os"
                   id="flexCheckChecked"
                   onChange={onChangeHandler}
                 />
                 <label class="form-check-label" for="flexCheckChecked">
-                  16 inch
+                  Mac OS
                 </label>
               </div>
             </div>
@@ -319,6 +279,19 @@ export default function SearchPage() {
                 <input
                   class="form-check-input"
                   type="radio"
+                  value="128"
+                  name="ssd"
+                  id="flexCheckDefault"
+                  onChange={onChangeHandler}
+                />
+                <label class="form-check-label" for="flexCheckDefault">
+                  128 GB
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
                   value="256"
                   name="ssd"
                   id="flexCheckDefault"
@@ -345,26 +318,13 @@ export default function SearchPage() {
                 <input
                   class="form-check-input"
                   type="radio"
-                  value="1000"
+                  value="1TB"
                   name="ssd"
                   id="flexCheckChecked"
                   onChange={onChangeHandler}
                 />
                 <label class="form-check-label" for="flexCheckChecked">
                   1 TB
-                </label>
-              </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  value="2000"
-                  name="ssd"
-                  id="flexCheckChecked"
-                  onChange={onChangeHandler}
-                />
-                <label class="form-check-label" for="flexCheckChecked">
-                  2 TB
                 </label>
               </div>
             </div>
@@ -381,16 +341,16 @@ export default function SearchPage() {
 
         {/* Filter Bar - Mobile */}
         <div class="d-flex d-md-none mb-3">
-          <label for="sort" class="form-label text-uppercase fw-bold">
+          <label for="sorted" class="form-label text-uppercase fw-bold">
             Sắp xếp:
           </label>
           <br />
           <select
-            id="sort"
+            id="sorted"
             style={{ width: "auto" }}
             class="form-select"
             onChange={onChangeHandler}
-            name="sort"
+            name="sorted"
             defaultValue="all"
             className="border-[#1488d8] border-2 py-1 px-4 rounded w-sm-50 w-md-auto"
           >
@@ -408,7 +368,7 @@ export default function SearchPage() {
             </option>
           </select>
         </div>
-        <ItemsList itemList={itemList} />
+        {itemList!=[] ? <ItemsList items={itemList} />:""}
       </div>
     </div>
   );
