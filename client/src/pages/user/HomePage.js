@@ -5,6 +5,10 @@ import { useEffect, useState } from 'react';
 
 function HomePage() {
     const [img,setImg] = useState([])
+    const [items, setItems] = useState([]);
+    useEffect(() => {
+        getProducts().then((data) => setItems(data));
+    }, []);
     useEffect(()=>{
         const timeoutID = window.setTimeout(() => {
             getHomeImages();
@@ -12,6 +16,9 @@ function HomePage() {
           
         return () => window.clearTimeout(timeoutID);
     },[])
+    const getProducts = async () => {
+        return axios.get('http://localhost:8080/api/products/all').then((res) => res.data);
+    };
     const getHomeImages = async () => {
         await axios
           .get("http://localhost:8080/api/upload/slider")
@@ -95,7 +102,7 @@ function HomePage() {
                 <a id="items-display" name="anchor"></a>
             </div>
             <div className="fs-1 p-10 my-5 font-size text-center">Tin đăng mới</div>
-            <ItemsList />
+            <ItemsList items={items}/>
         </div>
     );
 }
