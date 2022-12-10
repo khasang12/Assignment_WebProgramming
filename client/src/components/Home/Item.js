@@ -17,7 +17,7 @@ export default function Item({ item }) {
                 id: item.id,
                 name: item.name,
                 image: item.thumbnail,
-                price: item.cost,
+                price: item.price,
                 quantity: 1,
                 isSelected: false,
             }),
@@ -38,7 +38,7 @@ export default function Item({ item }) {
             </div>
             <div className="d-flex flex-column p-4 pt-0">
                 <div className="mb-1 fs-6 font-bold">{item.name}</div>
-                <Price className="ml-0 font-weight-bold">{Number(item.price)}</Price>
+                <Price className="ml-0 font-weight-bold">{item.price}</Price>
                 <RateStar number={Math.round(item.overall_rating)} />
                 <div className="mt-2 text-center">
                     <Link to={`/details?id=${item.id}`}>

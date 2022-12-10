@@ -9,6 +9,8 @@ import AddressForm from '../../components/Form/AddressForm';
 import { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { getAddress_str } from '../../helpper/helpper';
+import axios from 'axios';
 
 const deliveryUnits = [
     {
@@ -38,7 +40,7 @@ const paymentMethods = [
     },
     {
         title: 'Thanh toán khi nhận hàng',
-        name: 'cod',
+        name: 'cash',
         image: images.cod,
     },
 ];
@@ -49,6 +51,12 @@ function Payment() {
     // get products selected and caculate total price
     const products = state.cart.filter((item) => item.isSelected);
     const totalPrice = products.reduce((res, item) => (item.isSelected ? res + item.price * item.quantity : res), 0);
+
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [showConfirmPaymentModal, setShowConfirmPaymentModal] = useState(false);
+
+    const [ready, setReady] = useState(false);
+
     if (products.length <= 0) {
         window.location.href = '/cart';
     }
@@ -63,7 +71,62 @@ function Payment() {
     // click button 'Đặt hàng'
     const handleSubmit = (e) => {
         e.preventDefault();
-        alert('đặt hàng thành công!');
+        let order = {};
+
+        let city = e.target.payment__selectCity.value;
+        let district = e.target.payment__selectDistricts.value;
+        let ward = e.target.payment__selectWards.value;
+        let specificAddress = e.target.payment__SpecificAddress.value;
+        let paymentMethod = e.target.payment__method.value;
+        let phoneNumber = e.target.payment__phoneNumber.value;
+
+        if (!city || !district || !ward || !specificAddress || !paymentMethod || !phoneNumber) {
+            alert('Vui lòng điền đầy thủ thông tin địa chỉ nhận hàng!');
+            setReady(false);
+            return;
+        }
+
+        order.userID = 1;
+        order.receiverName = e.target.payment__fullname.value;
+        order.phoneNumber = phoneNumber;
+        order.p_method = paymentMethod;
+        order.note = e.target.payment__note.value;
+
+        order.address = getAddress_str({
+            city: city,
+            district: district,
+            ward: ward,
+            specificAddress: specificAddress,
+        });
+
+        order.products = state.cart.map((item) => [item.id, item.quantity]);
+
+        if (paymentMethod !== 'cash') {
+            alert('thanh toán online');
+            setReady(false);
+        } else {
+            setReady(true);
+        }
+
+        if (ready) {
+            console.log('ready: ');
+            axios({
+                method: 'post',
+                data: order,
+                url: 'http://localhost:8080/api/orders',
+            })
+                .then((res) => {
+                    alert('Thành công');
+
+                    //Xoá sản phẩm đã chọn trong giỏ hàng
+
+                    //chuyển sang trang quản lý đơn hàng
+                    window.location.href = '/';
+                })
+                .catch((err) => alert('Đã xảy ra lỗi vui lòng thử lại'));
+        }
+        console.log(sessionStorage);
+        console.log(order);
     };
 
     return (
@@ -108,7 +171,13 @@ function Payment() {
                             <div className="border p-2">
                                 {paymentMethods.map((item, index) => (
                                     <div key={index} className="d-flex align-items-start">
-                                        <input type={'radio'} name="payment-method" className="mt-1" id={item.name} />
+                                        <input
+                                            type={'radio'}
+                                            name="payment__method"
+                                            className="mt-1"
+                                            id={item.name}
+                                            value={item.name}
+                                        />
                                         <label htmlFor={item.name} className="mx-2">
                                             {item.title}{' '}
                                         </label>
