@@ -48,7 +48,8 @@ CREATE TABLE `Orders` (
   `receiverName` varchar(255),
   `phoneNumber`  varchar(255),
   `paymentMethod` varchar(255),
-  `order_date` timestamp,
+  `create_at` Datetime,
+  `last_update` timestamp,
   `status` varchar(255),
   `total_product` integer,
   `total_order_money` integer,
@@ -98,7 +99,7 @@ CREATE TABLE `Address` (
 	`ward` varchar(255), 
 	`specificAddress` varchar(255), 
 	`phoneNumber` varchar(255) , 
-	`reiceiverName` varchar(255) , 
+	`receiverName` varchar(255) , 
 	`type` BIT,
 
 	PRIMARY KEY(id)
@@ -1226,7 +1227,7 @@ INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (9,random_intege
 INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (10,random_integer(1,100), random_integer(0,2));
 INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (10,random_integer(1,100), random_integer(0,2));
 
-INSERT INTO Address (user_id, city, district, ward, specificAddress, phoneNumber, reiceiverName, `type`) VALUES
+INSERT INTO Address (user_id, city, district, ward, specificAddress, phoneNumber, receiverName, `type`) VALUES
 (1, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 1', '0923236277', 'Người nhận 1', 1),
 (2, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 2', '0923236277', 'Người nhận 2', 0),
 (3, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 3', '0923236277', 'Người nhận 3', 1),
