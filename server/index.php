@@ -18,7 +18,6 @@
     $dotenv->load();
 
     include_once './config/db.php';
-
     if(isset($_SERVER['REDIRECT_URL'])){
         $url = array_filter(explode('/', $_SERVER['REDIRECT_URL']));
         
@@ -35,7 +34,7 @@
             else if($url['2'] == 'products'){
                 include './routes/product.route.php';
             }
-            else if($url['2'] == 'order'){
+            else if($url['2'] == 'orders'){
                 include './routes/order.route.php';
             }
             else if($url['2'] == 'comments'){
@@ -43,6 +42,9 @@
             }
             else if($url['2'] == 'upload'){
                 include './routes/resource.route.php';
+            }
+            else if($url['2'] == 'address'){
+                include './routes/address.route.php';
             }
             else{
                 http_response_code(404);

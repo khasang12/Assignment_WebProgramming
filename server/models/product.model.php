@@ -14,17 +14,48 @@ class Product{
     public function getAllProduct($params){
         try{
             $query = "SELECT * FROM product ";
-            if ($params) {
+            if ($params && ((count(array_flip($params)) !== 1 && count($params)>1) ||count($params)==1)) {
                 $query .= ' WHERE ' ;
-                foreach(array_keys($params) as $key) {
-                    $query .= "$key= \"$params[$key]\" ";
+                if (isset($params['priceFrom'])){
+                    $priceFrom = $params['priceFrom']; 
+                    $query .= "price >= $priceFrom";
+                    if(isset($params['priceTo'])){
+                        $priceTo = $params['priceTo'];
+                        $query .= " AND price <= $priceTo";
+                    }
                 }
+                else{
+                    foreach(array_keys($params) as $key) {
+                        if ($params[$key]=='all' || $params[$key]=='undefined'){
+                            continue;
+                        }
+                        if($key!='sorted'){
+                            $query .= "$key LIKE \"%$params[$key]%\" AND ";
+                        }
+                        else{
+                            if($params[$key]=='priceUp'){
+                                $query .= "1=1 ORDER BY price ASC ";
+                            }
+                            else if($params[$key]=='priceDown'){
+                                $query .= "1=1 ORDER BY price DESC ";
+                            }
+                            else if($params[$key]=='hot'){
+                                $query .= "1=1 ORDER BY num_rates DESC ";
+                            }
+                            $stmt = $this->conn->prepare($query);
+                            $stmt->execute();
+                            return $stmt->get_result();
+                        }
+                    }
+                    $query .= "1=1";
+                }  
             }
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
             return $stmt->get_result();
         }
         catch (mysqli_sql_exception $e){
+            echo $this->conn->error;
             throw new InternalServerError('Server Error!!!');
         }
     }
@@ -37,6 +68,7 @@ class Product{
             return $stmt->get_result();
         }
         catch (mysqli_sql_exception $e){
+            echo $this->conn->error;
             throw new InternalServerError('Server Error!!!');
         }
     }

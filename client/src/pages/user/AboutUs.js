@@ -40,7 +40,7 @@ BK Zone nghiên cứu và phát triển giải pháp để giải quyết nhữn
                         </h5>
                         <div class="accordion-collapse collapse" id="aboutAccordion-collapseOne" aria-labelledby="aboutAccordion-collapseOne" data-bs-parent="#aboutAccordion" >
                           <div class="accordion-body">
-                            <div class="row">
+                           <div class="row">
                               <div class="col-md-4"><img class="img-fluid" src={img} alt="..."/></div>
                               <div class="col-md-8">
                                 <p>Công ty BK Zone thành lập vào tháng 08/2022 bởi 4 thành viên đồng sáng lập là Kha Sang, Trần Quốc Thái, Liễu Minh Vương và Lê Quang Tuấn Hào, lĩnh vực hoạt động chính của công ty bao gồm: mua bán sửa chữa các thiết bị liên quan đến điện thoại di động, thiết bị kỹ thuật số và các lĩnh vực liên quan đến thương mại điện tử.Bằng trải nghiệm về thị trường điện thoại di động và thiết bị công nghệ từ đầu những năm 2002, cùng với việc nghiên cứu kỹ tập quán mua hàng của khách hàng Việt Nam, BK Zone đã xây dựng một phương thức kinh doanh chưa từng có ở Việt Nam trước đây. Công ty đã xây dựng được một phong cách tư vấn bán hàng đặc biệt nhờ vào một đội ngũ nhân viên chuyên nghiệp và trang web www.thegioididong.com hỗ trợ như là một cẩm nang về điện thoại di động và một kênh thương mại điện tử hàng đầu tại Việt Nam.Hiện nay, số lượng điện thoại bán ra trung bình tại thegioididong.com khoảng 300.000 máy/tháng chiếm khoảng 15% thị phần điện thoại chính hãng cả nước.</p>                             

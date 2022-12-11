@@ -1,28 +1,39 @@
 
-import { Col, Button, Row, Container, Form } from "react-bootstrap";
+import { Col, Row, Container, Form } from "react-bootstrap";
 import { useState } from "react";
-import { Navigate } from 'react-router-dom';
-function LoginDB(input) {
-    return true;
-}
+import { Navigate, useNavigate } from 'react-router-dom';
+import axios from "axios";
+import MyButton from "../../components/MyButton";
+
 function Login() {
+    const navigate = useNavigate()
     const [input, setinput] = useState({username: "", password: "", email: ""});
     const [danger, setdanger] = useState({username: false, password: false, email: false, login: false});
     const [login, setlogin] = useState(false);
-    const [forget, setforget] = useState(false)
+    const [forget, setforget] = useState(false);
+    function LoginDB() {
+        axios({
+            method: "put",
+            url: "http://localhost:8080/api/users/login",
+            data: {
+                username: input.username,
+                password: input.password
+            },
+        })
+        .then((res) => (sessionStorage.setItem("user", JSON.stringify({id:res.data[0].id,name:res.data[0].first_name+' '+res.data[0].last_name}))))
+        .then(()=>navigate('/'))
+        .catch((res) => {alert('404 - Incorrect Username or Password')});
+    }
     function handleChange(e) {
         setinput({ ...input, [e.target.name]: e.target.value });
     }
     function validatepassword() {
-        var passw=  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
-        if(input.password.match(passw)) 
-        { 
-            return true;
+        if (input.username === "") {
+            return false;
         }
         else
         {
-            setinput({password: "", username : input.username, email: input.email});
-            return false;
+            return true;
         }
     }
     function validateusername(){
@@ -37,15 +48,9 @@ function Login() {
         e.preventDefault();
         if (validateusername()) {
             if (validatepassword()) {
-                if (LoginDB(input)) {
-                    setlogin(true);
-                    setinput({ username: "", password: "", email: "" });
-                }
-                else setdanger({username: danger.username, password: danger.password, login: true, email:false});
+                LoginDB(input);
             }
-            else setdanger({password: true, username: danger.username, login:false, email:false});
         }
-        else setdanger({password: danger.password, username: true, login: false, email: false});
     }
     function validateemail() {
         if (input.email === "") return false;
@@ -79,10 +84,15 @@ function Login() {
                                 <Form.Control type="password" placeholder="Enter password" name="password" value={input.password} onChange={(e) => handleChange(e)}/>
                                 <p className={` ${danger.password ? "text-danger" : "visually-hidden" }`}>Please enter a valid password</p>
                             </Form.Group>
-                            <Button className="bg-primary d-grid w-25" type="submit">
-                                Đăng nhập
-                            </Button>
-                            <p className={` ${danger.login ? "text-danger" : "visually-hidden" }`}>Wrong login detail</p>
+                            <div>
+                                <MyButton primary className="w-75" type="submit">
+                                        Đăng nhập
+                                </MyButton>
+                                <p className={` ${danger.login ? "text-danger" : "visually-hidden" }`}>Wrong login detail</p>
+                                <MyButton className="w-75 mt-2" to='/signup'>
+                                        Chưa có tài khoản? Đăng kí
+                                </MyButton>
+                            </div>    
                         </Form>
                     </Row>
                 </Col>
@@ -99,9 +109,9 @@ function Login() {
                                 <p className={` ${danger.email ? "text-danger" : "visually-hidden" }`}>Please enter a valid email</p>
                             </Form.Group>
 
-                            <Button className="bg-primary d-grid w-28" type="submit">
+                            <MyButton primary className="w-75" type="submit">
                             Lấy lại mật khẩu
-                            </Button>
+                            </MyButton>
                         </Form>
                     </Row>
                 </Col>

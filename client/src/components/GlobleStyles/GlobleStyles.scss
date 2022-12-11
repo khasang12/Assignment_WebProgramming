@@ -64,7 +64,9 @@ a {
 .bg-primary {
     background-color: var(--primary) !important;
 }
-
+.text-primary {
+    color: var(--primary) !important;
+}
 .bg-table {
     background: rgb(249, 246, 209);
 }
