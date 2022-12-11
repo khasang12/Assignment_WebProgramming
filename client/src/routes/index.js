@@ -1,5 +1,4 @@
 // UI for Admin
-
 import Home from "../pages/admin/Home";
 import Products from "../pages/admin/Products";
 import Accounts from "../pages/admin/Accounts";
@@ -18,7 +17,8 @@ import UNews from "../pages/user/News";
 import Payment from "../pages/user/Payment";
 import Address from "../pages/user/Address";
 import Guide from "../pages/user/Guide";
-import Account from '../pages/user/Account';
+import NotFound from "../pages/user/NotFound";
+import AboutUs from "../pages/user/AboutUs";
 import Resource from "../pages/admin/Resource";
 
 const publicRoutes = [];
@@ -76,16 +76,22 @@ const userRoutes = [
     component: Address,
     layout: DefaultLayout,
   },
-    {
-        path: '/shopping_guide',
-        component: Guide,
-        layout: DefaultLayout,
-    },
-    {
-        path: '/account',
-        component: Account,
-        layout: DefaultLayout,
-    },
+
+  {
+    path: "/shopping-guide",
+    component: Guide,
+    layout: DefaultLayout,
+  },
+  {
+    path: "/about",
+    component: AboutUs,
+    layout: DefaultLayout,
+  },
+  {
+    path: "*",
+    component: NotFound,
+    layout: DefaultLayout,
+  },
 ];
 
 const adminRoutes = [

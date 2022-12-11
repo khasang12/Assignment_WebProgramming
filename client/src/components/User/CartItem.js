@@ -53,7 +53,7 @@ function CartItem({ cartItem }) {
                 {cartItem.name}
             </div>
             <div className="col-2" style={{ width: '12%' }}>
-                <Price>{cartItem.price}</Price>
+                <Price primary>{cartItem.price}</Price>
             </div>
             <div
                 className="col-2 d-flex align-items-center justify-content-center text-primary p-0"

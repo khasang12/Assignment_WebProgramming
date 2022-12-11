@@ -152,11 +152,12 @@ export function CommentsTable() {
           verticalAlignment="center"
           records={records}
           columns={[
-            { accessor: "id", title: "Mã bình luận", width: "25%" },
+            { accessor: "id", title: "Mã bình luận", width: "15%" },
             { accessor: "product", title: "Sản phẩm", width: 200 },
             { accessor: "username", title: "Tài khoản", width: 200 },
             { accessor: "comment", title: "Bình luận", width: 500 },
             { accessor: "status", title: "Trạng thái", width: 150 },
+            { accessor: "updated_at", title: "Cập nhật", width: 150 },
             //{ accessor: "updated_at", title: "Cập nhật lần cuối", width: "100%", sortable:true , render: ({ updated_at }) => dayjs(updated_at).format('DD-MM-YYYY HH:mm:ss')},
             {
               accessor: "actions",

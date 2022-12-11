@@ -35,6 +35,8 @@ class Comment{
             $query0 = "SELECT id FROM Admin WHERE CONCAT(first_name,' ',last_name) = '$admin_name'";
             $stmt0 = $this->conn->query($query0);
             $admin_id = $stmt0->fetch_assoc()['id'];
+            if ($admin_id == null)
+                return false;
             $stmt0->close();
 
             $query = "INSERT INTO Comment (id, admin_id, content, thumbnail) VALUES ($id, $admin_id,'$content','$thumbnail')";
@@ -50,9 +52,11 @@ class Comment{
             $query0 = "SELECT id FROM Admin WHERE username = '$admin_name'";
             $stmt0 = $this->conn->query($query0);
             $admin_id = $stmt0->fetch_assoc()['id'];
+            if ($admin_id == null)
+                return false;
             $stmt0->close();
 
-            $query = "UPDATE Comment SET status='$status', admin_id='$admin_id' WHERE id = '$id'";
+            $query = "UPDATE Comment SET stats='$status', admin_id='$admin_id' WHERE id = '$id'";
             $stmt = $this->conn->prepare($query);
             return $stmt->execute();
         }
