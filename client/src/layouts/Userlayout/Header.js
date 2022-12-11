@@ -330,10 +330,10 @@ function Header() {
                       data-bs-parent="#accordionExample"
                     >
                       <div class="accordion-body list-group list-group-flush p-0">
-                        <div class="btn-group dropend">
+                        <div class="btn-group dropdown dropend-lg">
                           <button
                             type="button"
-                            class="btn btn-secondary list-group-item list-group-item-action"
+                            class="btn btn-secondary list-group-item list-group-item-action fw-bold"
                             data-bs-toggle="dropdown"
                             aria-current="true"
                             aria-expanded="false"
@@ -367,10 +367,10 @@ function Header() {
                             </li>
                           </ul>
                         </div>
-                        <div class="btn-group dropend">
+                        <div class="btn-group dropdown dropend-lg">
                           <button
                             type="button"
-                            class="btn btn-secondary list-group-item list-group-item-action"
+                            class="btn btn-secondary list-group-item list-group-item-action fw-bold"
                             data-bs-toggle="dropdown"
                             aria-current="true"
                             aria-expanded="false"

@@ -29,7 +29,7 @@ function HomePage() {
           .catch((res) => alert(res));
       };
     return (
-        <div class="container mt-4">
+        <div class="container mt-8 pt-5 pt-md-0 mt-md-4">
             {/* <MyButton className="m-5" primary to="/details?id=P123456577">
                 Goto Product details
             </MyButton> */}
@@ -70,14 +70,14 @@ function HomePage() {
                 </div>
                 <div class="carousel-inner relative w-full overflow-hidden">
                     <div class="carousel-item active relative float-left w-full">
-                        {img[0]?<img src={img[0].data} class="block w-full align-items-center object-contain" alt="..." />:"no"}
+                        {img[0]?<img src={img[0].data} class="block w-full align-items-center object-contain" alt="..." />:""}
                     </div>
                     <div class="carousel-item relative float-left w-full">
-                    {img[1]?<img src={img[1].data} class="block w-full align-items-center object-contain" alt="..." />:"no"}
+                    {img[1]?<img src={img[1].data} class="block w-full align-items-center object-contain" alt="..." />:""}
 
                     </div>
                     <div class="carousel-item relative float-left w-full">
-                    {img[2]?<img src={img[2].data} class="block w-full align-items-center object-contain" alt="..." />:"no"}
+                    {img[2]?<img src={img[2].data} class="block w-full align-items-center object-contain" alt="..." />:""}
 
                     </div>
                 </div>
