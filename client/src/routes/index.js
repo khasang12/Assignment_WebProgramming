@@ -20,7 +20,7 @@ import Guide from "../pages/user/Guide";
 import NotFound from "../pages/user/NotFound";
 import AboutUs from "../pages/user/AboutUs";
 import Resource from "../pages/admin/Resource";
-
+import Account from "../pages/user/Account";
 const publicRoutes = [];
 
 const privateRoutes = [];
@@ -85,6 +85,11 @@ const userRoutes = [
   {
     path: "/about",
     component: AboutUs,
+    layout: DefaultLayout,
+  },
+  {
+    path: "/account",
+    component: Account,
     layout: DefaultLayout,
   },
   {
