@@ -2,6 +2,7 @@
 include_once(dirname(__FILE__) . '/../models/user.model.php');
 include_once(dirname(__FILE__) . '/../middleware/utils/error.php');
 include_once(dirname(__FILE__) . '/../middleware/utils/utils.php');
+use Firebase\JWT\JWT;
 
 class UserController{
     public static function getAllUser(){
@@ -23,13 +24,22 @@ class UserController{
         if($new->num_rows == 1){
             $rows = $new->fetch_all(MYSQLI_ASSOC);   
             if ($rows[0]['password'] == $info['password']) {
+                $key = $_SERVER['SECRET_KEY'];
                 unset($rows[0]['password']);
-                $rows = json_encode($rows);
-                return $rows;
+
+                $getDate = new DateTimeImmutable();
+                $rows['created_time'] = $getDate->modify('+1 hour')->getTimestamp();
+                $jwt = JWT::encode($rows, $key, 'HS256');
+                return json_encode(["data" => [
+                    'id' => $rows[0]['id'],
+                    'first_name' => $rows[0]['first_name'],
+                    'last_name' => $rows[0]['last_name'],
+                    'token' => $jwt
+                ]]);
             }
             throw new FileNotFoundError("Incorrect password!!!");
         }
-        throw new FileNotFoundError("User not found!!!");
+        throw new BadRequestError('Invalid username or password');
     }
 
     public static function signup($info){

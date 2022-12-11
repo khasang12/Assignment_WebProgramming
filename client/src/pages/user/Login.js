@@ -20,7 +20,7 @@ function Login() {
                 password: input.password
             },
         })
-        .then((res) => (sessionStorage.setItem("user", JSON.stringify({id:res.data[0].id,name:res.data[0].first_name+' '+res.data[0].last_name}))))
+        .then((res) => (sessionStorage.setItem("user", JSON.stringify({id:res.data.data.id,name:res.data.data.first_name+' '+res.data.data.last_name,token:res.data.data.token}))))
         .then(()=>navigate('/'))
         .catch((res) => {alert('404 - Incorrect Username or Password')});
     }
