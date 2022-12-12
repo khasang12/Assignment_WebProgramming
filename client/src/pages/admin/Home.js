@@ -149,7 +149,7 @@ function Home({ navbarAdmin }) {
           </div>
         </div>
       </div>
-      <div className="d-flex mb-3 flex-column flex-lg-row mt-3">
+      <div className="d-flex mb-3 flex-column-reverse flex-lg-row mt-3">
         <div className="col-12 col-lg-6">
           {dataLine.datasets ? (
             <Line
@@ -161,29 +161,31 @@ function Home({ navbarAdmin }) {
             ""
           )}
         </div>
-        <div className="d-flex justify-content-center col-12 col-md-6 flex-column flex-md-row">
-          <div className="col-12 col-lg-6">
-            {dataPie.datasets ? (
-              <Doughnut
-                style={{ width: "25vw" }}
-                data={dataPie}
-                options={optionsDoughnut}
-              />
-            ) : (
-              ""
-            )}
-          </div>
-          <div className="col-12 col-lg-6">
-            {dataPie.datasets ? (
-              <Doughnut
-                style={{ height: "300px" }}
-                data={dataPie}
-                options={optionsDoughnut}
-              />
-            ) : (
-              ""
-            )}
-          </div>
+        <div className="justify-content-center col-12 col-md-6">
+            <div className="d-flex flex-column flex-md-row">
+              <div className="col-12 col-lg-6">
+                {dataPie.datasets ? (
+                  <Doughnut
+                    style={{ width: "25vw" }}
+                    data={dataPie}
+                    options={optionsDoughnut}
+                  />
+                ) : (
+                  ""
+                )}
+              </div>
+              <div className="col-12 col-lg-6">
+                {dataPie.datasets ? (
+                  <Doughnut
+                    style={{ height: "300px" }}
+                    data={dataPie}
+                    options={optionsDoughnut}
+                  />
+                ) : (
+                  ""
+                )}
+              </div>
+            </div>
         </div>
       </div>
     </div>

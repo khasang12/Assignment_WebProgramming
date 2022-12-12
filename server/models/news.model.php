@@ -26,10 +26,10 @@ class News{
 
     public function createNews($info){
 
-            $admin_name = $info['admin_name'];
-            $title = $info['title'];
-            $content = $info['content'];
-            $thumbnail = $info['thumbnail'];
+            $admin_name = mysqli_real_escape_string($this->conn,$info['admin_name']);
+            $title = mysqli_real_escape_string($this->conn,$info['title']);
+            $content = mysqli_real_escape_string($this->conn,$info['content']);
+            $thumbnail = mysqli_real_escape_string($this->conn,$info['thumbnail']);
 
             $query0 = "SELECT id FROM Admin WHERE CONCAT(first_name,' ',last_name) = '$admin_name'";
             $stmt0 = $this->conn->query($query0);
@@ -45,10 +45,10 @@ class News{
 
     public function editNews($id, $info){
         try{
-            $admin_name = $info['admin_name'];
-            $title = $info['title'];
-            $content = $info['content'];
-            $thumbnail = $info['thumbnail'];
+            $admin_name = mysqli_real_escape_string($this->conn,$info['admin_name']);
+            $title = mysqli_real_escape_string($this->conn,$info['title']);
+            $content = mysqli_real_escape_string($this->conn,$info['content']);
+            $thumbnail = mysqli_real_escape_string($this->conn,$info['thumbnail']);
 
             $query0 = "SELECT id FROM Admin WHERE CONCAT(first_name,' ',last_name) = '$admin_name'";
             $stmt0 = $this->conn->query($query0);

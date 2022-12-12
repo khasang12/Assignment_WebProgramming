@@ -1189,7 +1189,7 @@ VALUES (6, 'uploads/news3.jpg', NULL);
 INSERT INTO Resource (`id`, `name`, `data`)
 VALUES (7, 'uploads/logo.jpg', NULL);
 INSERT INTO Resource (`id`, `name`, `data`)
-VALUES (8, 'uploads/logo.jpg', NULL);
+VALUES (8, 'uploads/demo.mp4', NULL);
 DROP FUNCTION IF EXISTS create_random_integer;
 CREATE FUNCTION random_integer(value_minimum INT, value_maximum INT) RETURNS INT RETURN FLOOR(
   value_minimum + RAND() * (value_maximum - value_minimum + 1)

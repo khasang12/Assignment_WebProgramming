@@ -24,6 +24,7 @@ class User{
     }
     public function getUser($username){
         try{
+            $username = mysqli_real_escape_string($this->conn,$username);
             $query = "SELECT id,first_name,last_name,password FROM Customer WHERE username = '$username'";
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
@@ -37,7 +38,14 @@ class User{
     
     public function createUser($first_name,$last_name,$phone,$email,$birthday,$username,$password,$address){
         try{
-            print_r($birthday);
+            $first_name = mysqli_real_escape_string($this->conn,$first_name);
+            $last_name = mysqli_real_escape_string($this->conn,$last_name);
+            $phone = mysqli_real_escape_string($this->conn,$phone);
+            $email = mysqli_real_escape_string($this->conn,$email);
+            $username = mysqli_real_escape_string($this->conn,$username);
+            $password = mysqli_real_escape_string($this->conn,$password);
+            $address = mysqli_real_escape_string($this->conn,$address);
+
             $query = "INSERT INTO Customer (first_name, last_name, phone, email, birthday,username, password,address) VALUES('$first_name','$last_name','$phone','$email','$birthday','$username','$password','$address');";
             $stmt = $this->conn->prepare($query);
             return $stmt->execute();
@@ -50,7 +58,6 @@ class User{
     }
     public function deleteUser($id){
         try{
-            echo $id;
             $query = "DELETE FROM customer WHERE id = '$id'";
             $stmt = $this->conn->prepare($query);
             return $stmt->execute();

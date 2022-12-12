@@ -105,7 +105,7 @@ export default function SearchPage() {
   return (
     <div className="container w-full flex flex-column mt-3 text-center">
       <div className="w-full flex flex-column text-start pt-3">
-        <div className="fs-2 w-100">
+        <div className="fs-2 w-100 mt-5 mt-md-2">
           Kết quả tìm kiếm cho :&nbsp;{" "}
           <span className="text-[#030391]">{urlParams.get("s")}</span>
         </div>
@@ -130,244 +130,229 @@ export default function SearchPage() {
       </div>
       <div className="d-flex flex-column flex-md-row">
         {/* Filter Bar - Tablet & Desktop */}
-        <div
-          style={{ minWidth: "200px", height: "auto" }}
-          className="d-none flex-shrink-0 border text-start py-2 col-3 d-md-flex flex-column flex-wrap justify-start mt-2 mb-4"
-        >
-          <div className="w-48 d-flex flex-column mr-16 mb-6">
-            <div class="mb-3">
-              <label for="sorted" class="form-label text-uppercase fw-bold">
-                Sắp xếp:
-              </label>
-              <br />
-              <select
-                id="sorted"
-                name="sorted"
-                class="form-select"
-                onChange={onChangeHandler}
-                defaultValue="all"
-                className="border-[#1488d8] border-2 py-1 px-4 rounded appearance-none w-75"
+        <div class="accordion d-md-block" id="accordionExample">
+          <div class="accordion-item d-md-block">
+            <h2 class="accordion-header d-md-block" id="headingOne">
+              <button style={{ minWidth: "220px", height: "auto" }} class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFilter" aria-expanded="true" aria-controls="collapseOne">
+                Bộ lọc
+              </button>
+            </h2>
+            <div id="collapseFilter" class="d-md-block accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+              <div
+                style={{ minWidth: "200px", height: "auto" }}
+                className="d-flex flex-row flex-shrink-0 border text-start py-2 col-3 d-md-flex flex-md-column flex-wrap justify-start mt-2 mb-4"
               >
-                <option value="hot">Bán chạy nhất</option>
-                <option value="priceDown">Giá giảm dần</option>
-                <option value="priceUp">Giá tăng dần</option>
-                <option value="all">Tất cả</option>
-              </select>
-            </div>
+                <div className="w-48 d-flex flex-column mr-16 mb-6">
+                  <div class="mb-3">
+                    <label for="sorted" class="form-label text-uppercase fw-bold">
+                      Sắp xếp:
+                    </label>
+                    <br />
+                    <select
+                      id="sorted"
+                      name="sorted"
+                      class="form-select"
+                      onChange={onChangeHandler}
+                      defaultValue="all"
+                      className="border-[#1488d8] border-2 py-1 px-4 rounded appearance-none w-75"
+                    >
+                      <option value="hot">Bán chạy nhất</option>
+                      <option value="priceDown">Giá giảm dần</option>
+                      <option value="priceUp">Giá tăng dần</option>
+                      <option value="all">Tất cả</option>
+                    </select>
+                  </div>
 
-            <div class="mb-3">
-              <label for="price" class="form-label text-uppercase fw-bold">
-                Hệ điều hành
-              </label>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  value="all"
-                  name="os"
-                  id="flexCheckChecked"
-                  onChange={onChangeHandler}
-                />
-                <label class="form-check-label" for="flexCheckChecked">
-                  Tất cả
-                </label>
+                  <div class="mb-3">
+                    <label for="price" class="form-label text-uppercase fw-bold">
+                      Hệ điều hành
+                    </label>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        value="all"
+                        name="os"
+                        id="flexCheckChecked"
+                        onChange={onChangeHandler}
+                      />
+                      <label class="form-check-label" for="flexCheckChecked">
+                        Tất cả
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        value="windows"
+                        name="os"
+                        id="flexCheckDefault"
+                        onChange={onChangeHandler}
+                      />
+                      <label class="form-check-label" for="flexCheckDefault">
+                        Windows
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        value="linux"
+                        name="os"
+                        id="flexCheckChecked"
+                        onChange={onChangeHandler}
+                      />
+                      <label class="form-check-label" for="flexCheckChecked">
+                        Linux
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        value="macOS"
+                        name="os"
+                        id="flexCheckChecked"
+                        onChange={onChangeHandler}
+                      />
+                      <label class="form-check-label" for="flexCheckChecked">
+                        Mac OS
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="price" class="form-label text-uppercase fw-bold">
+                      RAM
+                    </label>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        value="all"
+                        name="ram"
+                        id="flexCheckChecked"
+                        onChange={onChangeHandler}
+                      />
+                      <label class="form-check-label" for="flexCheckChecked">
+                        Tất cả
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        value="8"
+                        name="ram"
+                        id="flexCheckDefault"
+                        onChange={onChangeHandler}
+                      />
+                      <label class="form-check-label" for="flexCheckDefault">
+                        8 GB
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        value="16"
+                        name="ram"
+                        id="flexCheckChecked"
+                        onChange={onChangeHandler}
+                      />
+                      <label class="form-check-label" for="flexCheckChecked">
+                        16 GB
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="price" class="form-label text-uppercase fw-bold">
+                      SSD
+                    </label>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        value="all"
+                        name="ssd"
+                        id="flexCheckChecked"
+                        onChange={onChangeHandler}
+                      />
+                      <label class="form-check-label" for="flexCheckChecked">
+                        Tất cả
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        value="128"
+                        name="ssd"
+                        id="flexCheckDefault"
+                        onChange={onChangeHandler}
+                      />
+                      <label class="form-check-label" for="flexCheckDefault">
+                        128 GB
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        value="256"
+                        name="ssd"
+                        id="flexCheckDefault"
+                        onChange={onChangeHandler}
+                      />
+                      <label class="form-check-label" for="flexCheckDefault">
+                        256 GB
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        value="512"
+                        name="ssd"
+                        id="flexCheckChecked"
+                        onChange={onChangeHandler}
+                      />
+                      <label class="form-check-label" for="flexCheckChecked">
+                        512 GB
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        value="1TB"
+                        name="ssd"
+                        id="flexCheckChecked"
+                        onChange={onChangeHandler}
+                      />
+                      <label class="form-check-label" for="flexCheckChecked">
+                        1 TB
+                      </label>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="btn btn-secondary"
+                    onClick={onSubmitHandler}
+                  >
+                    Lọc sản phẩm
+                  </button>
+                </div>
               </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  value="windows"
-                  name="os"
-                  id="flexCheckDefault"
-                  onChange={onChangeHandler}
-                />
-                <label class="form-check-label" for="flexCheckDefault">
-                  Windows
-                </label>
-              </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  value="linux"
-                  name="os"
-                  id="flexCheckChecked"
-                  onChange={onChangeHandler}
-                />
-                <label class="form-check-label" for="flexCheckChecked">
-                  Linux
-                </label>
-              </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  value="macOS"
-                  name="os"
-                  id="flexCheckChecked"
-                  onChange={onChangeHandler}
-                />
-                <label class="form-check-label" for="flexCheckChecked">
-                  Mac OS
-                </label>
               </div>
             </div>
-
-            <div class="mb-3">
-              <label for="price" class="form-label text-uppercase fw-bold">
-                RAM
-              </label>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  value="all"
-                  name="ram"
-                  id="flexCheckChecked"
-                  onChange={onChangeHandler}
-                />
-                <label class="form-check-label" for="flexCheckChecked">
-                  Tất cả
-                </label>
-              </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  value="8"
-                  name="ram"
-                  id="flexCheckDefault"
-                  onChange={onChangeHandler}
-                />
-                <label class="form-check-label" for="flexCheckDefault">
-                  8 GB
-                </label>
-              </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  value="16"
-                  name="ram"
-                  id="flexCheckChecked"
-                  onChange={onChangeHandler}
-                />
-                <label class="form-check-label" for="flexCheckChecked">
-                  16 GB
-                </label>
-              </div>
-            </div>
-
-            <div class="mb-3">
-              <label for="price" class="form-label text-uppercase fw-bold">
-                SSD
-              </label>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  value="all"
-                  name="ssd"
-                  id="flexCheckChecked"
-                  onChange={onChangeHandler}
-                />
-                <label class="form-check-label" for="flexCheckChecked">
-                  Tất cả
-                </label>
-              </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  value="128"
-                  name="ssd"
-                  id="flexCheckDefault"
-                  onChange={onChangeHandler}
-                />
-                <label class="form-check-label" for="flexCheckDefault">
-                  128 GB
-                </label>
-              </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  value="256"
-                  name="ssd"
-                  id="flexCheckDefault"
-                  onChange={onChangeHandler}
-                />
-                <label class="form-check-label" for="flexCheckDefault">
-                  256 GB
-                </label>
-              </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  value="512"
-                  name="ssd"
-                  id="flexCheckChecked"
-                  onChange={onChangeHandler}
-                />
-                <label class="form-check-label" for="flexCheckChecked">
-                  512 GB
-                </label>
-              </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  value="1TB"
-                  name="ssd"
-                  id="flexCheckChecked"
-                  onChange={onChangeHandler}
-                />
-                <label class="form-check-label" for="flexCheckChecked">
-                  1 TB
-                </label>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              class="btn btn-secondary"
-              onClick={onSubmitHandler}
-            >
-              Lọc sản phẩm
-            </button>
           </div>
-        </div>
+          </div>
+        
 
-        {/* Filter Bar - Mobile */}
-        <div class="d-flex d-md-none mb-3">
-          <label for="sorted" class="form-label text-uppercase fw-bold">
-            Sắp xếp:
-          </label>
-          <br />
-          <select
-            id="sorted"
-            style={{ width: "auto" }}
-            class="form-select"
-            onChange={onChangeHandler}
-            name="sorted"
-            defaultValue="all"
-            className="border-[#1488d8] border-2 py-1 px-4 rounded w-sm-50 w-md-auto"
-          >
-            <option value="time" className="fs-6">
-              Mới nhất
-            </option>
-            <option value="priceDown" className="fs-6">
-              Giá giảm dần
-            </option>
-            <option value="priceUp" className="fs-6">
-              Giá tăng dần
-            </option>
-            <option value="all" className="fs-6">
-              Tất cả
-            </option>
-          </select>
-        </div>
         {itemList!=[] ? <ItemsList items={itemList} />:""}
       </div>
     </div>

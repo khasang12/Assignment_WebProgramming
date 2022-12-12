@@ -46,12 +46,12 @@ function Header() {
   return (
     <div className={cx("header")}>
       <div className={cx("top-bar") + " border-bottom"}>
-        <div className="container-md d-flex align-items-center">
-          <p className="m-0 text-white">
+        <div className="container-md d-flex align-items-center justify-content-center">
+          <p className="m-0 text-white d-none d-md-block">
             {" "}
             Mở cửa: 8h đến 21h từ Thứ 2 đến chủ nhật
           </p>
-          <div className="ml-auto d-flex align-items-center">
+          <div className="ml-md-auto d-flex align-items-center">
             <Tippy
               render={(attrs) => {
                 return (
@@ -112,11 +112,12 @@ function Header() {
             </button>
           </div>
         </div>
-        <div className="mid-bar w-100">
-          <div className="container-md text-white d-flex align-items-center justify-content-between">
+        <div className="mid-bar w-100 mb-2 mb-md-0">
+          <div className="container-md text-white d-flex flex-md-row flex-column align-items-center flex-wrap justify-content-center">
             <Link to="/">
-              <img src={logo} width="240" className={cx("logo")} alt="logo" />
+              <img src={logo} width="200px" className={cx("logo")} alt="logo" />
             </Link>
+            <div className="d-flex flex-row col-12 col-md-10">
             <div className={cx("search") + " d-flex"}>
               <input
                 type={"text"}
@@ -126,7 +127,7 @@ function Header() {
                 onKeyDown={onSearchBoxKeyDown}
               />
               <button
-                className="btn btn-primary border-0 my-1"
+                className="btn btn-primary border-0"
                 onClick={search}
               >
                 <BiSearch />
@@ -188,20 +189,22 @@ function Header() {
                   to="/cart"
                   className="text-white d-flex align-items-center"
                 >
-                  <RiShoppingBagLine size="40" className="mr-3" />
+                  <RiShoppingBagLine size="40" className="ml-1 mr-md-3" />
                   <div>
-                    <p className="mb-1">Giỏ hàng</p>
+                    <p className="mb-1 d-none d-md-block">Giỏ hàng</p>
                     <p className="m-0">
-                      (<span className="m-0">{state.cart.length}</span>) Sản
-                      phẩm
+                      (<span className="m-0">{state.cart.length}</span>) <span className="m-0 d-none d-md-inline-block">Sản
+                      phẩm</span>
                     </p>
                   </div>
                 </Link>
               </Tippy>
             </div>
+            </div>
+            
           </div>
         </div>
-        <div className="bot-bar w-100" style={{ backgroundColor: "#e4f2f2" }}>
+        <div className="bot-bar mt-3 w-100" style={{ backgroundColor: "#e4f2f2" }}>
           <div className='container-md text-white d-flex flex-row align-items-center justify-content-between"'>
             <button className="col-12 col-lg-3 px-4 py-3 bg-warning fw-bold fs-4 d-flex flex-row align-items-center">
               <a
@@ -330,10 +333,10 @@ function Header() {
                       data-bs-parent="#accordionExample"
                     >
                       <div class="accordion-body list-group list-group-flush p-0">
-                        <div class="btn-group dropend">
+                        <div class="btn-group dropdown dropend-lg">
                           <button
                             type="button"
-                            class="btn btn-secondary list-group-item list-group-item-action"
+                            class="btn btn-secondary list-group-item list-group-item-action fw-bold"
                             data-bs-toggle="dropdown"
                             aria-current="true"
                             aria-expanded="false"
@@ -367,10 +370,10 @@ function Header() {
                             </li>
                           </ul>
                         </div>
-                        <div class="btn-group dropend">
+                        <div class="btn-group dropdown dropend-lg">
                           <button
                             type="button"
-                            class="btn btn-secondary list-group-item list-group-item-action"
+                            class="btn btn-secondary list-group-item list-group-item-action fw-bold"
                             data-bs-toggle="dropdown"
                             aria-current="true"
                             aria-expanded="false"
