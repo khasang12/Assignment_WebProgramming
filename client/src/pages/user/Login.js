@@ -1,15 +1,15 @@
 
 import { Col, Row, Container, Form } from "react-bootstrap";
 import { useState } from "react";
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import MyButton from "../../components/MyButton";
 
 function Login() {
+    var linkto = '/';
     const navigate = useNavigate()
     const [input, setinput] = useState({username: "", password: "", email: ""});
     const [danger, setdanger] = useState({username: false, password: false, email: false, login: false});
-    const [login, setlogin] = useState(false);
     const [forget, setforget] = useState(false);
     function LoginDB() {
         axios({
@@ -20,8 +20,8 @@ function Login() {
                 password: input.password
             },
         })
-        .then((res) => (sessionStorage.setItem("user", JSON.stringify({id:res.data.data.id,name:res.data.data.first_name+' '+res.data.data.last_name,token:res.data.data.token}))))
-        .then(()=>navigate('/'))
+        .then((res) => (sessionStorage.setItem('user',JSON.stringify({type:res.type,id:res.data.data.id,name:res.data.data.first_name+' '+res.data.data.last_name,token:res.data.data.token}))))
+        .then(()=> (sessionStorage.getItem('user')['type']==='admin'?navigate('/admin'):navigate('/')))
         .catch((res) => {alert('404 - Incorrect Username or Password')});
     }
     function handleChange(e) {
@@ -71,7 +71,6 @@ function Login() {
                         <h2 className="fw-bold mb-2 text-uppercase ">Đăng nhập tài khoản</h2>
                     </Row>
                     <Row className="mb-3 mt-md-4 ">
-                    {login && (<Navigate to="/" replace={true} />)}
                         <Form onSubmit={(e) => handleSubmitLogin(e)}>
                             <Form.Group className="mb-3 w-75">
                                 <Form.Label className="text-center">Tên tài khoản</Form.Label>
