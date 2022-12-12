@@ -35,7 +35,19 @@ class User{
             throw new InternalServerError('Server Error!!!');
         }
     }
-    
+    public function getUserAdmin($username){
+        try{
+            $username = mysqli_real_escape_string($this->conn,$username);
+            $query = "SELECT id,first_name,last_name,password FROM Admin WHERE username = '$username'";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
+            return $stmt->get_result();
+        }
+        catch (mysqli_sql_exception $e){
+            echo $this->conn->error;
+            throw new InternalServerError('Server Error!!!');
+        }
+    }
     public function createUser($first_name,$last_name,$phone,$email,$birthday,$username,$password,$address){
         try{
             $first_name = mysqli_real_escape_string($this->conn,$first_name);

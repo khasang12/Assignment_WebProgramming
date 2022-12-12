@@ -31,6 +31,27 @@ class UserController{
                 $rows['created_time'] = $getDate->modify('+1 hour')->getTimestamp();
                 $jwt = JWT::encode($rows, $key, 'HS256');
                 return json_encode(["data" => [
+                    'type' => 'user',
+                    'id' => $rows[0]['id'],
+                    'first_name' => $rows[0]['first_name'],
+                    'last_name' => $rows[0]['last_name'],
+                    'token' => $jwt
+                ]]);
+            }
+            throw new FileNotFoundError("Incorrect password!!!");
+        }
+        $new = $temp->getUserAdmin($info['username']);
+        if($new->num_rows == 1){
+            $rows = $new->fetch_all(MYSQLI_ASSOC);   
+            if ($rows[0]['password'] == $info['password']) {
+                $key = $_SERVER['SECRET_KEY'];
+                unset($rows[0]['password']);
+
+                $getDate = new DateTimeImmutable();
+                $rows['created_time'] = $getDate->modify('+1 hour')->getTimestamp();
+                $jwt = JWT::encode($rows, $key, 'HS256');
+                return json_encode(["data" => [
+                    'type' => 'admin',
                     'id' => $rows[0]['id'],
                     'first_name' => $rows[0]['first_name'],
                     'last_name' => $rows[0]['last_name'],
