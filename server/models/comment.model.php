@@ -27,10 +27,10 @@ class Comment{
 
     public function createComment($info){
 
-            $id = $info['id'];
-            $admin_name = $info['admin_name'];
-            $content = $info['content'];
-            $thumbnail = $info['thumbnail'];
+            $id = mysqli_real_escape_string($this->conn,$info['id']);
+            $admin_name = mysqli_real_escape_string($this->conn,$info['admin_name']);
+            $content = mysqli_real_escape_string($this->conn,$info['content']);
+            $thumbnail = mysqli_real_escape_string($this->conn,$info['thumbnail']);
 
             $query0 = "SELECT id FROM Admin WHERE CONCAT(first_name,' ',last_name) = '$admin_name'";
             $stmt0 = $this->conn->query($query0);
@@ -46,8 +46,8 @@ class Comment{
 
     public function editComment($id, $info){
         try{
-            $status = $info['status'];
-            $admin_name = $info['admin_name'];
+            $status = mysqli_real_escape_string($this->conn,$info['status']);
+            $admin_name = mysqli_real_escape_string($this->conn,$info['admin_name']);
 
             $query0 = "SELECT id FROM Admin WHERE username = '$admin_name'";
             $stmt0 = $this->conn->query($query0);
@@ -68,7 +68,7 @@ class Comment{
 
     public function deleteComment($id){
         try{
-            echo $id;
+            $id = mysqli_real_escape_string($id);
             $query = "DELETE FROM Comment WHERE id = $id";
             $stmt = $this->conn->prepare($query);
             return $stmt->execute();

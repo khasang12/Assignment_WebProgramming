@@ -13,6 +13,7 @@ class Resource{
 
     public function getResource($name){
         try{
+            $name = mysqli_real_escape_string($this->conn,$name);
             $query = "SELECT data FROM Resource WHERE name LIKE '%$name%'";
             $stmt = $this->conn->prepare($query);
             $stmt->execute();

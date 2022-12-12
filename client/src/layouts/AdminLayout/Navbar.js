@@ -81,9 +81,9 @@ export function AdminLayout({setNavbarAdmin}) {
           {SidebarData.map((item, index) => {
             return (
               <li key={index} className={item.cName}>
-                <Link to={item.path}>
-                  {item.icon}
-                  <span>{item.title}</span>
+                <Link className="justify-content-center justify-content-md-start" to={item.path}>
+                  <span className="align-self-center">{item.icon}</span>
+                  <span className={"d-none d-md-block"}>{item.title}</span>
                 </Link>
               </li>
             );
@@ -124,7 +124,7 @@ export function AdminLayout({setNavbarAdmin}) {
                 Đóng cửa sổ
               </button>
               <button type="button" class="btn btn-primary">
-                Đăng xuất
+                <a href="/" class="text-white">Đăng xuất</a>
               </button>
             </div>
           </div>
