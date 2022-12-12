@@ -76,6 +76,15 @@ function Header() {
                           : "Đăng nhập"}
                       </button>
                     </Link>
+                    {JSON.parse(sessionStorage.getItem("user")) && JSON.parse(sessionStorage.getItem("user"))['type']==='admin'?(
+                      <Link
+                        to="/admin"
+                        className="d-flex flex-column"
+                      >
+                        <button className="btn btn-success mb-2 px-5">
+                          Admin
+                        </button>
+                      </Link>):""}
                     <Link
                       to={
                         JSON.parse(sessionStorage.getItem("user"))

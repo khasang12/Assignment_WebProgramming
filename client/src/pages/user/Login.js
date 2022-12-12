@@ -1,12 +1,11 @@
 
 import { Col, Row, Container, Form } from "react-bootstrap";
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import axios from "axios";
 import MyButton from "../../components/MyButton";
 
 function Login() {
-    var linkto = '/';
     const navigate = useNavigate()
     const [input, setinput] = useState({username: "", password: "", email: ""});
     const [danger, setdanger] = useState({username: false, password: false, email: false, login: false});
@@ -20,7 +19,7 @@ function Login() {
                 password: input.password
             },
         })
-        .then((res) => (sessionStorage.setItem('user',JSON.stringify({type:res.type,id:res.data.data.id,name:res.data.data.first_name+' '+res.data.data.last_name,token:res.data.data.token}))))
+        .then((res) => (sessionStorage.setItem('user',JSON.stringify({type:res.data.data.type,id:res.data.data.id,name:res.data.data.first_name+' '+res.data.data.last_name,token:res.data.data.token}))))
         .then(()=> (sessionStorage.getItem('user')['type']==='admin'?navigate('/admin'):navigate('/')))
         .catch((res) => {alert('404 - Incorrect Username or Password')});
     }

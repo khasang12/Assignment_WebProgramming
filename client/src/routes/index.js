@@ -16,6 +16,7 @@ import Signup from "../pages/user/Signup";
 import UNews from "../pages/user/News";
 import Payment from "../pages/user/Payment";
 import Address from "../pages/user/Address";
+import Account from "../pages/user/Account"
 import Guide from "../pages/user/Guide";
 import NotFound from "../pages/user/NotFound";
 import AboutUs from "../pages/user/AboutUs";
@@ -85,6 +86,11 @@ const userRoutes = [
   {
     path: "/about",
     component: AboutUs,
+    layout: DefaultLayout,
+  },
+  {
+    path: "/profile",
+    component: Account,
     layout: DefaultLayout,
   },
   {
