@@ -646,6 +646,7 @@ export function ProductsTable() {
           </div>
         </div>
       </div>
+      
       {/* Edit Modal */}
       <div
         class="modal fade"

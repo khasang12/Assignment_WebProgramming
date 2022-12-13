@@ -65,7 +65,7 @@ function Header() {
                     <Link
                       to={
                         JSON.parse(sessionStorage.getItem("user"))
-                          ? "/profile"
+                          ? "/account"
                           : "/login"
                       }
                       className="d-flex flex-column"
