@@ -1,8 +1,8 @@
 import { Pagination, Button } from 'react-bootstrap';
-
+import { icons } from 'react-icons/lib';
 import RateStar from './RateStar';
 import StarPercen from './StarPercen';
-
+import  * as BiIcons from "react-icons/bi";
 const comments = [
     {
         avatar: 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png',
@@ -49,7 +49,14 @@ const comments = [
         reply: [],
     },
 ];
+
+function addComment(){
+        document.getElementById("test").style.display = "";
+        document.getElementById("addCmtButton").disabled = true;
+}
+
 function Comments({ product_id = '' }) {
+
     return (
         <div id="comment">
             <h4 className="font-weight-normal mb-4">KHÁCH HÀNG NHẬN XÉT</h4>
@@ -64,7 +71,7 @@ function Comments({ product_id = '' }) {
                 </div>
                 <div className="col-4 d-flex flex-column align-items-center">
                     <p>Chia sẻ đánh giá của bạn</p>
-                    <Button variant="danger">Viết đánh giá của bạn</Button>
+                    <Button id='addCmtButton' variant="danger" onClick={addComment}>Viết đánh giá của bạn</Button>
                 </div>
             </div>
 
@@ -111,6 +118,17 @@ function Comments({ product_id = '' }) {
                     <Pagination.Item>5</Pagination.Item>
                 </Pagination>
             </div>
+
+            <div id='test' style={{display:"none"}} className= "d-flex flex-col"> 
+                
+            <div class="form-group">
+    <label for="exampleFormControlTextarea1"><span><BiIcons.BiComment></BiIcons.BiComment></span> Viết bình luận của bạn ở đây nhé: </label>
+    <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" cols="115"></textarea>
+            </div>
+
+
+            </div>
+            <div><button type="submit" class="btn btn-primary">Đăng bình luận</button></div>
         </div>
     );
 }
