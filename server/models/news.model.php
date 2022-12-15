@@ -13,7 +13,19 @@ class News{
 
     public function getAllNews(){
         try{
-            $query = "SELECT N.id, CONCAT(A.first_name,' ',A.last_name) as admin_name, N.title, N.thumbnail, N.content FROM `News` N, `Admin` A WHERE N.admin_id=A.id";
+            $query = "SELECT id, title, thumbnail FROM News";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
+            return $stmt->get_result();
+        }
+        catch (mysqli_sql_exception $e){
+            echo $this->conn->error;
+            throw new InternalServerError('Server Error!!!');
+        }
+    }
+    public function getNewsDetail($id){
+        try{
+            $query = "SELECT content FROM News WHERE id = $id";
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
             return $stmt->get_result();

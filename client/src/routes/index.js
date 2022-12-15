@@ -21,6 +21,8 @@ import NotFound from '../pages/user/NotFound';
 import AboutUs from '../pages/user/AboutUs';
 import Resource from '../pages/admin/Resource';
 import Account from '../pages/user/Account';
+import NewsDetail from "../pages/user/NewsDetail";
+
 const publicRoutes = [];
 
 const privateRoutes = [];
@@ -93,10 +95,20 @@ const userRoutes = [
     layout: DefaultLayout,
   },
   {
+    path: "/newsdetail",
+    component: NewsDetail,
+    layout: DefaultLayout,
+  },
+  {
     path: '/profile',
     component: Account,
     layout: DefaultLayout,
   },
+  {
+    path: "*",
+    component: NotFound,
+  },
+  
 ];
 
 const adminRoutes = [
