@@ -32,7 +32,7 @@ export function NewsTable() {
   const initValues = {
     // Default Values for a News
     id: 0,
-    admin_name: "",
+    admin_name: JSON.parse(sessionStorage.getItem("user"))["name"],
     content: "",
     thumbnail: "",
     title:""
@@ -90,8 +90,6 @@ export function NewsTable() {
     const { id, admin_name, content, thumbnail, title } = values;
     if (id === "") {
       setDone({ status: false, msg: "Vui lòng nhập mã số" });
-    } else if (admin_name === undefined || admin_name === "") {
-      setDone({ status: false, msg: "Vui lòng chọn tác giả" });
     } else if (title === undefined || title === "") {
       setDone({ status: false, msg: "Vui lòng gõ tiêu đề" });
     } else if (content === undefined || content === "") {
@@ -132,7 +130,8 @@ export function NewsTable() {
       method: "put",
       url: `http://localhost:8080/api/news/${id}`,
       data: {
-        admin_name: news["admin_name"] || "",
+        id : id,
+        admin_name: JSON.parse(sessionStorage.getItem("user"))["name"] || "",
         title: news["title"] || "",
         content: news["content"] || "",
         thumbnail: news["thumbnail"] || "",
@@ -229,7 +228,6 @@ export function NewsTable() {
           records={records}
           columns={[
             { accessor: "id", title: "Mã tin đăng", width: "15%" },
-            { accessor: "admin_name", title: "Người đăng", width: 200 },
             { accessor: "title", title: "Tiêu đề", width: 400 },
             { accessor: "thumbnail", title: "Thumbnail", width: "100%" },
             {
@@ -302,10 +300,6 @@ export function NewsTable() {
               ></button>
             </div>
             <div class="modal-body gap-5 lh-lg">
-              <div class="d-flex flex-row">
-                <p class="text-secondary m-0">Tác giả:</p>
-                <p class="text-primary m-0 ms-auto">{values.admin_name}</p>
-              </div>
               <div class="d-flex flex-row">
                 <p class="text-secondary m-0">Tiêu đề:</p>
                 <p class="text-primary m-0 ms-auto">{values.title}</p>
@@ -503,7 +497,8 @@ export function NewsTable() {
                 placeholder="Tác giả"
                 name="admin_name"
                 onChange={handleChange}
-                value={values.admin_name}
+                value={JSON.parse(sessionStorage.getItem("user"))["name"]}
+                disabled
               />
               <label htmlFor="title" className="mt-2 form-label">
                 Tiêu đề
