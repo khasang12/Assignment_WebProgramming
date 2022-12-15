@@ -38,9 +38,9 @@ class NewsController{
         throw new FileNotFoundError("News not created or Author not found!!!");
     }
 
-    public static function editNews($id, $data){
+    public static function editNews($data){
         $temp = new News();
-        $new = $temp->editNews($id, $data);
+        $new = $temp->editNews($data);
 
         if ($new){
             http_response_code(200);

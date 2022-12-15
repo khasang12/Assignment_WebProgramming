@@ -100,7 +100,7 @@ const userRoutes = [
     layout: DefaultLayout,
   },
   {
-    path: '/profile',
+    path: '/account',
     component: Account,
     layout: DefaultLayout,
   },

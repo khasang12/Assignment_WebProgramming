@@ -40,7 +40,6 @@ function Account() {
   <table class="table table-striped table-hover"  >
       <thead>
     <tr>
-      <th scope="col"  className="d-none d-md-block">STT</th>
       <th scope="col"  >Mã đơn hàng</th>
       <th scope="col"  >Tổng tiền</th>
       <th scope="col"  >Phương thức</th>
@@ -52,7 +51,6 @@ function Account() {
     {list && list.map((item,index)=>{
         return (
         <tr>
-        <th scope="row" className="d-none d-md-block">{index+1}</th>
         <td>{item.id}</td>
         <td>{item.total_order_money}</td>
         <td>{item.paymentMethod}</td>

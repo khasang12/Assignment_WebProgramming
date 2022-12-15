@@ -8,12 +8,20 @@ import { useEffect, useState } from 'react';
 
 const AboutUs = () => {
   const [video,setVideo] = useState([]);
+  const [logo,setLogo] = useState([]);
   const getHomeImages = async () => {
     await axios
       .get("http://localhost:8080/api/upload/demo")
       .then((response) => {
         setVideo(response.data)
-        console.log(response)
+      })
+      .catch((res) => alert(res));
+  };
+  const getLogo = async () => {
+    await axios
+      .get("http://localhost:8080/api/upload/logo")
+      .then((response) => {
+        setLogo(response.data)
       })
       .catch((res) => alert(res));
   };
@@ -39,6 +47,13 @@ const AboutUs = () => {
       
     return () => window.clearTimeout(timeoutID);
 },[])
+useEffect(()=>{
+  const timeoutID = window.setTimeout(() => {
+      getLogo();
+    }, 1000);
+    
+  return () => window.clearTimeout(timeoutID);
+},[])
   return (
     <div class="container mt-4">
     <section class="py-5">
@@ -59,9 +74,9 @@ BK Zone nghiên cứu và phát triển giải pháp để giải quyết nhữn
                         <div class="accordion-collapse collapse" id="aboutAccordion-collapseOne" aria-labelledby="aboutAccordion-collapseOne" data-bs-parent="#aboutAccordion" >
                           <div class="accordion-body">
                            <div class="row">
-                              <div class="col-md-4"><img class="img-fluid" src={img} alt="..."/></div>
+                              <div class="col-md-4"><img class="img-fluid" src={logo[0]?logo[0].data:""} alt="..."/></div>
                               <div class="col-md-8">
-                                <p>Công ty BK Zone thành lập vào tháng 08/2022 bởi 4 thành viên đồng sáng lập là Kha Sang, Trần Quốc Thái, Liễu Minh Vương và Lê Quang Tuấn Hào, lĩnh vực hoạt động chính của công ty bao gồm: mua bán sửa chữa các thiết bị liên quan đến điện thoại di động, thiết bị kỹ thuật số và các lĩnh vực liên quan đến thương mại điện tử.Bằng trải nghiệm về thị trường điện thoại di động và thiết bị công nghệ từ đầu những năm 2002, cùng với việc nghiên cứu kỹ tập quán mua hàng của khách hàng Việt Nam, BK Zone đã xây dựng một phương thức kinh doanh chưa từng có ở Việt Nam trước đây. Công ty đã xây dựng được một phong cách tư vấn bán hàng đặc biệt nhờ vào một đội ngũ nhân viên chuyên nghiệp và trang web www.thegioididong.com hỗ trợ như là một cẩm nang về điện thoại di động và một kênh thương mại điện tử hàng đầu tại Việt Nam.Hiện nay, số lượng điện thoại bán ra trung bình tại thegioididong.com khoảng 300.000 máy/tháng chiếm khoảng 15% thị phần điện thoại chính hãng cả nước.</p>                             
+                                <p>Công ty BK Zone thành lập vào tháng 08/2022 bởi 4 thành viên đồng sáng lập là Kha Sang, Trần Quốc Thái, Liễu Minh Vương và Lê Quang Tuấn Hào</p>                             
                                  </div>
                             </div>
                           </div>
@@ -74,21 +89,13 @@ BK Zone nghiên cứu và phát triển giải pháp để giải quyết nhữn
                         <div class="accordion-collapse collapse" id="aboutAccordion-collapseTwo" aria-labelledby="aboutAccordion-collapseTwo" data-bs-parent="#aboutAccordion" >
                           <div class="accordion-body">
                             <div class="row">
-                              <div class="col-md-4"><img class="img-fluid" src={img} alt="..."/></div>
                               <div class="col-md-8">
-                                <p>One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections.</p>
-                                <p>One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections.</p>
+                                <p>Lĩnh vực hoạt động chính của công ty bao gồm: mua bán sửa chữa các thiết bị liên quan đến điện thoại di động, thiết bị kỹ thuật số và các lĩnh vực liên quan đến thương mại điện tử.Bằng trải nghiệm về thị trường điện thoại di động và thiết bị công nghệ từ đầu những năm 2002, cùng với việc nghiên cứu kỹ tập quán mua hàng của khách hàng Việt Nam, BK Zone đã xây dựng một phương thức kinh doanh chưa từng có ở Việt Nam trước đây. </p>
+                                <p>Công ty đã xây dựng được một phong cách tư vấn bán hàng đặc biệt nhờ vào một đội ngũ nhân viên chuyên nghiệp và trang web www.thegioididong.com hỗ trợ như là một cẩm nang về điện thoại di động và một kênh thương mại điện tử hàng đầu tại Việt Nam.Hiện nay, số lượng điện thoại bán ra trung bình tại thegioididong.com khoảng 300.000 máy/tháng chiếm khoảng 15% thị phần điện thoại chính hãng cả nước.</p>
                               </div>
+                              <div class="col-md-4"><img class="img-fluid" src={img} alt="..."/></div>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                      <div class="accordion-item">
-                        <h5 class="accordion-header" id="aboutAccordion-headingThree">
-                          <button class="accordion-button text-uppercase fw-bold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aboutAccordion-collapseThree" aria-expanded="false" aria-controls="aboutAccordion-collapseThree">Accordion Item No.1 a little too small</button>
-                        </h5>
-                        <div class="accordion-collapse collapse" id="aboutAccordion-collapseThree" aria-labelledby="aboutAccordion-collapseThree" data-bs-parent="#aboutAccordion">
-                          <div class="accordion-body">One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections.</div>
                         </div>
                       </div>
               </div>

@@ -35,7 +35,9 @@ class UserController{
                     'id' => $rows[0]['id'],
                     'first_name' => $rows[0]['first_name'],
                     'last_name' => $rows[0]['last_name'],
+                    'address' => $rows[0]['address'],
                     'email' => $rows[0]['email'],
+                    'phone' => $rows[0]['phone'],
                     'token' => $jwt
                 ]]);
             }
@@ -51,14 +53,12 @@ class UserController{
                 $getDate = new DateTimeImmutable();
                 $rows['created_time'] = $getDate->modify('+1 hour')->getTimestamp();
                 $jwt = JWT::encode($rows, $key, 'HS256');
+
                 return json_encode(["data" => [
                     'type' => 'admin',
                     'id' => $rows[0]['id'],
                     'first_name' => $rows[0]['first_name'],
                     'last_name' => $rows[0]['last_name'],
-                    'address' => $rows[0]['address'],
-                    'email' => $rows[0]['email'],
-                    'phone' => $rows[0]['phone'],
                     'token' => $jwt
                 ]]);
             }

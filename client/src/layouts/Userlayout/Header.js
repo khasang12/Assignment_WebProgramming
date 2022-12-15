@@ -76,6 +76,15 @@ function Header() {
                           : 'Đăng nhập'}
                       </button>
                     </Link>
+                    {JSON.parse(sessionStorage.getItem("user")) && JSON.parse(sessionStorage.getItem("user"))['type']==='admin'?(
+                      <Link
+                        to="/admin"
+                        className="d-flex flex-column"
+                      >
+                        <button className="btn btn-success mb-2 px-5">
+                          Admin
+                        </button>
+                      </Link>):""}
                     <Link
                       to={JSON.parse(sessionStorage.getItem('user')) ? '/login' : '/signup'}
                       className="d-flex flex-column"
@@ -197,7 +206,7 @@ function Header() {
                       <p className="m-0">
                         (
                         <span className="m-0">
-                          {sessionStorage.getItem('user') && state.cart.products !== []
+                          {sessionStorage.getItem('user') && JSON.parse(sessionStorage.getItem('user'))['type']=='user' && state.cart.products !== []
                             ? state.cart.products.length
                             : 0}
                         </span>

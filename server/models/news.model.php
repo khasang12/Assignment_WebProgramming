@@ -13,7 +13,7 @@ class News{
 
     public function getAllNews(){
         try{
-            $query = "SELECT id, title, thumbnail FROM News";
+            $query = "SELECT id, title, thumbnail,content FROM News";
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
             return $stmt->get_result();
@@ -55,8 +55,9 @@ class News{
             return $stmt->execute();
     }
 
-    public function editNews($id, $info){
+    public function editNews($info){
         try{
+            $id = mysqli_real_escape_string($this->conn,$info['id']);
             $admin_name = mysqli_real_escape_string($this->conn,$info['admin_name']);
             $title = mysqli_real_escape_string($this->conn,$info['title']);
             $content = mysqli_real_escape_string($this->conn,$info['content']);
