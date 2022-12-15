@@ -11,16 +11,16 @@ export default function ItemsList({ items }) {
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
     const currentPosts = items.slice(indexOfFirstPost, indexOfLastPost);
-    console.log(items)
     // Change page
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
         <div className="w-full d-flex flex-column align-items-center">
             <div className="d-flex flex-row flex-wrap w-full justify-content-center mb-5">
-                {currentPosts!=[] && currentPosts.map((item) => {
-                    return <Item item={item} key={item.id} />;
-                })}
+                {currentPosts != [] &&
+                    currentPosts.map((item) => {
+                        return <Item item={item} key={item.id} />;
+                    })}
             </div>
             <Pagination postsPerPage={postsPerPage} totalPosts={items.length} paginate={paginate} />
         </div>
