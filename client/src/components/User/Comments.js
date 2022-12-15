@@ -1,5 +1,4 @@
 import { Pagination, Button } from 'react-bootstrap';
-
 import { icons } from 'react-icons/lib';
 import RateStar from './RateStar';
 import StarPercen from './StarPercen';

@@ -63,7 +63,11 @@ function Header() {
                 return (
                   <div {...attrs} tabIndex="-1" className={cx('arrow-top-center') + ' shadow p-2 bg-white rounded'}>
                     <Link
-                      to={JSON.parse(sessionStorage.getItem('user')) ? '/profile' : '/login'}
+                      to={
+                        JSON.parse(sessionStorage.getItem("user"))
+                          ? "/account"
+                          : "/login"
+                      }
                       className="d-flex flex-column"
                     >
                       <button className="btn btn-warning mb-2 px-5">

@@ -523,7 +523,7 @@ export function ProductsTable() {
                                 Kích thước
                             </label>
                             <input type="text" className="form-control" name="screen_size" onChange={handleChange} />
-
+                   {/*
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                     Đóng
@@ -540,7 +540,53 @@ export function ProductsTable() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
+                
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Đóng
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  name="add"
+                >
+                  Thêm
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Edit Modal */}
+      <div
+        class="modal fade"
+        id="editModal"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                Chỉnh sửa thông tin
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
             </div>
             {/* Edit Modal */}
             <div
