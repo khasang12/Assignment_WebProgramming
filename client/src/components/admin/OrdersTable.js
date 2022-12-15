@@ -197,6 +197,7 @@ export function OrdersTable() {
                     onSortStatusChange={setSortStatus}
                 />
             </Box>
+            
             {/* View */}
             <div
                 className="modal fade"
