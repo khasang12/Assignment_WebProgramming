@@ -20,11 +20,12 @@
                     //get all if param.user_id = undefine else get all order of user
                     echo OrderController::getAllOrder($params);
                     http_response_code(200);
-                } else {  
-                    // get by ID
-                    echo OrderController::getOrder($url[3]);
-                    http_response_code(200);
                 }
+                // } else {  
+                //     // get by ID
+                //     echo OrderController::getOrder($url[3]);
+                //     http_response_code(200);
+                // }
             }
             catch(CustomError $e){
                 echo json_encode(['msg' => $e->getMessage()]);

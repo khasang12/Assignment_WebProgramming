@@ -25,6 +25,20 @@ class Comment{
         }
     }
 
+    public function getProductComments($product_id){
+        try{
+            // chua xu li duoc viec lay comment khi admin_id = null
+            $query = "SELECT CMT.id, CMT.product_id, CMT.customer_id, C.first_name, C.last_name, CMT.comment, CMT.num_rate, CMT.status FROM Comment CMT, Customer C WHERE CMT.product_id = $product_id AND CMT.customer_id = C.id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
+            return $stmt->get_result();
+        }
+        catch (mysqli_sql_exception $e){
+            echo $this->conn->error;
+            throw new InternalServerError('Server Error!!!');
+        }
+    }
+
     public function createComment($info){
 
             $id = mysqli_real_escape_string($this->conn,$info['id']);
@@ -43,6 +57,22 @@ class Comment{
             $stmt = $this->conn->prepare($query);
             return $stmt->execute();
     }
+
+    
+    public function createUserComment($info){
+        $admin_id = 1 ;
+        $comment = mysqli_real_escape_string($this->conn,$info['comment']);
+        $num_rate = mysqli_real_escape_string($this->conn,$info['num_rate']);
+        $product_id = mysqli_real_escape_string($this->conn,$info['product_id']);
+        $customer_id = mysqli_real_escape_string($this->conn,$info['user_id']);
+        $status = "Chưa phản hồi";
+
+        $query = "INSERT INTO Comment (product_id, admin_id, customer_id, comment, num_rate, `status`) VALUES ($product_id, $admin_id, $customer_id, '$comment', $num_rate, '$status')";
+        $stmt = $this->conn->prepare($query);
+        return $stmt->execute();
+}
+
+
 
     public function editComment($id, $info){
         try{
