@@ -17,11 +17,12 @@
 
 html {
   box-sizing: border-box;
+  scroll-behavior: smooth !important;
 }
 body {
   margin: 0;
   font-family: 'Roboto', sans-serif;
-  text-rendering: optimizespeed;
+  // text-rendering: optimizespeed;
   color: var(--text-color);
   scroll-behavior: smooth;
 }
