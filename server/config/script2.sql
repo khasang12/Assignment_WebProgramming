@@ -112,6 +112,32 @@ CREATE TABLE `Resource` (
   PRIMARY KEY(id)
 );
 
+CREATE TABLE Cart(
+	`id` int AUTO_INCREMENT, 
+	`user_id` int, 
+	`quantity` int DEFAULT  0, 
+	`total` int DEFAULT  0,
+
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE Cart_item(
+	`cart_id` int, 
+	`product_id` int, 
+	`quantity` int, 
+	`total` int,
+  `isSelected` int DEFAULT 0,
+
+	PRIMARY KEY(cart_id, product_id)
+);
+
+
+ALTER TABLE `Cart` ADD FOREIGN KEY (`user_id`) REFERENCES `Customer` (`id`) ON DELETE CASCADE;
+
+ALTER TABLE `Cart_item` ADD FOREIGN KEY (`cart_id`) REFERENCES `Cart` (`id`) ON DELETE CASCADE;
+
+ALTER TABLE `Cart_item` ADD FOREIGN KEY (`product_id`) REFERENCES `Product` (`id`) ON DELETE CASCADE;
+
 ALTER TABLE `Orders` ADD FOREIGN KEY (`customer_id`) REFERENCES `Customer` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `OrderDetail` ADD FOREIGN KEY (`order_id`) REFERENCES `Orders` (`id`) ON DELETE CASCADE;
@@ -127,6 +153,44 @@ ALTER TABLE `Comment` ADD FOREIGN KEY (`admin_id`) REFERENCES `Admin` (`id`) ON 
 ALTER TABLE `News` ADD FOREIGN KEY (`admin_id`) REFERENCES `Admin` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `Address` ADD FOREIGN KEY (`user_id`) REFERENCES `Customer` (`id`) ON DELETE CASCADE;
+/* 
+-- Trigger Mỗi lần tạo 1 tài khoản mới thì sẽ tự tạo 1 giỏ hàng 
+DROP TRIGGER IF EXISTS `tri_create_cart_after_signup`;
+DELIMITER $$
+CREATE TRIGGER tri_create_cart_after_signup
+    AFTER INSERT
+    ON Customer FOR EACH ROW
+BEGIN
+    INSERT INTO Cart(user_id) VALUES (New.id) ;
+END$$
+DELIMITER ;
+
+-- trigger cập nhật lại số lượng sản phẩm trong giỏ hàng mỗi khi insert vào giỏ hàng
+DROP TRIGGER IF EXISTS `tri_cart_item_insert`;
+DELIMITER $$
+CREATE TRIGGER tri_cart_item_insert
+    BEFORE INSERT
+    ON Cart_item FOR EACH ROW
+BEGIN
+	  SET New.total = New.quantity * (select product.price FROM Product WHERE NEW.product_id = product.id); 
+    UPDATE cart Set cart.quantity = cart.quantity + New.quantity, cart.total = cart.total + New.total WHERE New.cart_id = cart.id ;
+END$$
+DELIMITER ;
+
+-- trigger cập nhật lại tổng số lượng sản phẩm, tổng tiền mỗi khi cập nhật giỏ hàng
+DROP TRIGGER IF EXISTS `tri_cart_item_update`;
+DELIMITER $$
+
+CREATE TRIGGER tri_cart_item_update
+    BEFORE UPDATE
+    ON Cart_item FOR EACH ROW
+BEGIN
+    IF OLD.quantity <> new.quantity THEN
+	    Set new.total = new.quantity * (select product.price FROM Product WHERE new.product_id = product.id); 
+    END IF ;
+END$$
+DELIMITER ;
+ */
 
 
 INSERT INTO Product (name, thumbnail, price, quantity, brand, cpu, gpu, ram,disk, screen_size, screen_tech, weight, os, overall_rating, num_rates) VALUES ('Apple Ultrabook MacBook Pro','https://images.fpt.shop/unsafe/filters:quality(5)/fptshop.com.vn/Uploads/images/2015/Tin-Tuc/QuanLNH2/macbook-pro-14-4.JPG',24279787,22,'Apple','Intel Core i5 3.1GHz','Intel Iris Plus Graphics 650','8GB','256GB SSD','13.3','IPS Panel Retina Display 2560x1600',1.37,'macOS',1,795);
@@ -1196,16 +1260,16 @@ CREATE FUNCTION random_integer(value_minimum INT, value_maximum INT) RETURNS INT
 );
 USE bkzone_2022;
 
-INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (1,'59/6/12 Nguyễn Đình Chiểu, Phường 4, Quận 3, Thành phố Hồ Chí Minh',     'Minh Vuong', '039768114', 'momo',   '2022-12-1','waiting',67516694);
-INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (2,'98 Nguyễn Đình Chiểu Dist1, Thành phố Hồ Chí Minh',                      'Minh Vuong', '039768114', 'cash',   '2022-12-1','confirmed',58139323);
-INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (3,'98 Nguyễn Đình Chiểu Dist1, Thành phố Hồ Chí Minh',                      'Minh Vuong', '039768114', 'cash',   '2022-12-1','confirmed',78968476);
-INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (4,'K18 Luy Ban Bich Street Tan Thoi Hoa Phường, Thành phố Hồ Chí Minh',     'Tuan Hao',   '039768114', 'qrcode', '2022-12-1','waiting',67516694);
-INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (5,'18 Luy Ban Bich Street Tan Thoi Hoa Phường, Thành phố Hồ Chí Minh',      'Quoc Thai',  '039768114', 'vnpay',  '2022-12-1','waiting',52439323);
-INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (6,'98 Nguyễn Đình Chiểu, Quận 1, Thành phố Hồ Chí Minh',                    'Kha Sang',   '039768114', 'momo',   '2022-12-1','confirmed',14344335);
-INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (7,'298 Nguyen Trong Tuyen, Phường 1, Thành phố Hồ Chí Minh',                'Kha Sang',   '039768114', 'momo',   '2022-12-1','waiting',43333344);
-INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (8,'18 Luy Ban Bich Street Tan Thoi Hoa Phường, Thành phố Hồ Chí Minh',      'Kha Sang',   '039768114', 'qrcode', '2022-12-1','confirmed',78225013);
-INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (9,'Ký túc xá khu A, Đường tạ Quang Bửu, khu phố 6, Linh Trung, Thủ Đức',    'Tuan Hao',   '039768114', 'qrcode', '2022-12-1','confirmed',59821003);
-INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (10,'K18 Luy Ban Bich Street Tan Thoi Hoa Phường, Thành phố Hồ Chí Minh',     'Tuan Hao',   '039768114', 'qrcode', '2022-12-1','waiting',75122036);
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (1,'59/6/12 Nguyễn Đình Chiểu, Phường 4, Quận 3, Thành phố Hồ Chí Minh',     'Minh Vuong', '039768114', 'momo',  '2022-12-1 10:24:25','waiting',67516694);
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (2,'98 Nguyễn Đình Chiểu Dist1, Thành phố Hồ Chí Minh',                      'Minh Vuong', '039768114', 'cash',  '2022-12-1 10:24:25','confirmed',58139323);
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (3,'98 Nguyễn Đình Chiểu Dist1, Thành phố Hồ Chí Minh',                      'Minh Vuong', '039768114', 'cash',  '2022-12-1 10:24:25','confirmed',78968476);
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (4,'K18 Luy Ban Bich Street Tan Thoi Hoa Phường, Thành phố Hồ Chí Minh',     'Tuan Hao',   '039768114', 'qrcode','2022-12-1 10:24:25','waiting',67516694);
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (5,'18 Luy Ban Bich Street Tan Thoi Hoa Phường, Thành phố Hồ Chí Minh',      'Quoc Thai',  '039768114', 'vnpay', '2022-12-1 10:24:25','waiting',52439323);
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (6,'98 Nguyễn Đình Chiểu, Quận 1, Thành phố Hồ Chí Minh',                    'Kha Sang',   '039768114', 'momo',  '2022-12-1 10:24:25','confirmed',14344335);
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (7,'298 Nguyen Trong Tuyen, Phường 1, Thành phố Hồ Chí Minh',                'Kha Sang',   '039768114', 'momo',  '2022-12-1 10:24:25','waiting',43333344);
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (8,'18 Luy Ban Bich Street Tan Thoi Hoa Phường, Thành phố Hồ Chí Minh',      'Kha Sang',   '039768114', 'qrcode','2022-12-1 10:24:25','confirmed',78225013);
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (9,'Ký túc xá khu A, Đường tạ Quang Bửu, khu phố 6, Linh Trung, Thủ Đức',    'Tuan Hao',   '039768114', 'qrcode','2022-12-1 10:24:25','confirmed',59821003);
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (10,'K18 Luy Ban Bich Street Tan Thoi Hoa Phường, Thành phố Hồ Chí Minh',     'Tuan Hao',   '039768114', 'qrcode','2022-12-1 10:24:25','waiting',75122036);
 INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (1,random_integer(1,100), random_integer(0,2));
 INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (1,random_integer(1,100), random_integer(0,2));
 INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (2,random_integer(1,100), random_integer(0,2));
@@ -1228,12 +1292,40 @@ INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (10,random_integ
 INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (10,random_integer(1,100), random_integer(0,2));
 
 INSERT INTO Address (user_id, city, district, ward, specificAddress, phoneNumber, receiverName, `type`) VALUES
-(1, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 1', '0923236277', 'Người nhận 1', 1),
-(2, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 2', '0923236277', 'Người nhận 2', 0),
-(3, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 3', '0923236277', 'Người nhận 3', 1),
-(4, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 4', '0923236277', 'Người nhận 4', 1),
-(5, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 5', '0923236277', 'Người nhận 5', 1),
-(6, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 6', '0923236277', 'Người nhận 6', 1),
-(7, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 7', '0923236277', 'Người nhận 7', 1),
-(8, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 8', '0923236277', 'Người nhận 8', 1),
-(9, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 9', '0923236277', 'Người nhận 9', 1) ;
+(1, N'Bắc Giang', N'Huyện Lục Ngạn', N'Xã Nghĩa Hồ', N'Số nhà 1', '0923236277', N'Nguyễn Văn Anh', 1),
+(2, N'Lâm Đồng', N'Huyện Đạ Tẻh', N'Xã Quốc Oai', N'Số nhà 2', '0923236277', N'Nguyễn Huy Quốc', 0),
+(3, N'Hồ Chí Minh', N'Quận 3', N'Phường 11', N'Số nhà 3', '0923236277', N'Khưu Vĩnh Toàn', 1),
+(4, N'Hồ Chí Minh', N'Quận 3', N'Phường 01', N'Số nhà 4', '0923236277', N'Châu Ngọc Anh', 1),
+(5, N'Hồ Chí Minh', N'Thủ Đức', N'Linh Trung', N'Ký túc xá khu A', '0923236277', N'Liễu Minh Vương', 1),
+(6, N'Hồ Chí Minh', N'Quận 4', N'Phường 12', N'Số nhà 6', '0923236277', N'Mạnh Gia Khiêm', 1),
+(7, N'Hồ Chí Minh', N'Quận 11', N'Phường 05', N'Số nhà 7', '0923236277', N'Mâu Công Hậu', 1),
+(8, N'TPHCM', N'Thủ Đức', N'Linh Trung', N'Số nhà 8', '0923236277', N'Lyly Ðông Dương', 1),
+(9, N'Sóc Trăng', N'Huyện Long Phú', N'Xã Phú Hữu', N'Số nhà 9', '0923236277', N'Ngọc Quang Hòa', 1),
+(1, N'Sóc Trăng', N'Thị xã Ngã Năm', N'Xã Mỹ Bình', N'Số nhà 9', '0923236277', N'Mai Ðình Phúc', 1),
+(2, N'Cần Thơ', N'Quận Cái Răng', N'Phường Phú Thứ', N'Số nhà 9', '0923236277', N'Cống Bảo Hiển', 1),
+(3, N'Cần Thơ', N'Cần Thơ', N'Huyện Thới Lai', N'Số nhà 9', '0923236277', N'Trần Đình Nam', 1);
+
+
+INSERT INTO Cart_item(cart_id, product_id, quantity) VALUES
+(1, 1 ,2),
+(1, 3, 2),
+(1, 2, 2),
+(1, 8, 2),
+(1, 4, 1),
+(2, 2, 2),
+(2, 4, 3),
+(2, 3, 2),
+(3, 8, 1),
+(4, 8, 1),
+(5, 8, 1),
+(6, 8, 1),
+(7, 8, 3),
+(8, 8, 2),
+(9, 8, 1);
+
+
+
+
+
+
+

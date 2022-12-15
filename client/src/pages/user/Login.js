@@ -6,7 +6,6 @@ import axios from "axios";
 import MyButton from "../../components/MyButton";
 
 function Login() {
-    var linkto = '/';
     const navigate = useNavigate()
     const [input, setinput] = useState({username: "", password: "", email: ""});
     const [danger, setdanger] = useState({username: false, password: false, email: false, login: false});
@@ -100,7 +99,6 @@ function Login() {
                         <p className="mb-2">Bạn quên mật khẩu? Nhập địa chỉ email để lấy lại mật khẩu qua email.</p>
                     </Row>
                     <Row className="mb-3 mt-md-4 ">
-                    {forget && (<Navigate to="/" replace={true} />)}
                         <Form onSubmit={(e) => handleSubmitForget(e)}>
                             <Form.Group className="mb-3 w-75">
                                 <Form.Label className="text-center">Email</Form.Label>

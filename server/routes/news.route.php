@@ -18,10 +18,21 @@
                 http_response_code($e->getStatusCode());
             }
         }
+        else if($url['3'] == 'detail' and $method == 'PUT'){
+            try{
+                $data = (array) json_decode(file_get_contents('php://input'));
+                echo NewsController::getNewsDetail($data[0]);
+                http_response_code(200);
+            }
+            catch(CustomError $e){
+                echo json_encode(['msg' => $e->getMessage()]);
+                http_response_code($e->getStatusCode());
+            }
+        }
         else if($method == 'PUT'){
             try{
                 $data = (array) json_decode(file_get_contents('php://input'));       
-                echo NewsController::editNews($url['3'],$data);
+                echo NewsController::editNews($data);
                 http_response_code(200);
             }
             catch(CustomError $e){
