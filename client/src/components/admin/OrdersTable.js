@@ -2,7 +2,7 @@ import { Modal, Box, Checkbox, Grid, TextInput, Text, Group, ActionIcon } from '
 import sortBy from 'lodash/sortBy';
 import { useDebouncedValue, useMediaQuery } from '@mantine/hooks';
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 // import { orderData } from './data';
 import * as GrIcons from 'react-icons/gr';
 import * as AiIcons from 'react-icons/ai';
@@ -14,7 +14,6 @@ import { getStatus } from '../../helpper/helpper';
 import axios from 'axios';
 
 import Price from '../../components/PriceDisplay/Price';
-import { OrderContext } from '../../pages/admin/Orders';
 
 const PAGE_SIZES = [10, 15, 20];
 
@@ -22,23 +21,32 @@ export function OrdersTable() {
     const [pageSize, setPageSize] = useState(PAGE_SIZES[1]);
     const [query, setQuery] = useState('');
     const [debouncedQuery] = useDebouncedValue(query, 200);
-    const [orderData, setOrderData, getOrders] = useContext(OrderContext);
-
-    console.log(orderData);
-
-    useEffect(() => {
-        setPage(1);
-    }, [pageSize]);
-
+    const [orderData, setOrderData] = useState([]);
     const [page, setPage] = useState(1);
     const [records, setRecords] = useState(orderData.slice(0, pageSize));
-
-    const [orderDetails, setOrderDetails] = useState(orderData[0]);
+    const [orderDetails, setOrderDetails] = useState(orderData.length > 0 && orderData[0]);
     const [done, setDone] = useState({ status: false, msg: 'empty form' });
     const [sortStatus, setSortStatus] = useState({
         columnAccessor: 'price',
         direction: 'asc',
     });
+
+    const getOrders = async () => {
+        return await axios
+            .get('http://localhost:8080/api/orders/all')
+            .then((res) => setOrderData(res.data))
+            .catch((err) => alert('Đã xảy ra lỗi!', err));
+    };
+    useEffect(() => {
+        const timer = window.setTimeout(() => {
+            getOrders();
+        }, 1000);
+        return () => window.clearTimeout(timer);
+    }, []);
+
+    useEffect(() => {
+        setPage(1);
+    }, [pageSize]);
 
     //Pagination
     useEffect(() => {
@@ -60,7 +68,7 @@ export function OrdersTable() {
                 return true;
             }),
         );
-    }, [debouncedQuery]);
+    }, [debouncedQuery, orderData]);
 
     // Sorting...
     useEffect(() => {
@@ -85,9 +93,7 @@ export function OrdersTable() {
             },
         }).then((res) => res);
 
-        await getOrders()
-            .then((res) => setOrderData(res))
-            .catch((err) => alert(err));
+        getOrders();
 
         if (event.target.name === 'edit') {
             if (done['status'] === false) return toast.error(done['msg'], toastOptions);
@@ -97,6 +103,7 @@ export function OrdersTable() {
         }
     };
 
+    console.log(orderDetails);
     return (
         <div>
             <Box sx={{ height: 600 }}>
@@ -126,13 +133,13 @@ export function OrdersTable() {
                         { accessor: 'customer_id', title: 'Mã TK' },
                         { accessor: 'total_order_money', title: 'Tổng giá trị' },
                         {
-                            accessor: 'order_date',
+                            accessor: 'create_at',
                             title: 'Ngày đặt',
                             width: 150,
                             sortable: true,
                         },
                         {
-                            accessor: 'order_date',
+                            accessor: 'last_update',
                             title: 'Cập nhật lần cuối',
                             sortable: true,
                         },
@@ -224,7 +231,7 @@ export function OrdersTable() {
                                 <p className="text-primary m-0 ms-auto">{orderDetails.total_order_money}</p>
                             </div>
                             <hr />
-                            {orderDetails &&
+                            {orderDetails.products &&
                                 orderDetails.products.map((item, index) => {
                                     return (
                                         <div className="ms-2 py-2" key={index}>
@@ -302,9 +309,9 @@ export function OrdersTable() {
                                 xmlns="http://www.w3.org/2000/svg"
                             >
                                 <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
                                     d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                                 ></path>
                             </svg>
@@ -365,9 +372,9 @@ export function OrdersTable() {
                                 xmlns="http://www.w3.org/2000/svg"
                             >
                                 <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
                                     d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                                 ></path>
                             </svg>

@@ -1,114 +1,118 @@
 @import 'normalize.css';
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,400;1,500&display=swap');
 :root {
-    //For all
-    --white: #fff;
-    --black: #000;
-    --text-color: #333;
+  //For all
+  --white: #fff;
+  --black: #000;
+  --text-color: #333;
 
-    --primary: #030391;
+  --primary: #030391;
 
-    --user-header-height: 180px;
-    --user-footer-height: 60px;
+  --user-header-height: 200px;
+  --user-footer-height: 60px;
 }
 * {
-    box-sizing: inherit;
+  box-sizing: inherit;
 }
 
 html {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 body {
-    margin: 0;
-    font-family: 'Roboto', sans-serif;
-    text-rendering: optimizespeed;
-    color: var(--text-color);
-    scroll-behavior: smooth;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  text-rendering: optimizespeed;
+  color: var(--text-color);
+  scroll-behavior: smooth;
 }
 
 button,
 input,
 [tabindex] {
-    outline: none;
-    border: none;
+  outline: none;
+  border: none;
 }
 
 a {
-    color: var(--text-color);
+  color: var(--text-color);
+  text-decoration: none;
+  &:hover {
     text-decoration: none;
-    &:hover {
-        text-decoration: none;
-    }
+  }
 }
 ::-webkit-scrollbar {
-    width: 5px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--primary);
-    border-radius: 3px;
+  background: var(--primary);
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--primary);
+  background: var(--primary);
 }
 
 .text-orange {
-    color: #dc3545;
+  color: #dc3545;
 }
 
 .bg-primary {
-    background-color: var(--primary) !important;
+  background-color: var(--primary) !important;
+}
+
+.bg-primary2 {
+  background-color: #0280ff;
 }
 .text-primary {
-    color: var(--primary) !important;
+  color: var(--primary) !important;
 }
 .bg-table {
-    background: rgb(249, 246, 209);
+  background: rgb(249, 246, 209);
 }
 
 .text-overflow-ellipsis-2 {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 3; /* number of lines to show */
-    line-clamp: 3;
-    -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* number of lines to show */
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 //custm form-floating from bootstrap
 
 .form-floating {
-    .form-control,
-    .form-control-plaintext {
-        padding: 1rem 0.75rem;
-    }
-    .form-control,
-    .form-control-plaintext {
-        height: calc(2.5rem + 2px);
-        line-height: 1;
-    }
-    .form-select {
-        height: calc(2.7rem + 2px);
-        padding-top: 1rem;
-        padding-bottom: 0;
-    }
+  .form-control,
+  .form-control-plaintext {
+    padding: 1rem 0.75rem;
+  }
+  .form-control,
+  .form-control-plaintext {
+    height: calc(2.5rem + 2px);
+    line-height: 1;
+  }
+  .form-select {
+    height: calc(2.7rem + 2px);
+    padding-top: 1rem;
+    padding-bottom: 0;
+  }
 }
 
 .form-floating > label {
-    padding: 0.6rem 0.75rem;
-    font-size: 0.9rem;
-    color: #999;
-    transition: 0.2s all linear;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.9rem;
+  color: #999;
+  transition: 0.2s all linear;
 }
 .form-control:focus {
-    color: #495057;
-    background-color: #fff;
-    border-color: var(--primary);
-    outline: 0;
-    box-shadow: 0 0 0 1px rgb(3, 3, 145);
+  color: #495057;
+  background-color: #fff;
+  border-color: var(--primary);
+  outline: 0;
+  box-shadow: 0 0 0 1px rgb(3, 3, 145);
 }

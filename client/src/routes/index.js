@@ -21,7 +21,6 @@ import Guide from "../pages/user/Guide";
 import NotFound from "../pages/user/NotFound";
 import AboutUs from "../pages/user/AboutUs";
 import Resource from "../pages/admin/Resource";
-
 const publicRoutes = [];
 
 const privateRoutes = [];
@@ -89,7 +88,7 @@ const userRoutes = [
     layout: DefaultLayout,
   },
   {
-    path: "/profile",
+    path: "/account",
     component: Account,
     layout: DefaultLayout,
   },
