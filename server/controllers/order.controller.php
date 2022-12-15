@@ -5,7 +5,7 @@ include_once(dirname(__FILE__) . '/../middleware/utils/utils.php');
 
 class OrderController{
     public static function getAllOrder($params){
-        $user_id = array_key_exists('user_id', $params) ? $params['user_id'] : '' ;
+        $user_id = array_key_exists('userId', $params) ? $params['userId'] : '' ;
         $temp = new Order();
         $new = $temp->getAll($user_id);
 

@@ -34,6 +34,9 @@ class UserController{
                     'id' => $rows[0]['id'],
                     'first_name' => $rows[0]['first_name'],
                     'last_name' => $rows[0]['last_name'],
+                    'address' => $rows[0]['address'],
+                    'email' => $rows[0]['email'],
+                    'phone' => $rows[0]['phone'],
                     'token' => $jwt
                 ]]);
             }
