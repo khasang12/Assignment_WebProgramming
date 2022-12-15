@@ -14,19 +14,22 @@ export default function Item({ item }) {
   //add product to cart
   const [state, dispatch] = useContext(Context);
   const handleAddToCart = async () => {
-    await axios({
-      method: 'post',
-      url: `http://localhost:8080/api/cart/${state.current_user.id}`,
-      data: {
-        product_id: item.id,
-        quantity: 1,
-      },
-    })
-      .then((res) => alert('Thêm thành công vào giỏ hàng'))
-      .then((res) => res)
-      .catch((err) => alert('đã xảy ra lỗi: ', err));
+    let user_id = JSON.parse(sessionStorage.getItem('user')).id;
+    if (sessionStorage.getItem('user')) {
+      await axios({
+        method: 'post',
+        url: `http://localhost:8080/api/cart/${user_id}`,
+        data: {
+          product_id: item.id,
+          quantity: 1,
+        },
+      })
+        .then((res) => alert('Thêm thành công vào giỏ hàng'))
+        .then((res) => res)
+        .catch((err) => alert('đã xảy ra lỗi: ', err));
 
-    getCartAPI().then((res) => dispatch(setCart(res)));
+      getCartAPI().then((res) => dispatch(setCart(res)));
+    }
   };
 
   return (
