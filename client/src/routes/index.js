@@ -21,7 +21,6 @@ import NotFound from '../pages/user/NotFound';
 import AboutUs from '../pages/user/AboutUs';
 import Resource from '../pages/admin/Resource';
 import Account from '../pages/user/Account';
-
 const publicRoutes = [];
 
 const privateRoutes = [];

@@ -15,7 +15,7 @@ function Settings({ navbarAdmin }) {
 
           <div class="card-body">
             <h1 class="card-title p-2">Admin</h1>
-            <h3 class="card-text p-2">Admin 1 at BKZone</h3>
+            <h3 class="card-text p-2">{sessionStorage.getItem("user")?JSON.parse(sessionStorage.getItem("user")).name:"Undefined"} at BKZone</h3>
             <p class="card-text p-2">Email: admin@admin.com</p>
             <p class="card-text p-2">Phone: (+84) 0782 041 297</p>
             <p class="card-text p-2">

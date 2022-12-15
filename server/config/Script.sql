@@ -1,3 +1,4 @@
+SET GLOBAL log_bin_trust_function_creators = 1;
 DROP DATABASE IF EXISTS bkzone_2022;
 CREATE DATABASE bkzone_2022;
 USE bkzone_2022;
@@ -58,8 +59,8 @@ CREATE TABLE `Orders` (
 CREATE TABLE `OrderDetail` (
   `order_id` int,
   `product_id` int,
-  `quantity` integer,
-  `total_money` integer,
+  `quantity` integer DEFAULT 0,
+  `total_money` integer  DEFAULT 0,
   PRIMARY KEY (`order_id`, `product_id`)
 );
 CREATE TABLE `Comment` (
@@ -69,6 +70,7 @@ CREATE TABLE `Comment` (
   `admin_id` int,
   `comment` varchar(255),
   `updated_at` timestamp,
+  `num_rate` int,
   `status` varchar(255),
   PRIMARY KEY (id)
 );
@@ -112,6 +114,32 @@ CREATE TABLE `Resource` (
   PRIMARY KEY(id)
 );
 
+CREATE TABLE Cart(
+	`id` int AUTO_INCREMENT, 
+	`user_id` int, 
+	`quantity` int DEFAULT  0, 
+	`total` int DEFAULT  0,
+
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE Cart_item(
+	`cart_id` int, 
+	`product_id` int, 
+	`quantity` int, 
+	`total` int,
+  `isSelected` int DEFAULT 0,
+
+	PRIMARY KEY(cart_id, product_id)
+);
+
+
+ALTER TABLE `Cart` ADD FOREIGN KEY (`user_id`) REFERENCES `Customer` (`id`) ON DELETE CASCADE;
+
+ALTER TABLE `Cart_item` ADD FOREIGN KEY (`cart_id`) REFERENCES `Cart` (`id`) ON DELETE CASCADE;
+
+ALTER TABLE `Cart_item` ADD FOREIGN KEY (`product_id`) REFERENCES `Product` (`id`) ON DELETE CASCADE;
+
 ALTER TABLE `Orders` ADD FOREIGN KEY (`customer_id`) REFERENCES `Customer` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `OrderDetail` ADD FOREIGN KEY (`order_id`) REFERENCES `Orders` (`id`) ON DELETE CASCADE;
@@ -127,6 +155,72 @@ ALTER TABLE `Comment` ADD FOREIGN KEY (`admin_id`) REFERENCES `Admin` (`id`) ON 
 ALTER TABLE `News` ADD FOREIGN KEY (`admin_id`) REFERENCES `Admin` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `address` ADD FOREIGN KEY (`user_id`) REFERENCES `Customer` (`id`) ON DELETE CASCADE;
+
+-- Trigger Mỗi lần tạo 1 tài khoản mới thì sẽ tự tạo 1 giỏ hàng 
+DROP TRIGGER IF EXISTS `tri_create_cart_after_signup`;
+DELIMITER $$
+CREATE TRIGGER tri_create_cart_after_signup
+    AFTER INSERT
+    ON Customer FOR EACH ROW
+BEGIN
+    INSERT INTO Cart(user_id) VALUES (New.id) ;
+END$$
+DELIMITER ;
+
+-- trigger cập nhật lại số lượng sản phẩm trong giỏ hàng mỗi khi insert vào giỏ hàng
+DROP TRIGGER IF EXISTS `tri_cart_item_insert`;
+DELIMITER $$
+CREATE TRIGGER tri_cart_item_insert
+    BEFORE INSERT
+    ON Cart_item FOR EACH ROW
+BEGIN
+	  SET New.total = New.quantity * (select product.price FROM Product WHERE NEW.product_id = product.id); 
+    UPDATE cart Set cart.quantity = cart.quantity + New.quantity, cart.total = cart.total + New.total WHERE New.cart_id = cart.id ;
+END$$
+DELIMITER ;
+
+
+-- trigger cập nhật lại số lượng sản phẩm trong giỏ hàng mỗi khi insert vào giỏ hàng
+DROP TRIGGER IF EXISTS `tri_cart_item_delete`;
+DELIMITER $$
+CREATE TRIGGER tri_cart_item_delete
+    AFTER DELETE
+    ON Cart_item FOR EACH ROW
+BEGIN
+    UPDATE cart Set cart.quantity = cart.quantity - OLD.quantity, cart.total = cart.total - OLD.total WHERE OLD.cart_id = cart.id ;
+END$$
+DELIMITER ;
+
+
+-- trigger cập nhật lại tổng số lượng sản phẩm, tổng tiền mỗi khi cập nhật giỏ hàng
+DROP TRIGGER IF EXISTS `tri_cart_item_update`;
+DELIMITER $$
+
+CREATE TRIGGER tri_cart_item_update
+    BEFORE UPDATE
+    ON Cart_item FOR EACH ROW
+BEGIN
+    IF OLD.quantity <> new.quantity THEN
+	    Set new.total = new.quantity * (select product.price FROM Product WHERE new.product_id = product.id); 
+    END IF ;
+END$$
+DELIMITER ;
+
+
+-- trigger cập nhật tổng số lượng sản phẩm, tổng tiền mỗi khi đặt hàng
+DROP TRIGGER IF EXISTS `tri_order_update`;
+DELIMITER $$
+
+CREATE TRIGGER tri_order_update
+    BEFORE INSERT
+    ON OrderDetail FOR EACH ROW
+BEGIN
+      	SET New.total_money = New.quantity * (select product.price FROM Product WHERE New.product_id = product.id); 
+	    UPDATE Orders set Orders.total_product = Orders.total_product + NEW.quantity, Orders.total_order_money = Orders.total_order_money + NEW.total_money WHERE Orders.id = NEW.order_id;
+END$$
+DELIMITER ;
+
+
 
 
 INSERT INTO Product (name, thumbnail, price, quantity, brand, cpu, gpu, ram,disk, screen_size, screen_tech, weight, os, overall_rating, num_rates) VALUES ('Apple Ultrabook MacBook Pro','https://images.fpt.shop/unsafe/filters:quality(5)/fptshop.com.vn/Uploads/images/2015/Tin-Tuc/QuanLNH2/macbook-pro-14-4.JPG',24279787,22,'Apple','Intel Core i5 3.1GHz','Intel Iris Plus Graphics 650','8GB','256GB SSD','13.3','IPS Panel Retina Display 2560x1600',1.37,'macOS',1,795);
@@ -1166,12 +1260,12 @@ VALUES (
     '<div class=\"article-details\"><h1 class=\"article-title\"><a href=\"/cpu-viet-tat-cua-tu-gi\">CPU viết tắt của từ gì? Cấu tạo, vai trò và các thuật ngữ liên quan về CPU</a></h1> <div class=\"date\"> <i class=\"fa fa-clock-o\"></i> Thứ Wed, <div class=\"news_home_content_short_time\"> 30/11/2022 </div> <div class=\"post-time\"> <i class=\"fa fa-user\" aria-hidden=\"true\"></i> Đăng bởi <span>Lâm Hải</span></div></div><div class=\"article-content\"> <div class=\"rte\"> <p><em>CPU viết tắt của từ gì? CPU là thuật ngữ quen thuộc đối với người dùng công nghệ và đây là bộ phận trong thể thiếu khi xử lý các hoạt động của hệ thống. Vậy cấu tạo, vai trò của CPU là gì? Hãy cùng <a href=\"https://memoryzone.com.vn/\" target=\"_blank\">Memoryzone</a> giải đáp trong bài viết sau đây bạn nhé!</em></p> <p><meta charset=\"utf-8\" /></p> <h2 dir=\"ltr\">1. CPU viết tắt của từ gì? Vai trò của CPU trên máy tính</h2> <p dir=\"ltr\"><a href=\"https://memoryzone.com.vn/cpu-may-tinh\" target=\"_blank\">CPU</a> viết tắt của từ gì? Dành cho những bạn chưa biết thì CPU có tên đầy đủ là Central Processing Unit và đây là bộ xử lý trung tâm khi nhắc đến các thiết bị laptop hay máy tính.</p> <p dir=\"ltr\">CPU được xem phần không thể thiếu của máy tính, nó được ví như não bộ và là nơi tiếp nhận, xử lý và điều khiển mọi hoạt động của máy tính, laptop. Hơn nữa, CPU còn có thể xử lý nhanh chóng các câu lệnh, các phép tính số học siêu “hack não”.</p> <p dir=\"ltr\"><strong>Xem thêm:</strong><a href=\"https://memoryzone.com.vn/cach-kiem-tra-nhiet-do-cpu-may-tinh-ban-va-laptop\" target=\"_blank\">Cách kiểm tra nhiệt độ CPU máy tính bàn và laptop nhanh chóng và hiệu quả</a></p> <p dir=\"ltr\">Ngoài ra, CPU còn là nơi tiếp nhận thông tin từ các thiết bị ngoại vi như <a href=\"https://memoryzone.com.vn/chuot-gaming-van-phong\" target=\"_blank\">chuột máy tính</a>, <a href=\"https://memoryzone.com.vn/ban-phim-gaming-van-phong\" target=\"_blank\">bàn phím</a>, máy in,... và trả về kết quả cho người dùng qua màn hình chính.</p> <p dir=\"ltr\" style=\"text-align: center;\"><img alt=\"CPU có nhiệm vụ tiếp nhận và xử lý các thông tin\" data-thumb=\"original\" original-height=\"400\" original-width=\"600\" src=\"//bizweb.dktcdn.net/100/329/122/files/cpu-co-nhiem-vu-tiep-nhan-va-xu-ly-cac-thong-tin.jpg?v=1669807403153\" /></p> <p dir=\"ltr\" style=\"text-align: center;\"><meta charset=\"utf-8\" /><em>CPU có nhiệm vụ tiếp nhận và xử lý các thông tin</em><meta charset=\"utf-8\" /></p> <h2 dir=\"ltr\">2. Cấu tạo bên trong của CPU máy tính gồm những gì?</h2> <p dir=\"ltr\">Sau khi đã tìm hiểu rõ về CPU viết tắt của từ gì, người dùng còn thắc mắc cấu tạo bên trong của CPU là gì mà có thể xử lý vô vàn yêu cầu đến như vậy?</p> <p dir=\"ltr\">Một CPU sẽ chứa hàng tỷ các bóng dẫn, chúng được sắp xếp trên những bảng mạch nhỏ và thực hiện các phép tính để khởi chạy chương trình được lưu trữ trong bộ nhớ hệ thống. CPU sẽ bao gồm hai khối chính: Khối tính toán ALU (Arithmetic Logic Unit) và Khối điều khiển CU (Control Unit).</p> <ul style=\"margin-left: 40px;\"> <li aria-level=\"1\" dir=\"ltr\"> <p dir=\"ltr\" role=\"presentation\">Khối điều khiển CU (Control Unit): CU có nhiệm vụ là phiên dịch các lệnh chương trình và điều khiển các xung nhịp hệ thống. CU là phần cốt lõi của bộ xử lý gồm các mạch logic.</p></li> <li aria-level=\"1\" dir=\"ltr\"> <p dir=\"ltr\" role=\"presentation\">Khối tính toán ALU (Arithmetic Logic Unit): Sử dụng hàm để thực hiện các yêu cầu về phép toán số học và logic.</p></li></ul> <p dir=\"ltr\" role=\"presentation\" style=\"text-align: center;\"><img alt=\"CPU gồm hai khối chính là ALU và CU\" data-thumb=\"original\" original-height=\"400\" original-width=\"534\" src=\"//bizweb.dktcdn.net/100/329/122/files/cpu-gom-hai-khoi-chinh-la-alu-va-cu-jpeg-940c4304-12ba-4dcf-8afc-980c6b272e73.jpg?v=1669807291383\" /></p> <p dir=\"ltr\" role=\"presentation\" style=\"text-align: center;\"><meta charset=\"utf-8\" /><em>CPU gồm hai khối chính là ALU và CU</em><meta charset=\"utf-8\" /></p> <p dir=\"ltr\">Ngoài hai khối trên, thì bên trong CPU còn có các thanh ghi (Registers), Opcode, Phần điều khiển:</p> <ul style=\"margin-left: 40px;\"> <li aria-level=\"1\" dir=\"ltr\"> <p dir=\"ltr\" role=\"presentation\"><strong>Thanh ghi (Registers)</strong>: được xem là bộ nhớ có dung lượng khá nhỏ nhưng lại mang tốc độ xử lý cao. Các thanh ghi nằm trong CPU được dùng để lưu trữ tạm các toán hạng, kết quả các phép tính toán, ô nhớ hay tiếp nhận các thông tin từ ALU. Trên thanh ghi thì bộ đếm chương trình sẽ là phần quan trọng nhất bởi nó sẽ trỏ đến các lệnh cần thực thi tiếp theo.</p></li> <li aria-level=\"1\" dir=\"ltr\"> <p dir=\"ltr\" role=\"presentation\"><strong>Opcode:</strong> Opcode sẽ là một phần bộ nhớ dùng để chứa mã máy CPU và có thể dễ dàng thực hiện các lệnh.</p></li> <li aria-level=\"1\" dir=\"ltr\"> <p dir=\"ltr\" role=\"presentation\"><strong>Phần điều khiển:</strong> Có nhiệm vụ điều khiển tần số xung nhịp và các khối. Các mạch xung nhịp trên hệ thống có chức năng đồng bộ các hoạt động xử lý bên trong/ ngoài của CPU. Thời gian giữa hai xung nhịp gọi là chu kỳ xung nhịp. Các xung nhịp hệ thống tạo ra các xung tín hiệu có thời gian chuẩn sẽ được đo bằng đơn vị MHz.</p></li></ul> <p dir=\"ltr\" role=\"presentation\"><strong>Xem thêm:</strong><a href=\"https://memoryzone.com.vn/ram-may-tinh-la-gi\" target=\"_blank\">RAM máy tính là gì? Máy tính và laptop cần dung lượng RAM bao nhiêu là đủ?</a></p> <h2 dir=\"ltr\">3. Tổng hợp thương hiệu CPU phổ biến hiện nay</h2> <h3 dir=\"ltr\">3.1. Thương hiệu CPU Intel</h3> <p dir=\"ltr\" style=\"margin-left: 40px;\">Intel là hãng cung cấp CPU cho <a href=\"https://memoryzone.com.vn/laptop\" target=\"_blank\">laptop</a>, máy tính lớn nhất hiện nay với hơn 50 năm kinh nghiệm trong lĩnh vực sản xuất. Các chip CPU Intel được ứng dụng nhiều công nghệ hiện đại với cấu hình mạnh mẽ và chất lượng hàng đầu.</p> <p dir=\"ltr\" style=\"margin-left: 40px;\">Rất dễ nhận thấy 3 dòng CPU Intel được sử dụng rộng rãi trên các thiết bị laptop PC lần lượt là <a href=\"https://memoryzone.com.vn/cpu-intel\" target=\"_blank\">Intel Core i</a>, Intel Celeron và Intel Pentium.</p> <p dir=\"ltr\" style=\"text-align: center;\"><img alt=\"Intel và AMD là hai hãng sản xuất CPU nổi tiếng\" data-thumb=\"original\" original-height=\"360\" original-width=\"640\" src=\"//bizweb.dktcdn.net/100/329/122/files/intel-va-amd-la-hai-hang-san-xuat-cpu-noi-tieng-277a7da8-0577-4d11-8a59-4fd63c079dc3.jpg?v=1669807306958\" /></p> <p dir=\"ltr\" style=\"text-align: center;\"><meta charset=\"utf-8\" /><em>Intel và AMD là hai hãng sản xuất CPU nổi tiếng</em><meta charset=\"utf-8\" /></p> <h3 dir=\"ltr\"> 3.2. Thương hiệu CPU AMD</h3> <p dir=\"ltr\" style=\"margin-left: 40px;\">Cùng với đó là CPU đến từ AMD (Advanced Micro Devices). AMD được biết đến là thương hiệu sản xuất CPU sau Intel và dường như các sản phẩm của AMD đang có sự “đối đầu” với CPU Intel. Cụ thể: nếu như CPU Intel mang đến các sản phẩm Core i3,i5, i7, i9 thì AMD không kém cạnh khi có <a href=\"https://memoryzone.com.vn/cpu-amd\" target=\"_blank\">CPU AMD</a> Ryzen 3, Ryzen 5, Ryzen 7, Ryzen 9.</p> <p dir=\"ltr\" style=\"margin-left: 40px;\">Sự cạnh tranh khốc liệt giữa Intel và AMD sẽ mang đến cho người dùng nhiều cơ hội lựa chọn và các sản phẩm CPU sẽ ngày càng đa dạng, chất lượng hơn.</p> <p dir=\"ltr\" style=\"margin-left: 40px;\"><strong>Xem thêm:</strong><a href=\"https://memoryzone.com.vn/vram-la-gi-bao-nhieu-gb-vram-la-du\" target=\"_blank\">VRAM là gì? Bao nhiêu GB VRAM là đủ dùng? Phân biệt giữa VRAM và RAM bạn nên biết</a></p> <h2 dir=\"ltr\">4. Các thuật ngữ liên quan đến CPU máy tính</h2> <h3 dir=\"ltr\">4.1. Tốc độ CPU</h3> <p dir=\"ltr\" style=\"margin-left: 40px;\">Tốc độ CPU hay còn gọi là tốc độ xung nhịp CPU. Thuật ngữ này được hiểu là các chỉ số biểu thị số chu kỳ hoạt động mà CPU có thể xử lý trong vòng 1 giây, đơn vị tính là Gigahertz (GHz). Ví dụ thực tế như: CPU Intel có tốc độ xung nhịp là 3.5 GHz/s thì CPU đó có thể thực hiện 3.5 tỷ chu kỳ xoay.</p> <h3 dir=\"ltr\">4.2. Ép xung CPU</h3> <p dir=\"ltr\" style=\"margin-left: 40px;\">Đi đôi với thuật ngữ tốc độ xung nhịp CPU sẽ là ép xung CPU. Vậy thuật ngữ ép xung CPU được hiểu như thế nào? Ép xung CPU là cách thúc đẩy và giúp tăng tốc độ CPU hơn mức bình thường. Điều này được hiểu là khi ép xung CPU máy tính sẽ hoạt động một cách mạnh mẽ hơn, tăng năng suất và tốc độ xử lý các yêu cầu từ người dùng.</p> <h3 dir=\"ltr\">4.3. CPU usage</h3> <p dir=\"ltr\" style=\"margin-left: 40px;\">CPU Usage là thuật ngữ được dùng để nói về dung lượng sử dụng CPU (viết dưới dạng %). Chỉ số CPU Usage thể hiện tốc độ xử lý trên máy là mạnh hay yếu, nếu CPU Usage càng cao thì máy đang hoạt động kém hiệu quả và ngược lại. Chỉ khi nào chỉ số CPU Usage giảm xuống thì tốc độ và công suất máy tính mới được cải thiện.</p> <p dir=\"ltr\" style=\"text-align: center;\"><img alt=\"Tìm hiểu các thuật ngữ xoay quanh CPU\" data-thumb=\"original\" original-height=\"400\" original-width=\"626\" src=\"//bizweb.dktcdn.net/100/329/122/files/tim-hieu-cac-thuat-ngu-xoay-quanh-cpu-1-1.jpg?v=1669807212527\" /></p> <p dir=\"ltr\" style=\"text-align: center;\"><meta charset=\"utf-8\" /><em>Tìm hiểu các thuật ngữ xoay quanh CPU</em><meta charset=\"utf-8\" /></p> <h3 dir=\"ltr\"> 4.4. Socket CPU</h3> <p dir=\"ltr\" style=\"margin-left: 40px;\">Chân Socket là tên gọi khác của Socket CPU đây là bộ phận có nhiệm vụ kết nối chip CPU và bộ phận bo mạch chủ. Socket CPU sẽ giữ cho CPU được cố định tại một chỗ, không bị xê dịch hay va chạm với các bộ phận khác khi người dùng di chuyển CPU. Không phải chân Socket nào cũng có thể đi cùng CPU bất kỳ mà mỗi loại sẽ có chân Socket riêng. Vậy nên bạn cần lựa chọn chân Socket phù hợp với CPU của mình.</p> <p dir=\"ltr\" style=\"margin-left: 40px;\"><strong>Xem thêm:</strong><a href=\"https://memoryzone.com.vn/card-do-hoa-laptop-la-gi\" target=\"_blank\">Card đồ họa laptop là gì? Cách chọn card đồ họa rời laptop phù hợp nhu cầu</a></p> <h3 dir=\"ltr\">4.5. CPU Tray</h3> <p dir=\"ltr\" style=\"margin-left: 40px;\">CPU Tray là gì? Thuật ngữ này chắc hẳn không còn mới mẻ gì với dân công nghệ nhưng có thể với những bạn mới tiếp xúc thì khó mà biết đến. CPU Tray hay còn được gọi là CPU hàng Tray dùng để nói về một CPU không kèm quạt và không có hộp đựng riêng. Khác với CPU Tray, CPU hàng box sẽ bao gồm cả quạt và hộp đựng.</p> <p dir=\"ltr\" style=\"margin-left: 40px;\">Sở dĩ CPU Tray khác với CPU box là vì đây là những sản phẩm được bán với số lượng lớn cho các nhà sản xuất phụ tùng gốc. Bởi họ sẽ lắp đặt trực tiếp CPU đó vào laptop hay <a href=\"https://memoryzone.com.vn/pc-st\" target=\"_blank\">PC máy tính bàn</a>nên sẽ không bao gồm hộp đựng bày bản. Cùng với đó, CPU không bao gồm quạt là vì bên mua sẽ tùy biến và lựa chọn hệ thống tản nhiệt cho phù hợp với cấu hình máy mà họ mong muốn.</p> <p dir=\"ltr\" style=\"margin-left: 40px;\"><strong>Tham khảo thêm:</strong></p> <ul dir=\"ltr\" style=\"margin-left: 80px;\"> <li><a href=\"https://memoryzone.com.vn/pc-mercury-series\" target=\"_blank\">PC Mercury Series</a></li> <li><a href=\"https://memoryzone.com.vn/pc-venus-series\" target=\"_blank\">PC Venus Series</a></li> <li><a href=\"https://memoryzone.com.vn/pc-titan-series\" target=\"_blank\">PC Titan Series</a></li> <li><a href=\"https://memoryzone.com.vn/pc-moonator-series\" target=\"_blank\">PC Moonator Series</a></li> <li><a href=\"https://memoryzone.com.vn/pc-neptune-series\" target=\"_blank\">PC Neptune Series</a></li></ul> <h2 dir=\"ltr\">5. Câu hỏi thường gặp</h2> <h3 dir=\"ltr\">5.1. CPU có tốc độ xử lý ra sao?</h3> <p dir=\"ltr\" style=\"margin-left: 40px;\">Tốc độ xử lý CPU trên từng máy sẽ có sự khác nhau. Điều này phụ thuộc vào tốc độ xung nhịp CPU, được tính bằng biểu thị chu kỳ hoạt động mà CPU có thể xử lý trong vòng 1 giây. Nhờ vào tốc độ xung nhịp đó mà người dùng có thể tính toán được là CPU xử lý nhanh hay chậm.</p> <h3 dir=\"ltr\">5.2. Chip với CPU có phải là một?</h3> <p dir=\"ltr\" style=\"margin-left: 40px;\">Để trả lời được câu hỏi này, trước tiên bạn cần biết về định nghĩa của chip. Chip (hay gọi là vi mạch) gồm các mạch điện chứa linh kiện bán dẫn và linh kiện điện tử thụ động, chúng kết nối với nhau và cùng thực hiện một chức năng nào đó.</p> <p dir=\"ltr\" style=\"margin-left: 40px;\">Còn với CPU, như đã tìm hiểu ở trên vềCPU viết tắt của từ gì và định nghĩa thìCPU sẽ chứa hàng tỷ các bóng dẫn, chúng được sắp xếp trên những bảng mạch nhỏ với chức năng là xử lý thông tin. Vậy nên có thể xem chip và CPU là một.</p> <h3 dir=\"ltr\">5.3. Chipset so với chip khác nhau thế nào?</h3> <p dir=\"ltr\" style=\"margin-left: 40px;\">Chipset ở đây được hiểu là một tập hợp chip, nghĩa là nhiều chip đi với nhau và cùng làm một nhiệm vụ. Chipset thường được nhắc đến khi đề cập đến một chip đặc biệt trên mainboard hay các card mở rộng.</p> <h2 dir=\"ltr\">6. Tổng kết</h2> <p dir=\"ltr\"><a href=\"https://memoryzone.com.vn/\" target=\"_blank\">Memoryzone</a> hy vọng rằng qua bài viết trên bạn đọc đã hiểu rõ về CPU và trả lời được câu hỏi “CPU viết tắt của từ gì” hay những thuật ngữ liên quan đến CPU. Liên hệ với chúng tôi để được giải đáp các thắc mắc nếu có và thường xuyên cập nhật các <a href=\"https://memoryzone.com.vn/tin-tuc\" target=\"_blank\">tin tức</a>, bài viết mới nhất tại website Memoryzone bạn nhé!</p> <p dir=\"ltr\"><strong>Bài viết liên quan:</strong></p> <ul dir=\"ltr\" style=\"margin-left: 40px;\"> <li><a href=\"https://memoryzone.com.vn/bat-mi-cach-bat-den-led-ban-phim-tren-may-tinh-va-laptop\">Bật mí cách bật đèn led bàn phím trên máy tính và các dòng laptop Dell, Asus, Acer</a></li> <li><a href=\"https://memoryzone.com.vn/huong-dan-tai-coc-coc-ve-may-tinh-mien-phi\">Hướng dẫn tải Cốc Cốc về máy tính miễn phí và cài đặt chỉ trong 5 phút</a></li> <li><a href=\"https://memoryzone.com.vn/cach-ket-noi-wifi-cho-may-tinh-ban\">Cách kết nối wifi cho máy tính bàn chỉ trong tích tắc và dễ thao tác</a></li> <li><a href=\"https://memoryzone.com.vn/cach-ket-noi-chuot-khong-day-voi-laptop\">Cách kết nối chuột không dây với laptop trong tích tắc và đơn giản nhất</a></li></ul> </div> </div> </div> <div class=\"col-xs-12\"> <div class=\"row row-noGutter tag-share\"> <div class=\"col-xs-12 col-sm-6 tag_article \"> <b>Tags:</b> <a href=\"/blogs/all/tagged/alu\">ALU</a>, <a href=\"/blogs/all/tagged/amd\">AMD</a>, <a href=\"/blogs/all/tagged/cpu\">CPU</a>, <a href=\"/blogs/all/tagged/cpu-viet-tat-cua-tu-gi\">CPU viết tắt của từ gì</a>, <a href=\"/blogs/all/tagged/laptop\">Laptop</a> </div> <div class=\"col-xs-12 col-sm-6\"> <div class=\"social-sharing f-right\"> <div class=\"addthis_inline_share_toolbox share_add\"> <script type=\"text/javascript\" src=\"//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-58589c2252fc2da4\"></script> </div> </div> </div> </div> </div>'
   );
 
-INSERT INTO Comment (`product_id`, `customer_id`, `admin_id`, `comment`, `updated_at`, `status`) VALUES (2, 3, 1, 'Sản phẩm tốt', '2022-11-06 11:06:37', 'Chưa phản hồi');
-INSERT INTO Comment (`product_id`, `customer_id`, `admin_id`, `comment`, `updated_at`, `status`) VALUES (1, 1, 2, 'Sản phẩm tốt', '2022-11-06 11:06:37', 'Chưa phản hồi');
-INSERT INTO Comment (`product_id`, `customer_id`, `admin_id`, `comment`, `updated_at`, `status`) VALUES (3, 2, 3, 'Sản phẩm tốt', '2022-11-06 11:06:37', 'Chưa phản hồi');
-INSERT INTO Comment (`product_id`, `customer_id`, `admin_id`, `comment`, `updated_at`, `status`) VALUES (2, 4, 1, 'Sản phẩm tốt', '2022-11-06 11:06:37', 'Đã phản hồi');
-INSERT INTO Comment (`product_id`, `customer_id`, `admin_id`, `comment`, `updated_at`, `status`) VALUES (3, 2, 2, 'Sản phẩm tốt', '2022-11-06 11:06:37', 'Đã phản hồi');
-INSERT INTO Comment (`product_id`, `customer_id`, `admin_id`, `comment`, `updated_at`, `status`) VALUES (1, 2, 3, 'Sản phẩm tốt', '2022-11-06 11:06:37', 'Đã phản hồi');
+INSERT INTO Comment (`product_id`, `customer_id`, `admin_id`, `comment`, `updated_at`,`num_rate`, `status`) VALUES (2, 3, 1, 'Sản phẩm tốt', '2022-11-06 11:06:37', 5, 'Chưa phản hồi');
+INSERT INTO Comment (`product_id`, `customer_id`, `admin_id`, `comment`, `updated_at`,`num_rate`, `status`) VALUES (1, 1, 2, 'Sản phẩm tốt', '2022-11-06 11:06:37', 3, 'Chưa phản hồi');
+INSERT INTO Comment (`product_id`, `customer_id`, `admin_id`, `comment`, `updated_at`,`num_rate`, `status`) VALUES (3, 2, 3, 'Sản phẩm tốt', '2022-11-06 11:06:37', 4, 'Chưa phản hồi');
+INSERT INTO Comment (`product_id`, `customer_id`, `admin_id`, `comment`, `updated_at`,`num_rate`, `status`) VALUES (2, 4, 1, 'Sản phẩm tốt', '2022-11-06 11:06:37', 4, 'Đã phản hồi');
+INSERT INTO Comment (`product_id`, `customer_id`, `admin_id`, `comment`, `updated_at`,`num_rate`, `status`) VALUES (3, 2, 2, 'Sản phẩm tốt', '2022-11-06 11:06:37', 5, 'Đã phản hồi');
+INSERT INTO Comment (`product_id`, `customer_id`, `admin_id`, `comment`, `updated_at`,`num_rate`, `status`) VALUES (1, 2, 3, 'Sản phẩm tốt', '2022-11-06 11:06:37', 5, 'Đã phản hồi');
 
 -- Resource
 INSERT INTO Resource (`id`, `name`, `data`)
@@ -1196,44 +1290,72 @@ CREATE FUNCTION random_integer(value_minimum INT, value_maximum INT) RETURNS INT
 );
 USE bkzone_2022;
 
-INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, order_date, `status`,total_order_money) VALUE (1,'59/6/12 Nguyễn Đình Chiểu, Phường 4, Quận 3, Thành phố Hồ Chí Minh',     'Minh Vuong', '039768114', 'momo',   '2022-12-1','waiting',67516694);
-INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, order_date, `status`,total_order_money) VALUE (2,'98 Nguyễn Đình Chiểu Dist1, Thành phố Hồ Chí Minh',                      'Minh Vuong', '039768114', 'cash',   '2022-12-1','confirmed',58139323);
-INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, order_date, `status`,total_order_money) VALUE (3,'98 Nguyễn Đình Chiểu Dist1, Thành phố Hồ Chí Minh',                      'Minh Vuong', '039768114', 'cash',   '2022-12-1','confirmed',78968476);
-INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, order_date, `status`,total_order_money) VALUE (4,'K18 Luy Ban Bich Street Tan Thoi Hoa Phường, Thành phố Hồ Chí Minh',     'Tuan Hao',   '039768114', 'qrcode', '2022-12-1','waiting',67516694);
-INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, order_date, `status`,total_order_money) VALUE (5,'18 Luy Ban Bich Street Tan Thoi Hoa Phường, Thành phố Hồ Chí Minh',      'Quoc Thai',  '039768114', 'vnpay',  '2022-12-1','waiting',52439323);
-INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, order_date, `status`,total_order_money) VALUE (6,'98 Nguyễn Đình Chiểu, Quận 1, Thành phố Hồ Chí Minh',                    'Kha Sang',   '039768114', 'momo',   '2022-12-1','confirmed',14344335);
-INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, order_date, `status`,total_order_money) VALUE (7,'298 Nguyen Trong Tuyen, Phường 1, Thành phố Hồ Chí Minh',                'Kha Sang',   '039768114', 'momo',   '2022-12-1','waiting',43333344);
-INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, order_date, `status`,total_order_money) VALUE (8,'18 Luy Ban Bich Street Tan Thoi Hoa Phường, Thành phố Hồ Chí Minh',      'Kha Sang',   '039768114', 'qrcode', '2022-12-1','confirmed',78225013);
-INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, order_date, `status`,total_order_money) VALUE (9,'Ký túc xá khu A, Đường tạ Quang Bửu, khu phố 6, Linh Trung, Thủ Đức',    'Tuan Hao',   '039768114', 'qrcode', '2022-12-1','confirmed',59821003);
-INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, order_date, `status`,total_order_money) VALUE (10,'K18 Luy Ban Bich Street Tan Thoi Hoa Phường, Thành phố Hồ Chí Minh',     'Tuan Hao',   '039768114', 'qrcode', '2022-12-1','waiting',75122036);
-INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (1,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (1,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (2,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (2,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (3,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (3,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (4,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (4,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (5,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (5,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (6,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (6,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (7,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (7,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (8,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (8,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (9,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (9,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (10,random_integer(1,100), random_integer(0,2));
-INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (10,random_integer(1,100), random_integer(0,2));
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (1,'59/6/12 Nguyễn Đình Chiểu, Phường 4, Quận 3, Thành phố Hồ Chí Minh',     'Minh Vuong', '039768114', 'momo',  '2022-12-1 10:24:25 10:24:25','waiting',67516694);
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (2,'98 Nguyễn Đình Chiểu Dist1, Thành phố Hồ Chí Minh',                      'Minh Vuong', '039768114', 'cash',  '2022-12-1 10:24:25','confirmed',58139323);
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (3,'98 Nguyễn Đình Chiểu Dist1, Thành phố Hồ Chí Minh',                      'Minh Vuong', '039768114', 'cash',  '2022-12-1 10:24:25','confirmed',78968476);
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (4,'K18 Luy Ban Bich Street Tan Thoi Hoa Phường, Thành phố Hồ Chí Minh',     'Tuan Hao',   '039768114', 'qrcode','2022-12-1 10:24:25','waiting',67516694);
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (5,'18 Luy Ban Bich Street Tan Thoi Hoa Phường, Thành phố Hồ Chí Minh',      'Quoc Thai',  '039768114', 'vnpay', '2022-12-1 10:24:25','waiting',52439323);
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (6,'98 Nguyễn Đình Chiểu, Quận 1, Thành phố Hồ Chí Minh',                    'Kha Sang',   '039768114', 'momo',  '2022-12-1 10:24:25','confirmed',14344335);
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (7,'298 Nguyen Trong Tuyen, Phường 1, Thành phố Hồ Chí Minh',                'Kha Sang',   '039768114', 'momo',  '2022-12-1 10:24:25','waiting',43333344);
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (8,'18 Luy Ban Bich Street Tan Thoi Hoa Phường, Thành phố Hồ Chí Minh',      'Kha Sang',   '039768114', 'qrcode','2022-12-1 10:24:25','confirmed',78225013);
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (9,'Ký túc xá khu A, Đường tạ Quang Bửu, khu phố 6, Linh Trung, Thủ Đức',    'Tuan Hao',   '039768114', 'qrcode','2022-12-1 10:24:25','confirmed',59821003);
+INSERT INTO `Orders` (customer_id,`address`,receiverName,phoneNumber, paymentMethod, create_at, `status`,total_order_money) VALUE (10,'K18 Luy Ban Bich Street Tan Thoi Hoa Phường, Thành phố Hồ Chí Minh',     'Tuan Hao',   '039768114', 'qrcode','2022-12-1 10:24:25','waiting',75122036);
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (1,random_integer(1,20), random_integer(1,10));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (1,random_integer(1,20), random_integer(1,10));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (2,random_integer(1,20), random_integer(1,10));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (2,random_integer(1,20), random_integer(1,10));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (3,random_integer(1,20), random_integer(1,10));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (3,random_integer(1,20), random_integer(1,10));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (4,random_integer(1,20), random_integer(1,10));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (4,random_integer(1,20), random_integer(1,10));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (5,random_integer(1,20), random_integer(1,10));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (5,random_integer(1,20), random_integer(1,10));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (6,random_integer(1,20), random_integer(1,10));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (6,random_integer(1,20), random_integer(1,10));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (7,random_integer(1,20), random_integer(1,10));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (7,random_integer(1,20), random_integer(1,10));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (8,random_integer(1,20), random_integer(1,10));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (8,random_integer(1,20), random_integer(1,10));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (9,random_integer(1,20), random_integer(1,10));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (9,random_integer(1,20), random_integer(1,10));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (10,random_integer(1,20), random_integer(1,10));
+INSERT INTO `OrderDetail` (order_id,product_id, quantity) VALUE (10,random_integer(1,20), random_integer(1,10));
 
 INSERT INTO Address (user_id, city, district, ward, specificAddress, phoneNumber, receiverName, `type`) VALUES
-(1, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 1', '0923236277', 'Người nhận 1', 1),
-(2, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 2', '0923236277', 'Người nhận 2', 0),
-(3, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 3', '0923236277', 'Người nhận 3', 1),
-(4, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 4', '0923236277', 'Người nhận 4', 1),
-(5, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 5', '0923236277', 'Người nhận 5', 1),
-(6, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 6', '0923236277', 'Người nhận 6', 1),
-(7, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 7', '0923236277', 'Người nhận 7', 1),
-(8, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 8', '0923236277', 'Người nhận 8', 1),
-(9, 'TPHCM', 'Thủ Đức', 'Linh Trung', 'Số nhà 9', '0923236277', 'Người nhận 9', 1) ;
+(1, N'Bắc Giang', N'Huyện Lục Ngạn', N'Xã Nghĩa Hồ', N'Số nhà 1', '0923236277', N'Nguyễn Văn Anh', 1),
+(2, N'Lâm Đồng', N'Huyện Đạ Tẻh', N'Xã Quốc Oai', N'Số nhà 2', '0923236277', N'Nguyễn Huy Quốc', 0),
+(3, N'Hồ Chí Minh', N'Quận 3', N'Phường 11', N'Số nhà 3', '0923236277', N'Khưu Vĩnh Toàn', 1),
+(4, N'Hồ Chí Minh', N'Quận 3', N'Phường 01', N'Số nhà 4', '0923236277', N'Châu Ngọc Anh', 1),
+(5, N'Hồ Chí Minh', N'Thủ Đức', N'Linh Trung', N'Ký túc xá khu A', '0923236277', N'Liễu Minh Vương', 1),
+(6, N'Hồ Chí Minh', N'Quận 4', N'Phường 12', N'Số nhà 6', '0923236277', N'Mạnh Gia Khiêm', 1),
+(7, N'Hồ Chí Minh', N'Quận 11', N'Phường 05', N'Số nhà 7', '0923236277', N'Mâu Công Hậu', 1),
+(8, N'TPHCM', N'Thủ Đức', N'Linh Trung', N'Số nhà 8', '0923236277', N'Lyly Ðông Dương', 1),
+(9, N'Sóc Trăng', N'Huyện Long Phú', N'Xã Phú Hữu', N'Số nhà 9', '0923236277', N'Ngọc Quang Hòa', 1),
+(1, N'Sóc Trăng', N'Thị xã Ngã Năm', N'Xã Mỹ Bình', N'Số nhà 9', '0923236277', N'Mai Ðình Phúc', 1),
+(2, N'Cần Thơ', N'Quận Cái Răng', N'Phường Phú Thứ', N'Số nhà 9', '0923236277', N'Cống Bảo Hiển', 1),
+(3, N'Cần Thơ', N'Cần Thơ', N'Huyện Thới Lai', N'Số nhà 9', '0923236277', N'Trần Đình Nam', 1);
+
+
+INSERT INTO Cart_item(cart_id, product_id, quantity) VALUES
+(1, 1 ,2),
+(1, 3, 2),
+(1, 2, 2),
+(1, 8, 2),
+(1, 4, 1),
+(2, 2, 2),
+(2, 4, 3),
+(2, 3, 2),
+(3, 8, 1),
+(4, 8, 1),
+(5, 8, 1),
+(6, 8, 1),
+(7, 8, 3),
+(8, 8, 2),
+(9, 8, 1);
+
+
+
+
+
+
+

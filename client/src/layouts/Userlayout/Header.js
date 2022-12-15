@@ -211,7 +211,7 @@ function Header() {
           </div>
         </div>
 
-        <div className="bot-bar mt-3 w-100" style={{ backgroundColor: '#e4f2f2' }}>
+        <div className="bot-bar mt-4 w-100" style={{ backgroundColor: '#e4f2f2' }}>
           <div className='container-md text-white d-flex flex-row align-items-center justify-content-between"'>
             <button className="col-12 col-lg-3 px-4 py-3 bg-warning fw-bold fs-4 d-flex flex-row align-items-center">
               <a
