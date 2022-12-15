@@ -13,6 +13,8 @@ import { Context } from '../../stores';
 import Price from '../../components/PriceDisplay/Price';
 import MyButton from '../../components/MyButton';
 import images from '../../assets/images';
+import { getCartAPI } from '../../api/cartAPI';
+import { setCart } from '../../stores/actions';
 
 const cx = classNames.bind(styles);
 
@@ -26,6 +28,9 @@ function Header() {
     }
   };
 
+  useEffect(() => {
+    getCartAPI().then((res) => dispatch(setCart(res)));
+  }, []);
 
   const onSearchBoxChange = (e) => {
     setSearchStr(e.target.value);
@@ -45,6 +50,7 @@ function Header() {
       sessionStorage.clear();
     }
   }
+  console.log('state:', state);
   console.log(sessionStorage.getItem('user'));
   return (
     <div className={cx('header')}>
@@ -70,15 +76,6 @@ function Header() {
                           : 'Đăng nhập'}
                       </button>
                     </Link>
-                    {JSON.parse(sessionStorage.getItem("user")) && JSON.parse(sessionStorage.getItem("user"))['type']==='admin'?(
-                      <Link
-                        to="/admin"
-                        className="d-flex flex-column"
-                      >
-                        <button className="btn btn-success mb-2 px-5">
-                          Admin
-                        </button>
-                      </Link>):""}
                     <Link
                       to={JSON.parse(sessionStorage.getItem('user')) ? '/login' : '/signup'}
                       className="d-flex flex-column"
@@ -131,7 +128,7 @@ function Header() {
                 <Tippy
                   render={(attrs) => {
                     return sessionStorage.getItem('user') ? (
-                      state.cart.products && state.cart.products.length > 0 ? (
+                      state.cart !== [] && state.cart.products && state.cart.products.length > 0 ? (
                         <div
                           {...attrs}
                           tabIndex="-1"
@@ -188,7 +185,9 @@ function Header() {
                   zIndex={999}
                 >
                   <Link
-                    onClick = {() => {!sessionStorage.getItem('user') && alert('Vui lòng đăng nhập để thực hiện tính năng này!')}}
+                    onClick={() => {
+                      !sessionStorage.getItem('user') && alert('Vui lòng đăng nhập để thực hiện tính năng này!');
+                    }}
                     to={`${sessionStorage.getItem('user') ? '/cart' : '/login'}`}
                     className="text-white d-flex align-items-center"
                   >
@@ -196,8 +195,13 @@ function Header() {
                     <div>
                       <p className="mb-1 d-none d-md-block">Giỏ hàng</p>
                       <p className="m-0">
-                        (<span className="m-0">{state.cart === [] ?  state.cart.products.length : 0}</span>){' '}
-                        <span className="m-0 d-none d-md-inline-block">Sản phẩm</span>
+                        (
+                        <span className="m-0">
+                          {sessionStorage.getItem('user') && state.cart.products !== []
+                            ? state.cart.products.length
+                            : 0}
+                        </span>
+                        ) <span className="m-0 d-none d-md-inline-block">Sản phẩm</span>
                       </p>
                     </div>
                   </Link>
@@ -207,7 +211,7 @@ function Header() {
           </div>
         </div>
 
-        <div className="bot-bar mt-3 w-100" style={{ backgroundColor: '#e4f2f2' }}>
+        <div className="bot-bar mt-4 w-100" style={{ backgroundColor: '#e4f2f2' }}>
           <div className='container-md text-white d-flex flex-row align-items-center justify-content-between"'>
             <button className="col-12 col-lg-3 px-4 py-3 bg-warning fw-bold fs-4 d-flex flex-row align-items-center">
               <a

@@ -1,18 +1,4 @@
-import {
-  ADD_CART,
-  SET_CART,
-  REMOVE_CART_ITEM,
-  SELECT_ALL_CART_ITEM,
-  SELECT_CART_ITEM,
-  UPDATE_CART,
-  SET_USER,
-} from './constants';
-import { products } from './fakeData';
-
-const initState = {
-  current_user: '',
-  cart: [],
-};
+import { SET_CART, SELECT_ALL_CART_ITEM, SELECT_CART_ITEM, UPDATE_CART, SET_USER } from './constants';
 
 const reducer = (state, action) => {
   console.log('state', state);
@@ -43,6 +29,7 @@ const reducer = (state, action) => {
       let newCart = state.cart;
       let i = newCart.products.findIndex((item) => item.product_id === action.payload);
       console.log(i);
+      if (i < 0) return state;
       newCart.products[i].isSelected = !newCart.products[i].isSelected;
       return {
         ...state,
@@ -60,7 +47,5 @@ const reducer = (state, action) => {
       return new Error('Invalid action!');
   }
 };
-
-export { initState };
 
 export default reducer;

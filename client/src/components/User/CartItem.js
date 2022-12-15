@@ -10,9 +10,8 @@ import { useViewport } from '../../hooks/hooks';
 
 function CartItem({ cartItem }) {
   const [state, dispatch] = useContext(Context);
-  const {width, size} = useViewport() ;
-  console.log(width, size)
-
+  const { width, size } = useViewport();
+  console.log(width, size);
 
   console.log(cartItem);
 
@@ -20,16 +19,16 @@ function CartItem({ cartItem }) {
   const handleClose = () => setConfirmDelete(false);
 
   const handleConfirm = () => {
-    dispatch(removeCartItem(cartItem.id));
+    handleRemoveCart();
     handleClose();
   };
 
   // Xử lý xoá sản phẩm khỏi giỏ hàng
   const handleRemoveCart = async () => {
     // remove
-    removeCartItemAPI(cartItem.product_id);
+    await removeCartItemAPI(cartItem.product_id);
     // update
-    getCartAPI().then((res) => dispatch(setCart(res)));
+    await getCartAPI().then((res) => dispatch(setCart(res)));
   };
 
   // Xử lý giảm sản phẩm
@@ -46,7 +45,7 @@ function CartItem({ cartItem }) {
 
   return (
     <div className="row align-items-center justify-content-between text-center border-bottom py-2">
-      <div className="col-1 col-md-1" style={width >= 768  ? { width: '7%' }:{}}>
+      <div className="col-1 col-md-1" style={width >= 768 ? { width: '7%' } : {}}>
         <input
           type="checkbox"
           defaultChecked={cartItem.isSelected}
@@ -56,14 +55,19 @@ function CartItem({ cartItem }) {
           }}
         />
       </div>
-      <div className="col-3 col-md-3 p-2" style={width >= 992  ? { width: '17%' }:{}}>
-        <img src={cartItem.thumbnail} width={width >= 992  ? "60%" : '80%'} className="" alt="ảnh sản phẩm" />
+      <div className="col-3 col-md-3 p-2" style={width >= 992 ? { width: '17%' } : {}}>
+        <img src={cartItem.thumbnail} width={width >= 992 ? '60%' : '80%'} className="" alt="ảnh sản phẩm" />
       </div>
-      <div className={`col-5 col-md-3 ${width >= 992 ? "text-center" : "text-start"}`}style={width >= 992  ? { width: '33%' }:{}}>
+      <div
+        className={`col-5 col-md-3 ${width >= 992 ? 'text-center' : 'text-start'}`}
+        style={width >= 992 ? { width: '33%' } : {}}
+      >
         <p>{cartItem.name}</p>
-        <Price primary className='m-0 d-block d-md-none'>{cartItem.price}</Price>
+        <Price primary className="m-0 d-block d-md-none">
+          {cartItem.price}
+        </Price>
       </div>
-      <div className="col-2 d-none d-lg-block" style = {width >= 992  ? { width: '12%' }:{}}>
+      <div className="col-2 d-none d-lg-block" style={width >= 992 ? { width: '12%' } : {}}>
         <Price primary>{cartItem.price}</Price>
       </div>
       <div
@@ -86,20 +90,20 @@ function CartItem({ cartItem }) {
         />
         <AiOutlinePlusSquare onClick={handleIncrease} size={24} />
       </div>
-      <div className="col-2 col-md-2 d-none d-md-block" style={width >= 992  ? { width: '12%' }:{}}>
+      <div className="col-2 col-md-2 d-none d-md-block" style={width >= 992 ? { width: '12%' } : {}}>
         <Price>{cartItem.quantity * cartItem.price}</Price>
       </div>
-      <div className="col-1" style={width >= 992  ? { width: '7%' }:{}}>
+      <div className="col-1" style={width >= 992 ? { width: '7%' } : {}}>
         <div className="d-flex align-items-center justify-content-center text-primary p-0 d-md-none">
           <AiOutlineMinusSquare onClick={handleDecrease} size={24} />
-          <span className='mx-1'>{cartItem.quantity}</span>
+          <span className="mx-1">{cartItem.quantity}</span>
           <AiOutlinePlusSquare onClick={handleIncrease} size={24} />
         </div>
         <button className="btn btn-outline text-orange p-1" onClick={handleRemoveCart}>
-          {width >= 768  ? <AiFillCloseSquare  size={24} /> : <p className='m-0'>Xoá</p>}
+          {width >= 768 ? <AiFillCloseSquare size={24} /> : <p className="m-0">Xoá</p>}
         </button>
       </div>
-      
+
       <Modal
         show={confirmDelete}
         onHide={handleClose}
