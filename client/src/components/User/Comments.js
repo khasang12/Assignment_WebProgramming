@@ -1,8 +1,8 @@
 import { Pagination, Button } from 'react-bootstrap';
-
+import { icons } from 'react-icons/lib';
 import RateStar from './RateStar';
 import StarPercen from './StarPercen';
-
+import  * as BiIcons from "react-icons/bi";
 const comments = [
   {
     avatar: 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png',
@@ -49,57 +49,85 @@ const comments = [
     reply: [],
   },
 ];
-function Comments({ product_id = '' }) {
-  return (
-    <div id="comment">
-      <h4 className="font-weight-normal mb-4">KHÁCH HÀNG NHẬN XÉT</h4>
-      <div className="row pb-3 border-bottom">
-        <div className="col-12 col-md-6 d-flex flex-column align-items-center">
-          <p className="m-0">Đánh giá trung bình</p>
-          <h2 className="text-orange my-2 m-l-0"> 5 / 5 </h2>
-          <p>({comments.length} đánh giá)</p>
-        </div>
-        {/* <div className="col-12">
-          <StarPercen />
-        </div> */}
-        <div className="col-12 col-md-6 d-flex flex-column align-items-center">
-          <p>Chia sẻ đánh giá của bạn</p>
-          <Button variant="danger">Viết đánh giá của bạn</Button>
-        </div>
-      </div>
 
-      <div className="row border-bottom py-2">
-        <p className="ml-0 mb-2">Chọn xem đánh giá</p>
-        <div>
-          <select>
-            <option>Tất cả</option>
-            <option>Có ảnh</option>
-            <option>không có ảnh</option>
-          </select>
-          <select className="ml-3">
-            <option>Tất cả</option>
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-          </select>
-        </div>
-      </div>
-      {comments.map((item, index) => (
-        <div key={index} className="border-bottom m-0 py-2">
-          <div className="d-flex align-items-center">
-            <img width="30px" src={item.avatar} alt="" />
-            <span>{item.customerName}</span>
-          </div>
-          <div className="d-flex align-items-center">
-            <RateStar number={item.numStar} />
-            <span>{item.content}</span>
-          </div>
-          <div className="d-flex align-items-center">
-            <span className="ml-0 text-primary">Trả lời</span>
-            <span>{item.update_at}</span>
-          </div>
+function addComment(){
+        document.getElementById("test").style.display = "";
+        document.getElementById("addCmtButton").disabled = true;
+}
+
+function Comments({ product_id = '' }) {
+    return (
+        <div id="comment">
+            <h4 className="font-weight-normal mb-4">KHÁCH HÀNG NHẬN XÉT</h4>
+            <div className="row pb-3 border-bottom">
+                <div className="col-4 d-flex flex-column align-items-center">
+                    <p className="m-0">Đánh giá trung bình</p>
+                    <h2 className="text-orange my-2 m-l-0"> 5 / 5 </h2>
+                    <p>({comments.length} đánh giá)</p>
+                </div>
+                <div className="col-4">
+                    <StarPercen />
+                </div>
+                <div className="col-4 d-flex flex-column align-items-center">
+                    <p>Chia sẻ đánh giá của bạn</p>
+                    <Button id='addCmtButton' variant="danger" onClick={addComment}>Viết đánh giá của bạn</Button>
+                </div>
+            </div>
+
+            <div className="row border-bottom py-2">
+                <p className="ml-0 mb-2">Chọn xem đánh giá</p>
+                <div>
+                    <select>
+                        <option>Tất cả</option>
+                        <option>Có ảnh</option>
+                        <option>không có ảnh</option>
+                    </select>
+                    <select className="ml-3">
+                        <option>Tất cả</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                    </select>
+                </div>
+            </div>
+            {comments.map((item, index) => (
+                <div key={index} className="border-bottom m-0 py-2">
+                    <div className="d-flex align-items-center">
+                        <img width="30px" src={item.avatar} alt="" />
+                        <span>{item.customerName}</span>
+                    </div>
+                    <div className="d-flex align-items-center">
+                        <RateStar number={item.numStar} />
+                        <span>{item.content}</span>
+                    </div>
+                    <div className="d-flex align-items-center">
+                        <span className="ml-0 text-primary">Trả lời</span>
+                        <span>{item.update_at}</span>
+                    </div>
+                </div>
+            ))}
+            <div className="container d-flex justify-content-center my-3">
+                <Pagination>
+                    <Pagination.Item active>1</Pagination.Item>
+                    <Pagination.Item>2</Pagination.Item>
+                    <Pagination.Item>3</Pagination.Item>
+                    <Pagination.Item>4</Pagination.Item>
+                    <Pagination.Item>5</Pagination.Item>
+                </Pagination>
+            </div>
+
+            <div id='test' style={{display:"none"}} className= "d-flex flex-col"> 
+                
+            <div class="form-group">
+    <label for="exampleFormControlTextarea1"><span><BiIcons.BiComment></BiIcons.BiComment></span> Viết bình luận của bạn ở đây nhé: </label>
+    <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" cols="115"></textarea>
+            </div>
+
+
+            </div>
+            <div><button type="submit" class="btn btn-primary">Đăng bình luận</button></div>
         </div>
       ))}
       <div className="container d-flex justify-content-center my-3">
