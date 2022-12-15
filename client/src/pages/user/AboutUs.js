@@ -3,9 +3,20 @@ import img from "../../assets/avatar.jpg";
 import doraemon from "../../assets/doraemon.png";
 import neji from "../../assets/neji.png";
 import shisui from "../../assets/shisui.png";
-
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 const AboutUs = () => {
+  const [video,setVideo] = useState([]);
+  const getHomeImages = async () => {
+    await axios
+      .get("http://localhost:8080/api/upload/demo")
+      .then((response) => {
+        setVideo(response.data)
+        console.log(response)
+      })
+      .catch((res) => alert(res));
+  };
   const avatarStyle = {
     display: "inline-block",
     position: "relative",
@@ -21,6 +32,13 @@ const AboutUs = () => {
     height: "14rem",
     lineHeight: "14rem",
   };
+  useEffect(()=>{
+    const timeoutID = window.setTimeout(() => {
+        getHomeImages();
+      }, 1000);
+      
+    return () => window.clearTimeout(timeoutID);
+},[])
   return (
     <div class="container mt-4">
     <section class="py-5">
@@ -77,7 +95,9 @@ BK Zone nghiên cứu và phát triển giải pháp để giải quyết nhữn
             </div>
             <div class="col-lg-4">
               <div class="ratio ratio-4x3">
-                <iframe class="embed-responsive-item" src="//www.youtube.com/embed/upZJpGrppJA"></iframe>
+                  <video controls autoplay loop class="embed-responsive-item mt-0" src={video[0]?video[0].data:""}>
+                      Your browser does not support HTML5 video.
+                  </video>
               </div>
             </div>
           </div>

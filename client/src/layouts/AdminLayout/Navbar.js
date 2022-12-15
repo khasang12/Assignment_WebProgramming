@@ -8,18 +8,26 @@ import { SidebarData, NotiData } from "./SidebarData";
 import "./Navbar.css";
 import { IconContext } from "react-icons";
 import logo from "../../assets/logo.png";
+import { useNavigate } from "react-router-dom";
 
 export function AdminLayout({setNavbarAdmin}) {
   const [sidebar, setSidebar] = useState(false);
+  const navigate = useNavigate();
   const toggleSidebar = () => {
     setNavbarAdmin(!sidebar)
     setSidebar((sidebar) => !sidebar);
   };
+  useEffect(()=>{
+    if (!sessionStorage.getItem("user") || JSON.parse(sessionStorage.getItem("user")).type!="admin"){
+      alert("403 - You are not Authenticated !!")
+      navigate("/")
+    }
+  },[])
   return (
     <div>
       <div className="navbar">
         <Link to="#" className="menu-bars">
-          <FaIcons.FaBars onClick={toggleSidebar} />
+          <FaIcons.FaBars style={{color:'white'}} onClick={toggleSidebar} />
         </Link>
         <img src={logo} alt="logo" className="logo" />
         <div className="profile">
@@ -81,9 +89,9 @@ export function AdminLayout({setNavbarAdmin}) {
           {SidebarData.map((item, index) => {
             return (
               <li key={index} className={item.cName}>
-                <Link to={item.path}>
-                  {item.icon}
-                  <span>{item.title}</span>
+                <Link className="justify-content-center justify-content-md-start" to={item.path}>
+                  <span className="align-self-center">{item.icon}</span>
+                  <span className={"d-none d-md-block"}>{item.title}</span>
                 </Link>
               </li>
             );
@@ -123,8 +131,8 @@ export function AdminLayout({setNavbarAdmin}) {
               >
                 Đóng cửa sổ
               </button>
-              <button type="button" class="btn btn-primary">
-                Đăng xuất
+              <button type="button" class="btn btn-primary" onClick={()=>sessionStorage.clear()}>
+                <a href="/" class="text-white">Đăng xuất</a>
               </button>
             </div>
           </div>

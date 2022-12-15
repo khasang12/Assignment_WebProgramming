@@ -17,10 +17,10 @@ class Product{
             if ($params && ((count(array_flip($params)) !== 1 && count($params)>1) ||count($params)==1)) {
                 $query .= ' WHERE ' ;
                 if (isset($params['priceFrom'])){
-                    $priceFrom = $params['priceFrom']; 
+                    $priceFrom = mysqli_real_escape_string($this->conn,$params['priceFrom']); 
                     $query .= "price >= $priceFrom";
                     if(isset($params['priceTo'])){
-                        $priceTo = $params['priceTo'];
+                        $priceTo = mysqli_real_escape_string($this->conn,$params['priceTo']);
                         $query .= " AND price <= $priceTo";
                     }
                 }
@@ -30,7 +30,8 @@ class Product{
                             continue;
                         }
                         if($key!='sorted'){
-                            $query .= "$key LIKE \"%$params[$key]%\" AND ";
+                            $q = mysqli_real_escape_string($this->conn,$params[$key]);
+                            $query .= "$key LIKE \"%$q%\" AND ";
                         }
                         else{
                             if($params[$key]=='priceUp'){
@@ -62,6 +63,7 @@ class Product{
 
     public function getProduct($id){
         try{
+            $id = mysqli_real_escape_string($this->conn,$id);
             $query = "SELECT * FROM product Where id = $id";
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
@@ -74,25 +76,24 @@ class Product{
     }
 
     public function createProduct($info){
-        print_r($info);
-            $id = $info['id'];
-            $name = $info['name'];
-            $price = $info['price'];
-            $quantity = $info['quantity'];
+            $id = mysqli_real_escape_string($this->conn,$info['id']);
+            $name = mysqli_real_escape_string($this->conn,$info['name']);
+            $price = mysqli_real_escape_string($this->conn,$info['price']);
+            $quantity = mysqli_real_escape_string($this->conn,$info['quantity']);
             $overall_rating= 0;
-            $thumbnail = $info['thumbnail'];
+            $thumbnail = mysqli_real_escape_string($this->conn,$info['thumbnail']);
 
-            $brand = $info['brand'];
-            $cpu = $info['cpu'];
-            $gpu = $info['gpu'];
-            $ram = $info['ram'];
-            $disk = $info['disk'];
-            $description = $info['description'];
+            $brand = mysqli_real_escape_string($this->conn,$info['brand']);
+            $cpu = mysqli_real_escape_string($this->conn,$info['cpu']);
+            $gpu = mysqli_real_escape_string($this->conn,$info['gpu']);
+            $ram = mysqli_real_escape_string($this->conn,$info['ram']);
+            $disk = mysqli_real_escape_string($this->conn,$info['disk']);
+            $description = mysqli_real_escape_string($this->conn,$info['description']);
             $num_rates = 0;
-            $screen_tech = $info['screen_tech'];
-            $screen_size = $info['screen_size'];
-            $weight = $info['weight'];
-            $os = $info['os'];
+            $screen_tech = mysqli_real_escape_string($this->conn,$info['screen_tech']);
+            $screen_size = mysqli_real_escape_string($this->conn,$info['screen_size']);
+            $weight = mysqli_real_escape_string($this->conn,$info['weight']);
+            $os = mysqli_real_escape_string($this->conn,$info['os']);
 
             $query = "INSERT INTO product (`name`,thumbnail,price,quantity,brand,cpu,gpu,ram,`disk`,screen_size,screen_tech,os,overall_rating,`description`,`weight`,num_rates) VALUES ('$name','$thumbnail',$price,$quantity,'$brand','$cpu','$gpu','$ram','$disk','$screen_size','$screen_tech','$os',$overall_rating,'$description',$weight,$num_rates)";
             $stmt = $this->conn->prepare($query);
@@ -101,23 +102,24 @@ class Product{
 
     public function editProduct($id, $info){
         try{
-            $name = $info['name'];
-            $price = $info['price'];
-            $quantity = $info['quantity'];
+            $id = mysqli_real_escape_string($this->conn,$id);
+            $name = mysqli_real_escape_string($this->conn,$info['name']);
+            $price = mysqli_real_escape_string($this->conn,$info['price']);
+            $quantity = mysqli_real_escape_string($this->conn,$info['quantity']);
             $overall_rating= 0;
-            $thumbnail = $info['thumbnail'];
+            $thumbnail = mysqli_real_escape_string($this->conn,$info['thumbnail']);
 
-            $brand = $info['brand'];
-            $cpu = $info['cpu'];
-            $gpu = $info['gpu'];
-            $ram = $info['ram'];
-            $disk = $info['disk'];
-            $description = $info['description'];
+            $brand = mysqli_real_escape_string($this->conn,$info['brand']);
+            $cpu = mysqli_real_escape_string($this->conn,$info['cpu']);
+            $gpu = mysqli_real_escape_string($this->conn,$info['gpu']);
+            $ram = mysqli_real_escape_string($this->conn,$info['ram']);
+            $disk = mysqli_real_escape_string($this->conn,$info['disk']);
+            $description = mysqli_real_escape_string($this->conn,$info['description']);
             $num_rates = 0;
-            $screen_tech = $info['screen_tech'];
-            $screen_size = $info['screen_size'];
-            $weight = $info['weight'];
-            $os = $info['os'];
+            $screen_tech = mysqli_real_escape_string($this->conn,$info['screen_tech']);
+            $screen_size = mysqli_real_escape_string($this->conn,$info['screen_size']);
+            $weight = mysqli_real_escape_string($this->conn,$info['weight']);
+            $os = mysqli_real_escape_string($this->conn,$info['os']);
 
             $query = "UPDATE product SET name = '$name', price= $price,overall_rating= $overall_rating,num_rates= $num_rates, thumbnail = '$thumbnail', quantity = $quantity, brand='$brand',cpu='$cpu',gpu='$gpu',screen_size='$screen_size',screen_tech='$screen_tech',ram='$ram',disk='$disk',description='$description',weight='$weight',os='$os' WHERE id = '$id'";
             $stmt = $this->conn->prepare($query);

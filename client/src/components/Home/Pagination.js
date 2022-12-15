@@ -9,7 +9,7 @@ const Pagination = ({ postsPerPage, totalPosts, paginate }) => {
 
   return (
     <nav aria-label="Page navigation example">
-      <ul className="pagination pagination-lg">
+      <ul className="pagination pagination-lg d-flex flex-row flex-wrap justify-content-center">
         {pageNumbers.map((number) => (
           <li key={number} className="page-item">
             <a onClick={() => paginate(number)} href="#items-display" className="page-link">

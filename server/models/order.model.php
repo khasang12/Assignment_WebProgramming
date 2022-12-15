@@ -60,7 +60,7 @@ class Order{
         $phoneNumber = $info['phoneNumber'];
         $p_method = $info['p_method'];
         $create_at = date('Y-m-d H:i:s');
-        $status = "waiting";        
+        $status = "waiting";     
 
         $query0 = "INSERT INTO Orders(customer_id, address, receiverName,phoneNumber, paymentMethod, create_at, `status`) VALUES ($userID, '$address', '$receiverName', '$phoneNumber', '$p_method', '$create_at', '$status')";
         $stmt0 = $this->conn->prepare($query0);
