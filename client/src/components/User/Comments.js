@@ -4,50 +4,50 @@ import RateStar from './RateStar';
 import StarPercen from './StarPercen';
 import  * as BiIcons from "react-icons/bi";
 const comments = [
-    {
-        avatar: 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png',
-        id: 'cmt1',
-        p_id: 'P1',
-        customer_id: 'C1',
-        customerName: 'Minh Vương',
-        content: 'Đắt vl',
-        update_at: '29/09/2022 02:22',
-        numStar: 2,
-        reply: [],
-    },
-    {
-        id: 'cmt2',
-        avatar: 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png',
-        p_id: 'P1',
-        customer_id: 'C2',
-        customerName: 'Thái',
-        content: 'Sản phẩm tạm được!',
-        update_at: '29/09/2022 02:22',
-        numStar: 4,
-        reply: [],
-    },
-    {
-        id: 'cmt3',
-        avatar: 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png',
-        p_id: 'P1',
-        customer_id: 'C3',
-        customerName: 'Hào',
-        content: 'Ngon bổ rẻ :>',
-        update_at: '29/09/2022 02:22',
-        numStar: 5,
-        reply: [],
-    },
-    {
-        id: 'cmt4',
-        avatar: 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png',
-        p_id: 'P1',
-        customer_id: 'C4',
-        customerName: 'Kha Sang',
-        content: 'Đỉnh của chóp ',
-        update_at: '29/09/2022 02:22',
-        numStar: 5,
-        reply: [],
-    },
+  {
+    avatar: 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png',
+    id: 'cmt1',
+    p_id: 'P1',
+    customer_id: 'C1',
+    customerName: 'Minh Vương',
+    content: 'Đắt vl',
+    update_at: '29/09/2022 02:22',
+    numStar: 2,
+    reply: [],
+  },
+  {
+    id: 'cmt2',
+    avatar: 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png',
+    p_id: 'P1',
+    customer_id: 'C2',
+    customerName: 'Thái',
+    content: 'Sản phẩm tạm được!',
+    update_at: '29/09/2022 02:22',
+    numStar: 4,
+    reply: [],
+  },
+  {
+    id: 'cmt3',
+    avatar: 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png',
+    p_id: 'P1',
+    customer_id: 'C3',
+    customerName: 'Hào',
+    content: 'Ngon bổ rẻ :>',
+    update_at: '29/09/2022 02:22',
+    numStar: 5,
+    reply: [],
+  },
+  {
+    id: 'cmt4',
+    avatar: 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png',
+    p_id: 'P1',
+    customer_id: 'C4',
+    customerName: 'Kha Sang',
+    content: 'Đỉnh của chóp ',
+    update_at: '29/09/2022 02:22',
+    numStar: 5,
+    reply: [],
+  },
 ];
 
 function addComment(){
@@ -56,7 +56,6 @@ function addComment(){
 }
 
 function Comments({ product_id = '' }) {
-
     return (
         <div id="comment">
             <h4 className="font-weight-normal mb-4">KHÁCH HÀNG NHẬN XÉT</h4>
@@ -130,7 +129,18 @@ function Comments({ product_id = '' }) {
             </div>
             <div><button type="submit" class="btn btn-primary">Đăng bình luận</button></div>
         </div>
-    );
+      ))}
+      <div className="container d-flex justify-content-center my-3">
+        <Pagination>
+          <Pagination.Item active>1</Pagination.Item>
+          <Pagination.Item>2</Pagination.Item>
+          <Pagination.Item>3</Pagination.Item>
+          <Pagination.Item>4</Pagination.Item>
+          <Pagination.Item>5</Pagination.Item>
+        </Pagination>
+      </div>
+    </div>
+  );
 }
 
 export default Comments;

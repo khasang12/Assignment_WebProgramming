@@ -10,7 +10,7 @@ class AddressController{
 
         $new = $temp->getAllAddress($user_id);
 
-        if($new->num_rows > 0){
+        if($new->num_rows >= 0){
             $rows = $new->fetch_all(MYSQLI_ASSOC);
             $rows = json_encode($rows);
             return $rows;

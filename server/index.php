@@ -46,6 +46,9 @@
             else if($url['2'] == 'address'){
                 include './routes/address.route.php';
             }
+            else if($url['2'] == 'cart'){
+                include './routes/cart.route.php';
+            }
             else{
                 http_response_code(404);
                 echo json_encode(["message" => 'Not found API!!!']);

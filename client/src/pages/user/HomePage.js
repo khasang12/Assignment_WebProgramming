@@ -1,33 +1,36 @@
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
 import ItemsList from '../../components/Home/ItemList';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { Context } from '../../stores';
+import { setCart, setUser } from '../../stores/actions';
+import { getCartAPI } from '../../api/cartAPI';
 
 function HomePage() {
-    const [img,setImg] = useState([])
+    const [img, setImg] = useState([]);
     const [items, setItems] = useState([]);
+    const [state, dispatch] = useContext(Context);
     useEffect(() => {
         getProducts().then((data) => setItems(data));
     }, []);
-    useEffect(()=>{
+    useEffect(() => {
         const timeoutID = window.setTimeout(() => {
             getHomeImages();
-          }, 1000);
-          
+        }, 1000);
+
         return () => window.clearTimeout(timeoutID);
-    },[])
+    }, []);
     const getProducts = async () => {
         return axios.get('http://localhost:8080/api/products/all').then((res) => res.data);
     };
     const getHomeImages = async () => {
         await axios
-          .get("http://localhost:8080/api/upload/slider")
-          .then((response) => {
-            setImg(response.data)
-            console.log(response)
-          })
-          .catch((res) => alert(res));
-      };
+            .get('http://localhost:8080/api/upload/slider')
+            .then((response) => {
+                setImg(response.data);
+            })
+            .catch((res) => alert(res));
+    };
     return (
         <div class="container mt-8 pt-5 pt-md-0 mt-md-4">
             {/* <MyButton className="m-5" primary to="/details?id=P123456577">
@@ -41,7 +44,7 @@ function HomePage() {
                         data-bs-slide-to="0"
                         className="active"
                         aria-current="true"
-                        aria-label="Slide 1"  
+                        aria-label="Slide 1"
                     ></button>
                     <button
                         type="button"
@@ -70,15 +73,25 @@ function HomePage() {
                 </div>
                 <div class="carousel-inner relative w-full overflow-hidden">
                     <div class="carousel-item active relative float-left w-full">
-                        {img[0]?<img src={img[0].data} class="block w-full align-items-center object-contain" alt="..." />:""}
+                        {img[0] ? (
+                            <img src={img[0].data} class="block w-full align-items-center object-contain" alt="..." />
+                        ) : (
+                            ''
+                        )}
                     </div>
                     <div class="carousel-item relative float-left w-full">
-                    {img[1]?<img src={img[1].data} class="block w-full align-items-center object-contain" alt="..." />:""}
-
+                        {img[1] ? (
+                            <img src={img[1].data} class="block w-full align-items-center object-contain" alt="..." />
+                        ) : (
+                            ''
+                        )}
                     </div>
                     <div class="carousel-item relative float-left w-full">
-                    {img[2]?<img src={img[2].data} class="block w-full align-items-center object-contain" alt="..." />:""}
-
+                        {img[2] ? (
+                            <img src={img[2].data} class="block w-full align-items-center object-contain" alt="..." />
+                        ) : (
+                            ''
+                        )}
                     </div>
                 </div>
                 <button
@@ -102,7 +115,7 @@ function HomePage() {
                 <a id="items-display" name="anchor"></a>
             </div>
             <div className="fs-1 p-10 my-5 font-size text-center">Tin đăng mới</div>
-            <ItemsList items={items}/>
+            <ItemsList items={items} />
         </div>
     );
 }

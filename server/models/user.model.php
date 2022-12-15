@@ -25,7 +25,7 @@ class User{
     public function getUser($username){
         try{
             $username = mysqli_real_escape_string($this->conn,$username);
-            $query = "SELECT id,first_name,last_name,password FROM Customer WHERE username = '$username'";
+            $query = "SELECT id,first_name,last_name,email,password FROM Customer WHERE username = '$username'";
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
             return $stmt->get_result();
