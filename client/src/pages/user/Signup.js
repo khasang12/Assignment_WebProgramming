@@ -110,7 +110,7 @@ function Signup() {
                             <Col>
                                 <Form.Group className="mb-3 w-100">
                                     <Form.Label className="fw-bold">Số điện thoại</Form.Label>
-                                    <Form.Control type="text" placeholder="Enter your phone number" name="phone" value={input.phone} onChange={(e) => handleChange(e)}/>
+                                    <Form.Control type="number" placeholder="Enter your phone number" name="phone" value={input.phone} onChange={(e) => handleChange(e)}/>
                                     <p className={` ${danger.phone ? "text-danger" : "visually-hidden" }`}>Please enter your phone</p>
                                 </Form.Group>
                             </Col>

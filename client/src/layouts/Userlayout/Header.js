@@ -137,7 +137,7 @@ function Header() {
                 <Tippy
                   render={(attrs) => {
                     return sessionStorage.getItem('user') ? (
-                      state.cart !== [] && state.cart.products && state.cart.products.length > 0 ? (
+                      state.cart && state.cart !== [] && state.cart.products && state.cart.products.length > 0 ? (
                         <div
                           {...attrs}
                           tabIndex="-1"
@@ -206,7 +206,7 @@ function Header() {
                       <p className="m-0">
                         (
                         <span className="m-0">
-                          {sessionStorage.getItem('user') && JSON.parse(sessionStorage.getItem('user'))['type']=='user' && state.cart.products !== []
+                          {sessionStorage.getItem('user') && JSON.parse(sessionStorage.getItem('user'))['type']=='user' && state.cart && state.cart.products && state.cart.products !== []
                             ? state.cart.products.length
                             : 0}
                         </span>
