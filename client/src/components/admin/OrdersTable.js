@@ -140,11 +140,6 @@ export function OrdersTable() {
                             width: 150,
                             sortable: true,
                         },
-                        {
-                            accessor: 'last_update',
-                            title: 'Cập nhật lần cuối',
-                            sortable: true,
-                        },
                         { accessor: 'phoneNumber', title: 'Số điện thoại' },
                         { accessor: 'address', title: 'Địa chỉ', width: '100%' },
                         {

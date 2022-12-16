@@ -12,6 +12,7 @@ class Address{
     }
 
     public function getAllAddress($user_id){
+        $user_id = mysqli_real_escape_string($this->conn, $user_id);
         try{
             $query = "SELECT * FROM `address`";
             if ($user_id != '') {
@@ -28,13 +29,13 @@ class Address{
     }
 
     public function createAddress($info){
-            $user_id = $info['user_id'];
-            $fullname = $info['fullname'];
-            $phoneNumber = $info['phoneNumber'];
-            $city = $info['city'];
-            $district = $info['district'];
-            $ward = $info['ward'];
-            $specificAddress = $info['specificAddress'];
+            $user_id =mysqli_real_escape_string($this->conn, $info['user_id']);
+            $fullname =mysqli_real_escape_string($this->conn, $info['fullname']);
+            $phoneNumber =mysqli_real_escape_string($this->conn, $info['phoneNumber']);
+            $city =mysqli_real_escape_string($this->conn, $info['city']);
+            $district =mysqli_real_escape_string($this->conn, $info['district']);
+            $ward =mysqli_real_escape_string($this->conn, $info['ward']);
+            $specificAddress =mysqli_real_escape_string($this->conn, $info['specificAddress']);
 
             $query = "INSERT INTO Address (user_id, city, district, ward, specificAddress, phoneNumber, receiverName) VALUES ($user_id, '$city',' $district', '$ward', '$specificAddress', '$phoneNumber', '$fullname')";
             $stmt = $this->conn->prepare($query);
@@ -43,13 +44,13 @@ class Address{
 
     public function editAddress($id, $info){
         try{
-            $user_id = $info['user_id'];
-            $fullname = $info['fullname'];
-            $phoneNumber = $info['phoneNumber'];
-            $city = $info['city'];
-            $district = $info['district'];
-            $ward = $info['ward'];
-            $specificAddress = $info['specificAddress'];
+            $user_id = mysqli_real_escape_string($this->conn, $info['user_id']);
+            $fullname = mysqli_real_escape_string($this->conn, $info['fullname']);
+            $phoneNumber = mysqli_real_escape_string($this->conn, $info['phoneNumber']);
+            $city = mysqli_real_escape_string($this->conn, $info['city']);
+            $district = mysqli_real_escape_string($this->conn, $info['district']);
+            $ward = mysqli_real_escape_string($this->conn, $info['ward']);
+            $specificAddress = mysqli_real_escape_string($this->conn, $info['specificAddress']);
 
             $query = "UPDATE address SET receiverName = '$fullname', phoneNumber = '$phoneNumber', city = '$city', district = '$district', ward = '$ward', specificAddress = '$specificAddress' WHERE id = $id AND user_id = $user_id";
             $stmt = $this->conn->prepare($query);
@@ -63,6 +64,7 @@ class Address{
     }
 
     public function deleteAddress($id){
+        $id = mysqli_real_escape_string($this->conn, $id);
         try{
             echo $id;
             $query = "DELETE FROM Address WHERE id = $id";

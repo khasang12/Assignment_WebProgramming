@@ -80,6 +80,7 @@ function CartItem({ cartItem }) {
           className="text-center"
           style={{ width: 36 }}
           defaultValue={cartItem.quantity}
+          disabled
           key={Math.random()}
           onChange={(e) => {
             cartItem.quantity = Number(e.target.value);

@@ -12,6 +12,7 @@ class Cart{
     }
 
     public function getAllCart($user_id){
+        $user_id = mysqli_real_escape_string($this->conn, $user_id);
         try{
             $query1 = "SELECT * FROM cart WHERE id = $user_id" ;
             $stmt1 = $this->conn->prepare($query1);

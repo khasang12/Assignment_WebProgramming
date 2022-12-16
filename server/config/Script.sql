@@ -1,4 +1,3 @@
-SET GLOBAL log_bin_trust_function_creators = 1;
 DROP DATABASE IF EXISTS bkzone_2022;
 CREATE DATABASE bkzone_2022;
 USE bkzone_2022;
@@ -52,8 +51,8 @@ CREATE TABLE `Orders` (
   `create_at` Datetime,
   `last_update` timestamp,
   `status` varchar(255),
-  `total_product` integer,
-  `total_order_money` integer,
+  `total_product` integer DEFAULT 0,
+  `total_order_money` integer DEFAULT 0,
    PRIMARY KEY(id)
 );
 CREATE TABLE `OrderDetail` (
@@ -154,7 +153,7 @@ ALTER TABLE `Comment` ADD FOREIGN KEY (`admin_id`) REFERENCES `Admin` (`id`) ON 
 
 ALTER TABLE `News` ADD FOREIGN KEY (`admin_id`) REFERENCES `Admin` (`id`) ON DELETE CASCADE;
 
-ALTER TABLE `Address` ADD FOREIGN KEY (`user_id`) REFERENCES `Customer` (`id`) ON DELETE CASCADE;
+ALTER TABLE `address` ADD FOREIGN KEY (`user_id`) REFERENCES `Customer` (`id`) ON DELETE CASCADE;
 
 -- Trigger Mỗi lần tạo 1 tài khoản mới thì sẽ tự tạo 1 giỏ hàng 
 DROP TRIGGER IF EXISTS `tri_create_cart_after_signup`;
@@ -215,7 +214,7 @@ CREATE TRIGGER tri_order_update
     BEFORE INSERT
     ON OrderDetail FOR EACH ROW
 BEGIN
-      	SET New.total_money = New.quantity * (select product.price FROM Product WHERE New.product_id = product.id); 
+      SET New.total_money = New.quantity * (select product.price FROM Product WHERE New.product_id = product.id); 
 	    UPDATE Orders set Orders.total_product = Orders.total_product + NEW.quantity, Orders.total_order_money = Orders.total_order_money + NEW.total_money WHERE Orders.id = NEW.order_id;
 END$$
 DELIMITER ;
