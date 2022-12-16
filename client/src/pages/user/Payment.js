@@ -107,7 +107,7 @@ function Payment() {
       return;
     }
 
-    order.userID = state.current_user.id;
+    order.userID = state.cart.user_id;
     order.receiverName = e.target.payment__fullname.value;
     order.phoneNumber = phoneNumber;
     order.p_method = paymentMethod;

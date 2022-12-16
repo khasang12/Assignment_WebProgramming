@@ -96,8 +96,10 @@ export function OrdersTable() {
         getOrders();
 
         if (event.target.name === 'edit') {
-            if (done['status'] === false) return toast.error(done['msg'], toastOptions);
-            else return toast.success('Cập nhật thành công', toastOptions);
+            if(orderDetails.status!='confirmed')
+                return toast.success('Cập nhật thành công', toastOptions);
+            else 
+                return toast.error('Đơn hàng đã được xác nhận', toastOptions);
         } else if (event.target.name === 'delete') {
             return toast.success('Cập nhật thành công', toastOptions);
         }
