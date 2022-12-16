@@ -21,7 +21,7 @@ function Login() {
         })
         .then((res) => (sessionStorage.setItem("user", JSON.stringify({id:res.data.data.id,address:res.data.data.address,email:res.data.data.email,phone:res.data.data.phone,name:res.data.data.first_name+' '+res.data.data.last_name,token:res.data.data.token,type:res.data.data.type}))))
         .then(()=>navigate('/'))
-        .catch((res) => {alert('404 - Incorrect Username or Password')});
+        .catch((res) => {alert('Incorrect Username or Password')});
     }
   function handleChange(e) {
     setinput({ ...input, [e.target.name]: e.target.value });

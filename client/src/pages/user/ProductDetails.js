@@ -121,7 +121,7 @@ function ProductDetails() {
                         Thêm vào giỏ hàng
                       </Button>
                       <Link
-                        to="/cart"
+                        to={sessionStorage.getItem('user')?"/cart":"/login"}
                         className="col-12 col-lg-5 btn btn-primary px-2 py-2 bg-primary mt-2"
                         onClick={handleBuy}
                       >
