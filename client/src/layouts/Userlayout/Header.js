@@ -29,7 +29,9 @@ function Header() {
   };
 
   useEffect(() => {
-    getCartAPI().then((res) => dispatch(setCart(res)));
+    if (sessionStorage.getItem('user')) {
+      getCartAPI().then((res) => dispatch(setCart(res)));
+    } else  dispatch(setCart({products: []}))
   }, []);
 
   const onSearchBoxChange = (e) => {

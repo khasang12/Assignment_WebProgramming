@@ -11,7 +11,7 @@ function HomePage() {
   const [items, setItems] = useState([]);
   const [state, dispatch] = useContext(Context);
   useEffect(() => {
-    getProducts().then((data) => setItems(data));
+      getProducts().then((data) => setItems(data));
   }, []);
   useEffect(() => {
     const timeoutID = window.setTimeout(() => {
@@ -31,6 +31,8 @@ function HomePage() {
       })
       .catch((res) => alert(res));
   };
+
+  console.log(items)
   return (
     <div class="container mt-8 pt-5 pt-md-0 mt-md-4">
       {/* <MyButton className="m-5" primary to="/details?id=P123456577">
@@ -103,7 +105,7 @@ function HomePage() {
         <a id="items-display" name="anchor"></a>
       </div>
       <div className="fs-1 p-10 my-5 font-size text-center">Tin đăng mới</div>
-      <ItemsList items={items} />
+     {items &&  <ItemsList items={items} />}
     </div>
   );
 }

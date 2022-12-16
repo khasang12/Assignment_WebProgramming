@@ -36,7 +36,7 @@ function AddressForm() {
     setCurrentAddress(addressList[index]);
   };
 
-  const getCity = async () => {
+  const getCity = async () => { 
     return await axios
       .get('https://provinces.open-api.vn/api/?depth=3%20')
       .then((res) => res.data)
@@ -44,10 +44,12 @@ function AddressForm() {
         console.log('Error :-S', err);
       });
   };
+  
   const getAddressList = async () => {
-    console.log(state.current_user);
+    let id = JSON.parse(sessionStorage.getItem('user')).id;
+    console.log(id)
     return await axios
-      .get(`http://localhost:8080/api/address/all?user_id=${state.current_user.id}`)
+      .get(`http://localhost:8080/api/address/all?user_id=${id}`)
       .then((res) => res.data)
       .catch((err) => alert(err));
   };
@@ -60,6 +62,7 @@ function AddressForm() {
   useEffect(() => {
     getData();
   }, []);
+
 
   return (
     <>
@@ -86,11 +89,11 @@ function AddressForm() {
       <div className="form-floating my-2">
         <input
           type="email"
-          defaultValue={state.current_user ? state.current_user.email : ''}
+          defaultValue={sessionStorage.getItem('user') ? JSON.parse(sessionStorage.getItem('user')).email : ''}
           className="form-control"
           id="payment__email"
           placeholder="name@example.com"
-          readOnly={state.current_user}
+          readOnly={sessionStorage.getItem('user')}
         />
         <label htmlFor="payment__email">Email</label>
       </div>
